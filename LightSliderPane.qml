@@ -6,14 +6,12 @@ import QtQuick.VirtualKeyboard
 
 import com.büro 1.0
 
-
 Pane {
     property variant light
 
     Material.elevation: 6
 
     ColumnLayout {
-
         anchors.fill: parent
 
         Label {
@@ -43,19 +41,35 @@ Pane {
                         horizontalAlignment: Text.AlignHCenter
                     }
 
-                    Slider {
+                    DmxSlider {
                         id: slider
                         Layout.fillWidth: true
                         Layout.fillHeight: true
 
                         orientation: Qt.Vertical
-                        from: 0
-                        to: 255
-
-                        snapMode: Slider.SnapAlways
-                        stepSize: 1
 
                         onValueChanged: __controller.setChannel(registerAddress, value)
+
+                        Binding on value {
+                            value: homePage.masterDimmer
+                            when: model.registerType === DeviceTypeRegisterType.Dimmer
+                        }
+                        Binding on value {
+                            value: homePage.masterRed
+                            when: model.registerType === DeviceTypeRegisterType.Red
+                        }
+                        Binding on value {
+                            value: homePage.masterGreen
+                            when: model.registerType === DeviceTypeRegisterType.Green
+                        }
+                        Binding on value {
+                            value: homePage.masterBlue
+                            when: model.registerType === DeviceTypeRegisterType.Blue
+                        }
+                        Binding on value {
+                            value: homePage.masterWhite
+                            when: model.registerType === DeviceTypeRegisterType.White
+                        }
                     }
 
                     Label {

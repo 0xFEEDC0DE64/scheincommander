@@ -31,25 +31,48 @@ DmxController::DmxController(QObject *parent) :
             },
             {
                 .id=2,
-                .name="RGB Strahler"
+                .name="RGB Strahler",
+                .registers {
+                    DeviceTypeRegisterConfig { .type = DeviceTypeRegisterType::Red },
+                    DeviceTypeRegisterConfig { .type = DeviceTypeRegisterType::Green },
+                    DeviceTypeRegisterConfig { .type = DeviceTypeRegisterType::Blue }
+                }
             },
             {
                 .id=3,
-                .name="Nebelmaschine"
+                .name="Nebelmaschine",
+                .registers {
+                    DeviceTypeRegisterConfig { .type = DeviceTypeRegisterType::Dimmer }
+                }
             }
         },
         .devices {
-            { .id=0,  .name="Lampe 1",       .deviceTypeId=1, .address=32, .position{1,0,0} },
-            { .id=1,  .name="Lampe 2",       .deviceTypeId=1, .address=0, .position{2,0,0}  },
-            { .id=2,  .name="Lampe 3",       .deviceTypeId=1, .address=7,  .position{3,0,0}  },
-            { .id=3,  .name="Lampe 4",       .deviceTypeId=1, .address=14 },
-            { .id=4,  .name="Moving Head 1", .deviceTypeId=0, .address=40 },
-            { .id=5,  .name="Moving Head 2", .deviceTypeId=0, .address=43 },
-            { .id=6,  .name="Moving Head 3", .deviceTypeId=0, .address=46 },
-            { .id=7,  .name="Moving Head 4", .deviceTypeId=0, .address=49 },
-            { .id=8,  .name="Test 1",        .deviceTypeId=2, .address=70 },
-            { .id=9,  .name="Test 2",        .deviceTypeId=2, .address=72 },
-            { .id=10, .name="Nebelmaschine", .deviceTypeId=3, .address=80 }
+            { .id=0,  .name="Test 1",        .deviceTypeId=1, .address=32, .position{1,0,0} },
+            { .id=1,  .name="Lampe 1",       .deviceTypeId=2, .address=1,  .position{2,0,0}  },
+            { .id=1,  .name="Lampe 2",       .deviceTypeId=2, .address=4,  .position{2,0,0}  },
+            { .id=2,  .name="Lampe 3",       .deviceTypeId=2, .address=7,  .position{3,0,0}  },
+            { .id=3,  .name="Lampe 4",       .deviceTypeId=2, .address=10 },
+            { .id=4,  .name="Lampe 5",       .deviceTypeId=2, .address=13 },
+            { .id=5,  .name="Lampe 6",       .deviceTypeId=2, .address=16 },
+            { .id=6,  .name="Lampe 7",       .deviceTypeId=2, .address=19 },
+            { .id=7,  .name="Lampe 8",       .deviceTypeId=2, .address=22 },
+            { .id=8,  .name="Lampe 9",       .deviceTypeId=2, .address=25 },
+            { .id=9,  .name="Lampe 10",      .deviceTypeId=2, .address=28 },
+            { .id=1,  .name="Lampe 11",      .deviceTypeId=2, .address=31 },
+            { .id=1,  .name="Lampe 12",      .deviceTypeId=2, .address=34 },
+            { .id=2,  .name="Lampe 13",      .deviceTypeId=2, .address=37 },
+            { .id=3,  .name="Lampe 14",      .deviceTypeId=2, .address=40 },
+            { .id=4,  .name="Lampe 15",      .deviceTypeId=2, .address=43 },
+            { .id=5,  .name="Lampe 16",      .deviceTypeId=2, .address=46 },
+            { .id=6,  .name="Lampe 17",      .deviceTypeId=2, .address=49 },
+            { .id=7,  .name="Lampe 18",      .deviceTypeId=2, .address=52 },
+            { .id=8,  .name="Lampe 19",      .deviceTypeId=2, .address=55 },
+            { .id=9,  .name="Lampe 20",      .deviceTypeId=2, .address=58 },
+            { .id=10, .name="Nebelmaschine", .deviceTypeId=3, .address=90 },
+            { .id=11, .name="Moving Head 1", .deviceTypeId=0, .address=40 },
+            { .id=12, .name="Moving Head 2", .deviceTypeId=0, .address=43 },
+            { .id=13, .name="Moving Head 3", .deviceTypeId=0, .address=46 },
+            { .id=14, .name="Moving Head 4", .deviceTypeId=0, .address=49 }
         }
     }
 {

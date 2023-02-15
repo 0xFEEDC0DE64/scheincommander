@@ -34,6 +34,8 @@ ApplicationWindow {
 
             Material.elevation: 6
 
+            z: 999
+
             RowLayout {
                 anchors.fill: parent
 
