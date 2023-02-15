@@ -27,6 +27,7 @@ qt_add_qml_module(applightcontrol
         EditableListView.qml
         DeviceTypesSettingsPage.qml
         DevicesSettingsPage.qml
+        Vector3DField.qml
 )
 
 set_target_properties(applightcontrol PROPERTIES

@@ -229,7 +229,7 @@ bool DevicesModel::setData(const QModelIndex &index, const QVariant &value, int 
             return false;
         }
         light.position = value.value<QVector3D>();
-        emit dataChanged(index, index, { AddressRole });
+        emit dataChanged(index, index, { PositionRole });
         return true;
     }
 

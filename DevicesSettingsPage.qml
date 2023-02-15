@@ -22,6 +22,8 @@ ColumnLayout {
 
             onAddClicked: (index) => devicesModel.insertRow(index < 0 ? 0 : index + 1);
             onRemoveClicked: (index) => devicesModel.removeRow(index)
+
+            onCurrentDataChanged: test.value = currentData.position
         }
 
         ColumnLayout {
@@ -51,7 +53,7 @@ ColumnLayout {
                     model: deviceTypesModel
                     textRole: "name"
                     valueRole: "id"
-                    // TODO
+                    // TODO make binding for selection
                 }
                 Label { text: qsTr("Address:") }
                 SpinBox {
@@ -60,6 +62,12 @@ ColumnLayout {
                     onValueModified: listView.currentItem.myData.address = value
                 }
                 Label { text: qsTr("Position:") }
+                Vector3DField {
+                    id: test
+                    Layout.fillWidth: true
+                    onValueModified: listView.currentItem.myData.position = value;
+                    // TODO solve without onCurrentDataChanged
+                }
             }
             Item {
                 Layout.fillHeight: true

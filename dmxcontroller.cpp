@@ -18,9 +18,9 @@ DmxController::DmxController(QObject *parent) :
             { .id=3, .name="Nebelmaschine" }
         },
         .lights {
-            { .id=0,  .name="Lampe 1",       .lightTypeId=1, .address=32 },
-            { .id=1,  .name="Lampe 2",       .lightTypeId=1, .address=0  },
-            { .id=2,  .name="Lampe 3",       .lightTypeId=1, .address=7  },
+            { .id=0,  .name="Lampe 1",       .lightTypeId=1, .address=32, .position{1,0,0} },
+            { .id=1,  .name="Lampe 2",       .lightTypeId=1, .address=0, .position{2,0,0}  },
+            { .id=2,  .name="Lampe 3",       .lightTypeId=1, .address=7,  .position{3,0,0}  },
             { .id=3,  .name="Lampe 4",       .lightTypeId=1, .address=14 },
             { .id=4,  .name="Moving Head 1", .lightTypeId=0, .address=40 },
             { .id=5,  .name="Moving Head 2", .lightTypeId=0, .address=43 },
@@ -102,7 +102,7 @@ void DmxController::sendDmxBuffer()
 
     if (m_lastInfo.msecsTo(now) >= 1000)
     {
-        qInfo("%i per second ä", m_counter);
+        qInfo("%i per second", m_counter);
         m_counter = 0;
         m_lastInfo = now;
     }

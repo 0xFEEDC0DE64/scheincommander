@@ -6,6 +6,7 @@ ColumnLayout {
     property alias model: listView.model
     property alias currentIndex: listView.currentIndex
     property alias currentItem: listView.currentItem
+    property variant currentData: listView.currentItem ? listView.currentItem.myData : null
 
     signal addClicked(index: int)
     signal removeClicked(index: int)
