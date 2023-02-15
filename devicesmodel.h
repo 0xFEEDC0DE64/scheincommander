@@ -25,6 +25,7 @@ public:
     QHash<int, QByteArray> roleNames() const override;
 
     bool setData(const QModelIndex &index, const QVariant &value, int role) override;
+    bool insertRows(int row, int count, const QModelIndex &parent) override;
     bool removeRows(int row, int count, const QModelIndex &parent) override;
 
 signals:

@@ -20,11 +20,13 @@ ColumnLayout {
 
             model: deviceTypesModel
 
-            onAddClicked: (index) => console.log('added', index);
+            onAddClicked: (index) => deviceTypesModel.insertRow(index < 0 ? 0 : index + 1);
             onRemoveClicked: (index) => deviceTypesModel.removeRow(index)
         }
 
         ColumnLayout {
+            enabled: listView.currentIndex !== -1
+
             GridLayout {
                 Layout.preferredWidth: 300
                 Layout.maximumWidth: 300

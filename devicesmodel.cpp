@@ -234,6 +234,41 @@ bool DevicesModel::setData(const QModelIndex &index, const QVariant &value, int 
     return false;
 }
 
+bool DevicesModel::insertRows(int row, int count, const QModelIndex &parent)
+{
+    if (parent.isValid())
+    {
+        qWarning() << "hilfe" << __LINE__;
+        return false;
+    }
+
+    if (!m_controller)
+    {
+        qWarning() << "hilfe" << __LINE__;
+        return false;
+    }
+
+    auto &lights = m_controller->lightProject().lights;
+
+    if (row < 0)
+    {
+        qWarning() << "hilfe" << __LINE__;
+        return false;
+    }
+
+    if (row > lights.size())
+    {
+        qWarning() << "hilfe" << __LINE__;
+        return false;
+    }
+
+    beginInsertRows({}, row, row+count-1);
+    lights.insert(std::begin(lights) + row, count, LightConfig{ .id=99, .name="<neu>", .lightTypeId=0, .address=0, .position={} });
+    endInsertRows();
+
+    return true;
+}
+
 bool DevicesModel::removeRows(int row, int count, const QModelIndex &parent)
 {
     if (parent.isValid())
@@ -249,6 +284,12 @@ bool DevicesModel::removeRows(int row, int count, const QModelIndex &parent)
     }
 
     auto &lights = m_controller->lightProject().lights;
+
+    if (row < 0)
+    {
+        qWarning() << "hilfe" << __LINE__;
+        return false;
+    }
 
     if (row >= lights.size())
     {
