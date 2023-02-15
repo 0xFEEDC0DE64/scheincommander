@@ -223,8 +223,13 @@ bool DeviceTypesModel::insertRows(int row, int count, const QModelIndex &parent)
         return false;
     }
 
+    auto max_iter = std::max_element(std::cbegin(lightTypes), std::cend(lightTypes), [](const auto &l, const auto &r){ return l.id < r.id; });
+    auto id = max_iter != std::cend(lightTypes) ? max_iter->id + 1 : 0;
+
     beginInsertRows({}, row, row+count-1);
-    lightTypes.insert(std::begin(lightTypes) + row, count, LightTypeConfig{ .id=99, .name="<neu>" });
+    auto iter = std::begin(lightTypes) + row;
+    for (; count > 0; count--)
+        iter = lightTypes.insert(iter, LightTypeConfig{ .id=id++, .name="<neu>" }) + 1;
     endInsertRows();
 
     return true;

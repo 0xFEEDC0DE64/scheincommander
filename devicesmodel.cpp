@@ -1,5 +1,7 @@
 #include "devicesmodel.h"
 
+#include <algorithm>
+
 #include <QCoreApplication>
 #include <QQmlEngine>
 
@@ -262,8 +264,13 @@ bool DevicesModel::insertRows(int row, int count, const QModelIndex &parent)
         return false;
     }
 
+    auto max_iter = std::max_element(std::cbegin(lights), std::cend(lights), [](const auto &l, const auto &r){ return l.id < r.id; });
+    auto id = max_iter != std::cend(lights) ? max_iter->id + 1 : 0;
+
     beginInsertRows({}, row, row+count-1);
-    lights.insert(std::begin(lights) + row, count, LightConfig{ .id=99, .name="<neu>", .lightTypeId=0, .address=0, .position={} });
+    auto iter = std::begin(lights) + row;
+    for (; count > 0; count--)
+        iter = lights.insert(iter, LightConfig{ .id=id++, .name="<neu>", .lightTypeId=0, .address=0, .position={} }) + 1;
     endInsertRows();
 
     return true;
