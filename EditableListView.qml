@@ -27,7 +27,7 @@ ColumnLayout {
         }
 
         Button {
-            text: qsTr("Remove")
+            text: qsTr("Remove ") + listView.currentIndex
 
             onClicked: removeClicked(listView.currentIndex)
             enabled: listView.currentIndex >= 0
@@ -41,6 +41,8 @@ ColumnLayout {
         Layout.fillHeight: true
 
         clip: true
+
+        onCountChanged: if (count === 0 && currentIndex >= 0) currentIndex = -1
 
         delegate: Item {
             property variant myData: model

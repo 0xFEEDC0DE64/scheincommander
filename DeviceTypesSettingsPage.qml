@@ -14,7 +14,7 @@ ColumnLayout {
         Layout.fillHeight: true
 
         EditableListView {
-            id: listView
+            id: deviceTypesListView
 
             Layout.preferredWidth: 300
             Layout.maximumWidth: 300
@@ -27,39 +27,80 @@ ColumnLayout {
         }
 
         ColumnLayout {
-            enabled: listView.currentIndex !== -1
+            enabled: deviceTypesListView.currentIndex !== -1
 
             GridLayout {
-                Layout.preferredWidth: 300
-                Layout.maximumWidth: 300
+                Layout.preferredWidth: 600
+                Layout.maximumWidth: 600
 
                 columns: 2
 
                 Label { text: qsTr("Id:") }
                 SpinBox {
+                    enabled: false
                     Layout.fillWidth: true
-                    value: listView.currentData.id
-                    onValueModified: listView.currentData.id = value
+                    value: deviceTypesListView.currentData.id
+                    onValueModified: deviceTypesListView.currentData.id = value
                 }
                 Label { text: qsTr("Name:") }
                 TextField {
                     Layout.fillWidth: true
-                    text: listView.currentData.name
-                    onTextEdited: listView.currentData.name = text
+                    text: deviceTypesListView.currentData.name
+                    onTextEdited: deviceTypesListView.currentData.name = text
                 }
                 Label { text: qsTr("Registers:") }
                 Pane {
                     Layout.fillWidth: true
                     Layout.fillHeight: true
-                    EditableListView {
-                        textRole: 'registerTypeName'
 
-                        model: DeviceTypeRegistersModel {
-                            controller: __controller
-                            deviceTypeId: listView.currentData.id
+                    Material.elevation: 6
+
+                    RowLayout {
+                        anchors.fill: parent
+
+                        Pane {
+                            Layout.preferredWidth: 300
+                            Layout.fillHeight: true
+
+                            Material.elevation: 6
+
+                            EditableListView {
+                                id: deviceTypesRegistersListView
+                                anchors.fill: parent
+
+                                textRole: 'registerTypeName'
+
+                                model: DeviceTypeRegistersModel {
+                                    controller: __controller
+                                    deviceTypeId: deviceTypesListView.currentData.id
+                                }
+                            }
                         }
 
-                        anchors.fill: parent
+                        ColumnLayout {
+                            Layout.fillWidth: true
+                            Layout.fillHeight: true
+
+                            enabled: deviceTypesRegistersListView.currentIndex >= 0
+
+                            GridLayout {
+                                Layout.fillWidth: true
+
+                                columns: 2
+
+                                Label {
+                                    text: qsTr('Type:')
+                                }
+                                ComboBox {
+
+                                }
+                            }
+
+                            Item {
+                                Layout.fillWidth: true
+                                Layout.fillHeight: true
+                            }
+                        }
                     }
                 }
             }

@@ -23,7 +23,7 @@ ColumnLayout {
             onAddClicked: (index) => devicesModel.insertRow(index < 0 ? 0 : index + 1);
             onRemoveClicked: (index) => devicesModel.removeRow(index)
 
-            onCurrentDataChanged: test.value = currentData.position
+            onCurrentDataChanged: if (currentData) test.value = currentData.position
         }
 
         ColumnLayout {
@@ -37,6 +37,7 @@ ColumnLayout {
 
                 Label { text: qsTr("Id:") }
                 SpinBox {
+                    enabled: false
                     Layout.fillWidth: true
                     value: listView.currentData.id
                     onValueModified: listView.currentData.id = value
