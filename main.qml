@@ -1,5 +1,10 @@
 import QtQuick
 
 LightControlWindow {
-    Component.onCompleted: showFullScreen()
+    Component.onCompleted: {
+        if (__windowed)
+            showNormal();
+        else
+            showFullScreen();
+    }
 }

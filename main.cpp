@@ -47,9 +47,11 @@ int main(int argc, char *argv[])
 
     QQmlApplicationEngine engine;
 
-    engine.rootContext()->setContextProperty("__controller", &controller);
 
-    const QUrl url{windowed ? u"qrc:/lightcontrol/main-dev.qml"_qs : u"qrc:/lightcontrol/main.qml"_qs};
+    engine.rootContext()->setContextProperty("__controller", &controller);
+    engine.rootContext()->setContextProperty("__windowed", windowed);
+
+    const QUrl url{u"qrc:/lightcontrol/main.qml"_qs};
     QObject::connect(&engine, &QQmlApplicationEngine::objectCreated,
                      &app, [url](QObject *obj, const QUrl &objUrl) {
         if (!obj && url == objUrl)
