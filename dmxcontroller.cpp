@@ -103,6 +103,8 @@ bool DmxController::start()
 
 void DmxController::setChannel(int channel, int value)
 {
+    //qDebug() << channel << value;
+    Q_ASSERT(channel >= 0 && channel < std::size(buf));
     buf[channel] = value;
 }
 
