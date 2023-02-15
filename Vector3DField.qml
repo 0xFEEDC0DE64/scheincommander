@@ -2,7 +2,9 @@ import QtQuick
 import QtQuick.Layouts
 import QtQuick.Controls.Material
 
-RowLayout {
+GridLayout {
+    columns: 2
+
     property vector3d value
     onValueChanged: {
         xBox.value = value.x
