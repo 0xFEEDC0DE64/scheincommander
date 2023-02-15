@@ -6,7 +6,7 @@ A qt quick application to control dmx moving heads / lights / fog machines (runn
 ```
 mkdir build
 cd build
-qmake6 ..
+cmake ..
 make -j4096
 ./applightcontrol
 ```
