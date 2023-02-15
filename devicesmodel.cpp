@@ -304,7 +304,7 @@ bool DevicesModel::removeRows(int row, int count, const QModelIndex &parent)
         return false;
     }
 
-    if (row + count >= lights.size())
+    if (row + count > lights.size())
     {
         qWarning() << "hilfe" << __LINE__;
         return false;
