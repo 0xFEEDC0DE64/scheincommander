@@ -4,22 +4,19 @@
 
 #include "dmxcontroller.h"
 
-class DevicesModel : public QAbstractItemModel
+class DevicesModel : public QAbstractListModel
 {
     Q_OBJECT
     Q_PROPERTY(DmxController* controller READ controller WRITE setController NOTIFY controllerChanged)
 
 public:
-    explicit DevicesModel(QObject *parent = nullptr);
+    using QAbstractListModel::QAbstractListModel;
 
     DmxController *controller() { return m_controller; }
     const DmxController *controller() const { return m_controller; }
     void setController(DmxController *controller);
 
-    QModelIndex index(int row, int column, const QModelIndex &parent) const override;
-    QModelIndex parent(const QModelIndex &child) const override;
     int rowCount(const QModelIndex &parent) const override;
-    int columnCount(const QModelIndex &parent) const override;
     QVariant data(const QModelIndex &index, int role) const override;
     QMap<int, QVariant> itemData(const QModelIndex &index) const override;
     QHash<int, QByteArray> roleNames() const override;

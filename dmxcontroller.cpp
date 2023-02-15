@@ -12,10 +12,31 @@ DmxController::DmxController(QObject *parent) :
     m_counter{},
     m_lightProject {
         .lightTypes {
-            { .id=0, .name="Stairville MH-X50+" },
-            { .id=1, .name="RGBW Strahler" },
-            { .id=2, .name="RGB Strahler" },
-            { .id=3, .name="Nebelmaschine" }
+            {
+                .id=0,
+                .name="Stairville MH-X50+"
+            },
+            {
+                .id=1,
+                .name="RGBW Strahler",
+                .registers {
+                    LightTypeRegisterConfig { .type = LightTypeRegisterType::Dimmer },
+                    LightTypeRegisterConfig { .type = LightTypeRegisterType::Red },
+                    LightTypeRegisterConfig { .type = LightTypeRegisterType::Green },
+                    LightTypeRegisterConfig { .type = LightTypeRegisterType::Blue },
+                    LightTypeRegisterConfig { .type = LightTypeRegisterType::White },
+                    LightTypeRegisterConfig { .type = LightTypeRegisterType::Strobo },
+                    LightTypeRegisterConfig { .type = LightTypeRegisterType::Dummy }
+                }
+            },
+            {
+                .id=2,
+                .name="RGB Strahler"
+            },
+            {
+                .id=3,
+                .name="Nebelmaschine"
+            }
         },
         .lights {
             { .id=0,  .name="Lampe 1",       .lightTypeId=1, .address=32, .position{1,0,0} },

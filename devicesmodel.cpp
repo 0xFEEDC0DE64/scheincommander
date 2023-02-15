@@ -2,6 +2,7 @@
 
 #include <algorithm>
 
+#include <QDebug>
 #include <QCoreApplication>
 #include <QQmlEngine>
 
@@ -10,36 +11,15 @@ constexpr auto LightTypeIdRole = Qt::UserRole + 1;
 constexpr auto AddressRole = Qt::UserRole + 2;
 constexpr auto PositionRole = Qt::UserRole + 3;
 
-DevicesModel::DevicesModel(QObject *parent) :
-    QAbstractItemModel{parent}
-{
-}
-
 void DevicesModel::setController(DmxController *controller)
 {
-    if (m_controller != controller)
-    {
-        beginResetModel();
-        m_controller = controller;
-        endResetModel();
-        emit controllerChanged(m_controller);
-    }
-}
+    if (m_controller == controller)
+        return;
 
-QModelIndex DevicesModel::index(int row, int column, const QModelIndex &parent) const
-{
-    if (parent.isValid())
-    {
-        qWarning() << "hilfe" << __LINE__;
-        return {};
-    }
-
-    return createIndex(row, column, nullptr);
-}
-
-QModelIndex DevicesModel::parent(const QModelIndex &child) const
-{
-    return {};
+    beginResetModel();
+    m_controller = controller;
+    endResetModel();
+    emit controllerChanged(m_controller);
 }
 
 int DevicesModel::rowCount(const QModelIndex &parent) const
@@ -56,16 +36,6 @@ int DevicesModel::rowCount(const QModelIndex &parent) const
     return m_controller->lightProject().lights.size();
 }
 
-int DevicesModel::columnCount(const QModelIndex &parent) const
-{
-    if (parent.isValid())
-    {
-        qWarning() << "hilfe" << __LINE__;
-        return -1;
-    }
-    return 1;
-}
-
 QVariant DevicesModel::data(const QModelIndex &index, int role) const
 {
     if (!index.isValid())
@@ -80,7 +50,8 @@ QVariant DevicesModel::data(const QModelIndex &index, int role) const
         return {};
     }
 
-    if (index.row() < 0 || index.row() >= m_controller->lightProject().lights.size())
+    const auto &lights = m_controller->lightProject().lights;
+    if (index.row() < 0 || index.row() >= lights.size())
     {
         qWarning() << "hilfe" << __LINE__;
         return {};
@@ -92,7 +63,7 @@ QVariant DevicesModel::data(const QModelIndex &index, int role) const
         return {};
     }
 
-    const auto &light = m_controller->lightProject().lights.at(index.row());
+    const auto &light = lights.at(index.row());
 
     switch (role)
     {
@@ -121,7 +92,8 @@ QMap<int, QVariant> DevicesModel::itemData(const QModelIndex &index) const
         return {};
     }
 
-    if (index.row() < 0 || index.row() >= m_controller->lightProject().lights.size())
+    const auto &lights = m_controller->lightProject().lights;
+    if (index.row() < 0 || index.row() >= lights.size())
     {
         qWarning() << "hilfe" << __LINE__;
         return {};
@@ -133,7 +105,7 @@ QMap<int, QVariant> DevicesModel::itemData(const QModelIndex &index) const
         return {};
     }
 
-    const auto &light = m_controller->lightProject().lights.at(index.row());
+    const auto &light = lights.at(index.row());
 
     return {
         { Qt::DisplayRole, light.name },
