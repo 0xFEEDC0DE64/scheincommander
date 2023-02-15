@@ -10,7 +10,7 @@
 
 namespace hilfe {
 Q_NAMESPACE
-enum class LightTypeRegisterType
+enum class DeviceTypeRegisterType
 {
     Dummy,
     Dimmer,
@@ -21,43 +21,43 @@ enum class LightTypeRegisterType
     Strobo,
     Shutter
 };
-Q_ENUM_NS(LightTypeRegisterType)
+Q_ENUM_NS(DeviceTypeRegisterType)
 } // namespace hilfe
 
-Q_DECLARE_METATYPE(hilfe::LightTypeRegisterType)
+Q_DECLARE_METATYPE(hilfe::DeviceTypeRegisterType)
 
-using LightTypeRegisterType = hilfe::LightTypeRegisterType;
+using DeviceTypeRegisterType = hilfe::DeviceTypeRegisterType;
 
-struct LightTypeRegisterConfig
+struct DeviceTypeRegisterConfig
 {
-    LightTypeRegisterType type;
+    DeviceTypeRegisterType type;
 };
 
-struct LightTypeConfig
+struct DeviceTypeConfig
 {
     int id;
     QString name;
-    std::vector<LightTypeRegisterConfig> registers;
+    std::vector<DeviceTypeRegisterConfig> registers;
 };
 
-class LightTypesContainer : public std::vector<LightTypeConfig>
+class DeviceTypesContainer : public std::vector<DeviceTypeConfig>
 {
-    using base_t = std::vector<LightTypeConfig>;
+    using base_t = std::vector<DeviceTypeConfig>;
 
 public:
     using base_t::base_t;
 
-    LightTypeConfig *findById(int id)
+    DeviceTypeConfig *findById(int id)
     {
         auto iter = std::find_if(std::begin(*this), std::end(*this),
-                                 [&id](const LightTypeConfig &lightType){ return lightType.id == id; });
+                                 [&id](const DeviceTypeConfig &deviceType){ return deviceType.id == id; });
         return iter != std::end(*this) ? &*iter : nullptr;
     }
 
-    const LightTypeConfig *findById(int id) const
+    const DeviceTypeConfig *findById(int id) const
     {
         auto iter = std::find_if(std::begin(*this), std::end(*this),
-                                 [&id](const LightTypeConfig &lightType){ return lightType.id == id; });
+                                 [&id](const DeviceTypeConfig &deviceType){ return deviceType.id == id; });
         return iter != std::end(*this) ? &*iter : nullptr;
     }
 };
@@ -66,13 +66,13 @@ struct LightConfig
 {
     int id;
     QString name;
-    int lightTypeId;
+    int deviceTypeId;
     int address;
     QVector3D position;
 };
 
 struct LightProject
 {
-    LightTypesContainer lightTypes;
-    std::vector<LightConfig> lights;
+    DeviceTypesContainer deviceTypes;
+    std::vector<LightConfig> devices;
 };

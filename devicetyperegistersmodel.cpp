@@ -42,14 +42,14 @@ int DeviceTypeRegistersModel::rowCount(const QModelIndex &parent) const
     if (m_deviceTypeId == -1)
         return 0;
 
-    auto lightType = m_controller->lightProject().lightTypes.findById(m_deviceTypeId);
-    if (!lightType)
+    auto deviceType = m_controller->lightProject().deviceTypes.findById(m_deviceTypeId);
+    if (!deviceType)
     {
         qWarning() << "hilfe" << __LINE__;
         return 0;
     }
 
-    return lightType->registers.size();
+    return deviceType->registers.size();
 }
 
 QVariant DeviceTypeRegistersModel::data(const QModelIndex &index, int role) const
@@ -72,14 +72,14 @@ QVariant DeviceTypeRegistersModel::data(const QModelIndex &index, int role) cons
         return {};
     }
 
-    auto lightType = m_controller->lightProject().lightTypes.findById(m_deviceTypeId);
-    if (!lightType)
+    auto deviceType = m_controller->lightProject().deviceTypes.findById(m_deviceTypeId);
+    if (!deviceType)
     {
         qWarning() << "hilfe" << __LINE__;
         return {};
     }
 
-    if (index.row() < 0 || index.row() >= lightType->registers.size())
+    if (index.row() < 0 || index.row() >= deviceType->registers.size())
     {
         qWarning() << "hilfe" << __LINE__;
         return {};
@@ -91,16 +91,16 @@ QVariant DeviceTypeRegistersModel::data(const QModelIndex &index, int role) cons
         return {};
     }
 
-    const auto &lightTypeRegister = lightType->registers.at(index.row());
+    const auto &deviceTypeRegister = deviceType->registers.at(index.row());
 
     switch (role)
     {
     case Qt::DisplayRole:
     {
-        return QMetaEnum::fromType<LightTypeRegisterType>().valueToKey(std::to_underlying(lightTypeRegister.type));
+        return QMetaEnum::fromType<DeviceTypeRegisterType>().valueToKey(std::to_underlying(deviceTypeRegister.type));
     }
     case Qt::EditRole:
-        return QVariant::fromValue(lightTypeRegister.type);
+        return QVariant::fromValue(deviceTypeRegister.type);
     }
 
     return {};
@@ -126,14 +126,14 @@ QMap<int, QVariant> DeviceTypeRegistersModel::itemData(const QModelIndex &index)
         return {};
     }
 
-    auto lightType = m_controller->lightProject().lightTypes.findById(m_deviceTypeId);
-    if (!lightType)
+    auto deviceType = m_controller->lightProject().deviceTypes.findById(m_deviceTypeId);
+    if (!deviceType)
     {
         qWarning() << "hilfe" << __LINE__;
         return {};
     }
 
-    if (index.row() < 0 || index.row() >= lightType->registers.size())
+    if (index.row() < 0 || index.row() >= deviceType->registers.size())
     {
         qWarning() << "hilfe" << __LINE__;
         return {};
@@ -145,11 +145,11 @@ QMap<int, QVariant> DeviceTypeRegistersModel::itemData(const QModelIndex &index)
         return {};
     }
 
-    const auto &lightTypeRegister = lightType->registers.at(index.row());
+    const auto &deviceTypeRegister = deviceType->registers.at(index.row());
 
     return {
-        { Qt::DisplayRole, QMetaEnum::fromType<LightTypeRegisterType>().valueToKey(std::to_underlying(lightTypeRegister.type)) },
-        { Qt::EditRole,    QVariant::fromValue(lightTypeRegister.type) }
+        { Qt::DisplayRole, QMetaEnum::fromType<DeviceTypeRegisterType>().valueToKey(std::to_underlying(deviceTypeRegister.type)) },
+        { Qt::EditRole,    QVariant::fromValue(deviceTypeRegister.type) }
     };
 }
 

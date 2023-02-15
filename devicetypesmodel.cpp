@@ -28,7 +28,7 @@ int DeviceTypesModel::rowCount(const QModelIndex &parent) const
     if (!m_controller)
         return 0;
 
-    return m_controller->lightProject().lightTypes.size();
+    return m_controller->lightProject().deviceTypes.size();
 }
 
 QVariant DeviceTypesModel::data(const QModelIndex &index, int role) const
@@ -45,9 +45,9 @@ QVariant DeviceTypesModel::data(const QModelIndex &index, int role) const
         return {};
     }
 
-    const auto &lightTypes = m_controller->lightProject().lightTypes;
+    const auto &deviceTypes = m_controller->lightProject().deviceTypes;
 
-    if (index.row() < 0 || index.row() >= lightTypes.size())
+    if (index.row() < 0 || index.row() >= deviceTypes.size())
     {
         qWarning() << "hilfe" << __LINE__;
         return {};
@@ -59,13 +59,13 @@ QVariant DeviceTypesModel::data(const QModelIndex &index, int role) const
         return {};
     }
 
-    const auto &lightType = lightTypes.at(index.row());
+    const auto &deviceType = deviceTypes.at(index.row());
 
     switch (role)
     {
     case Qt::DisplayRole:
-    case Qt::EditRole: return lightType.name;
-    case IdRole:       return lightType.id;
+    case Qt::EditRole: return deviceType.name;
+    case IdRole:       return deviceType.id;
     }
 
     return {};
@@ -85,9 +85,9 @@ QMap<int, QVariant> DeviceTypesModel::itemData(const QModelIndex &index) const
         return {};
     }
 
-    const auto &lightTypes = m_controller->lightProject().lightTypes;
+    const auto &deviceTypes = m_controller->lightProject().deviceTypes;
 
-    if (index.row() < 0 || index.row() >= lightTypes.size())
+    if (index.row() < 0 || index.row() >= deviceTypes.size())
     {
         qWarning() << "hilfe" << __LINE__;
         return {};
@@ -99,11 +99,11 @@ QMap<int, QVariant> DeviceTypesModel::itemData(const QModelIndex &index) const
         return {};
     }
 
-    const auto &lightType = lightTypes.at(index.row());
+    const auto &deviceType = deviceTypes.at(index.row());
 
     return {
-        { Qt::DisplayRole, lightType.name },
-        { IdRole,          lightType.id }
+        { Qt::DisplayRole, deviceType.name },
+        { IdRole,          deviceType.id }
     };
 }
 
@@ -129,8 +129,8 @@ bool DeviceTypesModel::setData(const QModelIndex &index, const QVariant &value, 
         return false;
     }
 
-    auto &lightTypes = m_controller->lightProject().lightTypes;
-    if (index.row() < 0 || index.row() >= lightTypes.size())
+    auto &deviceTypes = m_controller->lightProject().deviceTypes;
+    if (index.row() < 0 || index.row() >= deviceTypes.size())
     {
         qWarning() << "hilfe" << __LINE__;
         return false;
@@ -142,7 +142,7 @@ bool DeviceTypesModel::setData(const QModelIndex &index, const QVariant &value, 
         return false;
     }
 
-    auto &lightType = lightTypes.at(index.row());
+    auto &deviceType = deviceTypes.at(index.row());
     switch (role)
     {
     case Qt::DisplayRole:
@@ -152,7 +152,7 @@ bool DeviceTypesModel::setData(const QModelIndex &index, const QVariant &value, 
             qWarning() << "hilfe" << __LINE__ << value.userType();
             return false;
         }
-        lightType.name = value.toString();
+        deviceType.name = value.toString();
         emit dataChanged(index, index, { Qt::DisplayRole, Qt::EditRole });
         return true;
     case IdRole:
@@ -161,7 +161,7 @@ bool DeviceTypesModel::setData(const QModelIndex &index, const QVariant &value, 
             qWarning() << "hilfe" << __LINE__ << value.userType();
             return false;
         }
-        lightType.id = value.toInt();
+        deviceType.id = value.toInt();
         emit dataChanged(index, index, { IdRole });
         return true;
     }
@@ -183,7 +183,7 @@ bool DeviceTypesModel::insertRows(int row, int count, const QModelIndex &parent)
         return false;
     }
 
-    auto &lightTypes = m_controller->lightProject().lightTypes;
+    auto &deviceTypes = m_controller->lightProject().deviceTypes;
 
     if (row < 0)
     {
@@ -191,19 +191,19 @@ bool DeviceTypesModel::insertRows(int row, int count, const QModelIndex &parent)
         return false;
     }
 
-    if (row > lightTypes.size())
+    if (row > deviceTypes.size())
     {
         qWarning() << "hilfe" << __LINE__;
         return false;
     }
 
-    auto max_iter = std::max_element(std::cbegin(lightTypes), std::cend(lightTypes), [](const auto &l, const auto &r){ return l.id < r.id; });
-    auto id = max_iter != std::cend(lightTypes) ? max_iter->id + 1 : 0;
+    auto max_iter = std::max_element(std::cbegin(deviceTypes), std::cend(deviceTypes), [](const auto &l, const auto &r){ return l.id < r.id; });
+    auto id = max_iter != std::cend(deviceTypes) ? max_iter->id + 1 : 0;
 
     beginInsertRows({}, row, row+count-1);
-    auto iter = std::begin(lightTypes) + row;
+    auto iter = std::begin(deviceTypes) + row;
     for (; count > 0; count--)
-        iter = lightTypes.insert(iter, LightTypeConfig{ .id=id++, .name="<neu>" }) + 1;
+        iter = deviceTypes.insert(iter, DeviceTypeConfig{ .id=id++, .name="<neu>" }) + 1;
     endInsertRows();
 
     return true;
@@ -223,7 +223,7 @@ bool DeviceTypesModel::removeRows(int row, int count, const QModelIndex &parent)
         return false;
     }
 
-    auto &lightTypes = m_controller->lightProject().lightTypes;
+    auto &deviceTypes = m_controller->lightProject().deviceTypes;
 
     if (row < 0)
     {
@@ -231,22 +231,22 @@ bool DeviceTypesModel::removeRows(int row, int count, const QModelIndex &parent)
         return false;
     }
 
-    if (row >= lightTypes.size())
+    if (row >= deviceTypes.size())
     {
         qWarning() << "hilfe" << __LINE__;
         return false;
     }
 
-    if (row + count > lightTypes.size())
+    if (row + count > deviceTypes.size())
     {
         qWarning() << "hilfe" << __LINE__;
         return false;
     }
 
     beginRemoveRows({}, row, row+count-1);
-    auto begin = std::begin(lightTypes) + row;
+    auto begin = std::begin(deviceTypes) + row;
     auto end = begin + count;
-    lightTypes.erase(begin, end);
+    deviceTypes.erase(begin, end);
     endRemoveRows();
 
     return true;

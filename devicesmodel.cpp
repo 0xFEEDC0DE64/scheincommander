@@ -7,7 +7,7 @@
 #include <QQmlEngine>
 
 constexpr auto IdRole = Qt::UserRole;
-constexpr auto LightTypeIdRole = Qt::UserRole + 1;
+constexpr auto DeviceTypeIdRole = Qt::UserRole + 1;
 constexpr auto AddressRole = Qt::UserRole + 2;
 constexpr auto PositionRole = Qt::UserRole + 3;
 
@@ -33,7 +33,7 @@ int DevicesModel::rowCount(const QModelIndex &parent) const
     if (!m_controller)
         return 0;
 
-    return m_controller->lightProject().lights.size();
+    return m_controller->lightProject().devices.size();
 }
 
 QVariant DevicesModel::data(const QModelIndex &index, int role) const
@@ -50,8 +50,8 @@ QVariant DevicesModel::data(const QModelIndex &index, int role) const
         return {};
     }
 
-    const auto &lights = m_controller->lightProject().lights;
-    if (index.row() < 0 || index.row() >= lights.size())
+    const auto &devices = m_controller->lightProject().devices;
+    if (index.row() < 0 || index.row() >= devices.size())
     {
         qWarning() << "hilfe" << __LINE__;
         return {};
@@ -63,16 +63,16 @@ QVariant DevicesModel::data(const QModelIndex &index, int role) const
         return {};
     }
 
-    const auto &light = lights.at(index.row());
+    const auto &device = devices.at(index.row());
 
     switch (role)
     {
     case Qt::DisplayRole:
-    case Qt::EditRole:    return light.name;
-    case IdRole:          return light.id;
-    case LightTypeIdRole: return light.lightTypeId;
-    case AddressRole:     return light.address;
-    case PositionRole:    return light.position;
+    case Qt::EditRole:    return device.name;
+    case IdRole:          return device.id;
+    case DeviceTypeIdRole: return device.deviceTypeId;
+    case AddressRole:     return device.address;
+    case PositionRole:    return device.position;
     }
 
     return {};
@@ -92,8 +92,8 @@ QMap<int, QVariant> DevicesModel::itemData(const QModelIndex &index) const
         return {};
     }
 
-    const auto &lights = m_controller->lightProject().lights;
-    if (index.row() < 0 || index.row() >= lights.size())
+    const auto &devices = m_controller->lightProject().devices;
+    if (index.row() < 0 || index.row() >= devices.size())
     {
         qWarning() << "hilfe" << __LINE__;
         return {};
@@ -105,14 +105,13 @@ QMap<int, QVariant> DevicesModel::itemData(const QModelIndex &index) const
         return {};
     }
 
-    const auto &light = lights.at(index.row());
-
+    const auto &device = devices.at(index.row());
     return {
-        { Qt::DisplayRole, light.name },
-        { IdRole,          light.id },
-        { LightTypeIdRole, light.lightTypeId },
-        { AddressRole,     light.address },
-        { PositionRole,    light.position }
+        { Qt::DisplayRole, device.name },
+        { IdRole,          device.id },
+        { DeviceTypeIdRole, device.deviceTypeId },
+        { AddressRole,     device.address },
+        { PositionRole,    device.position }
     };
 }
 
@@ -121,7 +120,7 @@ QHash<int, QByteArray> DevicesModel::roleNames() const
     return {
         { Qt::DisplayRole, "name" },
         { IdRole,          "id" },
-        { LightTypeIdRole, "lightTypeId" },
+        { DeviceTypeIdRole, "deviceTypeId" },
         { AddressRole,     "address" },
         { PositionRole,    "position" }
     };
@@ -141,8 +140,8 @@ bool DevicesModel::setData(const QModelIndex &index, const QVariant &value, int 
         return false;
     }
 
-    auto &lights = m_controller->lightProject().lights;
-    if (index.row() < 0 || index.row() >= lights.size())
+    auto &devices = m_controller->lightProject().devices;
+    if (index.row() < 0 || index.row() >= devices.size())
     {
         qWarning() << "hilfe" << __LINE__;
         return false;
@@ -154,7 +153,7 @@ bool DevicesModel::setData(const QModelIndex &index, const QVariant &value, int 
         return false;
     }
 
-    auto &light = lights.at(index.row());
+    auto &device = devices.at(index.row());
     switch (role)
     {
     case Qt::DisplayRole:
@@ -164,7 +163,7 @@ bool DevicesModel::setData(const QModelIndex &index, const QVariant &value, int 
             qWarning() << "hilfe" << __LINE__ << value.userType();
             return false;
         }
-        light.name = value.toString();
+        device.name = value.toString();
         emit dataChanged(index, index, { Qt::DisplayRole, Qt::EditRole });
         return true;
     case IdRole:
@@ -173,17 +172,17 @@ bool DevicesModel::setData(const QModelIndex &index, const QVariant &value, int 
             qWarning() << "hilfe" << __LINE__ << value.userType();
             return false;
         }
-        light.id = value.toInt();
+        device.id = value.toInt();
         emit dataChanged(index, index, { IdRole });
         return true;
-    case LightTypeIdRole:
+    case DeviceTypeIdRole:
         if (value.userType() != QMetaType::Int)
         {
             qWarning() << "hilfe" << __LINE__ << value.userType();
             return false;
         }
-        light.lightTypeId = value.toInt();
-        emit dataChanged(index, index, { LightTypeIdRole });
+        device.deviceTypeId = value.toInt();
+        emit dataChanged(index, index, { DeviceTypeIdRole });
         return true;
     case AddressRole:
         if (value.userType() != QMetaType::Int)
@@ -191,7 +190,7 @@ bool DevicesModel::setData(const QModelIndex &index, const QVariant &value, int 
             qWarning() << "hilfe" << __LINE__ << value.userType();
             return false;
         }
-        light.address = value.toInt();
+        device.address = value.toInt();
         emit dataChanged(index, index, { AddressRole });
         return true;
     case PositionRole:
@@ -200,7 +199,7 @@ bool DevicesModel::setData(const QModelIndex &index, const QVariant &value, int 
             qWarning() << "hilfe" << __LINE__ << value.userType();
             return false;
         }
-        light.position = value.value<QVector3D>();
+        device.position = value.value<QVector3D>();
         emit dataChanged(index, index, { PositionRole });
         return true;
     }
@@ -222,7 +221,7 @@ bool DevicesModel::insertRows(int row, int count, const QModelIndex &parent)
         return false;
     }
 
-    auto &lights = m_controller->lightProject().lights;
+    auto &devices = m_controller->lightProject().devices;
 
     if (row < 0)
     {
@@ -230,19 +229,19 @@ bool DevicesModel::insertRows(int row, int count, const QModelIndex &parent)
         return false;
     }
 
-    if (row > lights.size())
+    if (row > devices.size())
     {
         qWarning() << "hilfe" << __LINE__;
         return false;
     }
 
-    auto max_iter = std::max_element(std::cbegin(lights), std::cend(lights), [](const auto &l, const auto &r){ return l.id < r.id; });
-    auto id = max_iter != std::cend(lights) ? max_iter->id + 1 : 0;
+    auto max_iter = std::max_element(std::cbegin(devices), std::cend(devices), [](const auto &l, const auto &r){ return l.id < r.id; });
+    auto id = max_iter != std::cend(devices) ? max_iter->id + 1 : 0;
 
     beginInsertRows({}, row, row+count-1);
-    auto iter = std::begin(lights) + row;
+    auto iter = std::begin(devices) + row;
     for (; count > 0; count--)
-        iter = lights.insert(iter, LightConfig{ .id=id++, .name="<neu>", .lightTypeId=0, .address=0, .position={} }) + 1;
+        iter = devices.insert(iter, LightConfig{ .id=id++, .name="<neu>", .deviceTypeId=0, .address=0, .position={} }) + 1;
     endInsertRows();
 
     return true;
@@ -262,7 +261,7 @@ bool DevicesModel::removeRows(int row, int count, const QModelIndex &parent)
         return false;
     }
 
-    auto &lights = m_controller->lightProject().lights;
+    auto &devices = m_controller->lightProject().devices;
 
     if (row < 0)
     {
@@ -270,22 +269,22 @@ bool DevicesModel::removeRows(int row, int count, const QModelIndex &parent)
         return false;
     }
 
-    if (row >= lights.size())
+    if (row >= devices.size())
     {
         qWarning() << "hilfe" << __LINE__;
         return false;
     }
 
-    if (row + count > lights.size())
+    if (row + count > devices.size())
     {
         qWarning() << "hilfe" << __LINE__;
         return false;
     }
 
     beginRemoveRows({}, row, row+count-1);
-    auto begin = std::begin(lights) + row;
+    auto begin = std::begin(devices) + row;
     auto end = begin + count;
-    lights.erase(begin, end);
+    devices.erase(begin, end);
     endRemoveRows();
 
     return true;

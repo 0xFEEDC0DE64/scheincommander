@@ -50,11 +50,13 @@ ColumnLayout {
                 }
                 Label { text: qsTr("DeviceType:") }
                 ComboBox {
+                    id: deviceTypeCombobox
                     Layout.fillWidth: true
                     model: deviceTypesModel
                     textRole: "name"
                     valueRole: "id"
-                    // TODO make binding for selection
+                    currentIndex: deviceTypeCombobox.indexOfValue(listView.currentData.deviceTypeId)
+                    onCurrentValueChanged: if (listView.currentData) listView.currentData.deviceTypeId = currentValue; else console.warn('discarded');
                 }
                 Label { text: qsTr("Address:") }
                 SpinBox {
