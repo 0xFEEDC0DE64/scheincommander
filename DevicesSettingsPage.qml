@@ -38,14 +38,14 @@ ColumnLayout {
                 Label { text: qsTr("Id:") }
                 SpinBox {
                     Layout.fillWidth: true
-                    value: listView.currentItem.myData.id
-                    onValueModified: listView.currentItem.myData.id = value
+                    value: listView.currentData.id
+                    onValueModified: listView.currentData.id = value
                 }
                 Label { text: qsTr("Name:") }
                 TextField {
                     Layout.fillWidth: true
-                    text: listView.currentItem.myData.name
-                    onTextEdited: listView.currentItem.myData.name = text
+                    text: listView.currentData.name
+                    onTextEdited: listView.currentData.name = text
                 }
                 Label { text: qsTr("DeviceType:") }
                 ComboBox {
@@ -58,14 +58,14 @@ ColumnLayout {
                 Label { text: qsTr("Address:") }
                 SpinBox {
                     Layout.fillWidth: true
-                    value: listView.currentItem.myData.address
-                    onValueModified: listView.currentItem.myData.address = value
+                    value: listView.currentData.address
+                    onValueModified: listView.currentData.address = value
                 }
                 Label { text: qsTr("Position:") }
                 Vector3DField {
                     id: test
                     Layout.fillWidth: true
-                    onValueModified: listView.currentItem.myData.position = value;
+                    onValueModified: listView.currentData.position = value;
                     // TODO solve without onCurrentDataChanged
                 }
             }

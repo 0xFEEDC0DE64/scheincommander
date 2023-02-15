@@ -2,6 +2,8 @@ import QtQuick
 import QtQuick.Controls.Material
 import QtQuick.Layouts
 
+import com.büro 1.0
+
 ColumnLayout {
     Label {
         text: qsTr("Device Types Settings")
@@ -36,20 +38,27 @@ ColumnLayout {
                 Label { text: qsTr("Id:") }
                 SpinBox {
                     Layout.fillWidth: true
-                    value: listView.currentItem.myData.id
-                    onValueModified: listView.currentItem.myData.id = value
+                    value: listView.currentData.id
+                    onValueModified: listView.currentData.id = value
                 }
                 Label { text: qsTr("Name:") }
                 TextField {
                     Layout.fillWidth: true
-                    text: listView.currentItem.myData.name
-                    onTextEdited: listView.currentItem.myData.name = text
+                    text: listView.currentData.name
+                    onTextEdited: listView.currentData.name = text
                 }
                 Label { text: qsTr("Registers:") }
                 Pane {
                     Layout.fillWidth: true
                     Layout.fillHeight: true
                     EditableListView {
+                        textRole: 'registerTypeName'
+
+                        model: DeviceTypeRegistersModel {
+                            controller: __controller
+                            deviceTypeId: listView.currentData.id
+                        }
+
                         anchors.fill: parent
                     }
                 }

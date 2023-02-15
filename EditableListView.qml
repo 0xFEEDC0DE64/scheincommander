@@ -3,6 +3,8 @@ import QtQuick.Controls.Material
 import QtQuick.Layouts
 
 ColumnLayout {
+    property string textRole: "name"
+
     property alias model: listView.model
     property alias currentIndex: listView.currentIndex
     property alias currentItem: listView.currentItem
@@ -59,7 +61,7 @@ ColumnLayout {
                     anchors.fill: parent
                     //anchors.verticalCenter: parent.verticalCenter
                     id: text
-                    text: model.name
+                    text: model[textRole]
                     padding: 10
                     fontSizeMode: Text.VerticalFit
                     minimumPixelSize: 10;

@@ -108,12 +108,57 @@ QVariant DeviceTypeRegistersModel::data(const QModelIndex &index, int role) cons
 
 QMap<int, QVariant> DeviceTypeRegistersModel::itemData(const QModelIndex &index) const
 {
-    // TODO
+    if (!index.isValid())
+    {
+        qWarning() << "hilfe" << __LINE__;
+        return {};
+    }
+
+    if (!m_controller)
+    {
+        qWarning() << "hilfe" << __LINE__;
+        return {};
+    }
+
+    if (m_deviceTypeId == -1)
+    {
+        qWarning() << "hilfe" << __LINE__;
+        return {};
+    }
+
+    auto lightType = m_controller->lightProject().lightTypes.findById(m_deviceTypeId);
+    if (!lightType)
+    {
+        qWarning() << "hilfe" << __LINE__;
+        return {};
+    }
+
+    if (index.row() < 0 || index.row() >= lightType->registers.size())
+    {
+        qWarning() << "hilfe" << __LINE__;
+        return {};
+    }
+
+    if (index.column() != 0)
+    {
+        qWarning() << "hilfe" << __LINE__;
+        return {};
+    }
+
+    const auto &lightTypeRegister = lightType->registers.at(index.row());
+
+    return {
+        { Qt::DisplayRole, QMetaEnum::fromType<LightTypeRegisterType>().valueToKey(std::to_underlying(lightTypeRegister.type)) },
+        { Qt::EditRole,    QVariant::fromValue(lightTypeRegister.type) }
+    };
 }
 
 QHash<int, QByteArray> DeviceTypeRegistersModel::roleNames() const
 {
-    // TODO
+    return {
+        { Qt::DisplayRole, "registerTypeName" },
+        { Qt::EditRole,    "registerType" },
+    };
 }
 
 namespace {
