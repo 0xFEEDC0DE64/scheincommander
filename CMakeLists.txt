@@ -21,7 +21,6 @@ qt_add_qml_module(applightcontrol
     VERSION 1.0
     QML_FILES
         main.qml
-        main-dev.qml
         HomePage.qml
         SettingsPage.qml
         LightControlWindow.qml
