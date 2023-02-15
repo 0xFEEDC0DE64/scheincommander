@@ -38,28 +38,41 @@ ColumnLayout {
         Layout.fillHeight: true
 
         clip: true
-        spacing: 2
 
-        delegate: Rectangle {
+        delegate: Item {
             property variant myData: model
+            readonly property bool isCurrentItem: ListView.isCurrentItem
 
             width: listView.width
-            height: 40
+            height: 45
 
-            color: ListView.isCurrentItem ?
-                       Material.color(Material.Purple) :
-                       Material.color(Material.Purple, Material.Shade900)
-            radius: 5
-
-            Label {
+            Rectangle {
                 anchors.fill: parent
-                //anchors.verticalCenter: parent.verticalCenter
-                id: text
-                text: model.name
-                padding: 5
-                fontSizeMode: Text.VerticalFit
-                minimumPixelSize: 10;
-                font.pixelSize: 72
+
+                color: isCurrentItem ?
+                           Material.color(Material.Purple) :
+                           Material.background
+                radius: 0
+
+                Label {
+                    anchors.fill: parent
+                    //anchors.verticalCenter: parent.verticalCenter
+                    id: text
+                    text: model.name
+                    padding: 10
+                    fontSizeMode: Text.VerticalFit
+                    minimumPixelSize: 10;
+                    font.pixelSize: 72
+                }
+            }
+
+            Rectangle {
+                color: Material.dividerColor
+                height: 1
+                anchors.left: parent.left
+                anchors.right: parent.right
+                anchors.bottom: parent.bottom
+                visible: index !== (listView.count - 1)
             }
 
             MouseArea {
