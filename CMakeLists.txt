@@ -27,6 +27,7 @@ qt_add_qml_module(applightcontrol
         HomePage.qml
         SettingsPage.qml
         LightControlWindow.qml
+        LightSliderPane.qml
         EditableListView.qml
         DeviceTypesSettingsPage.qml
         DevicesSettingsPage.qml

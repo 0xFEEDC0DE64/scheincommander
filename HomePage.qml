@@ -17,66 +17,10 @@ RowLayout {
             Repeater {
                 model: devicesModel
 
-                delegate: Pane {
-                    property int deviceAddress: model.address
-                    property int myDeviceTypeId: model.deviceTypeId
+                delegate: LightSliderPane {
+                    light: model
 
-                    Material.elevation: 6
-
-                    //width: 75
                     height: 250
-
-                    ColumnLayout {
-                        anchors.fill: parent
-
-                        Label {
-                            Layout.fillWidth: true
-                            text: model.name
-                            horizontalAlignment: Text.AlignHCenter
-                        }
-
-                        RowLayout {
-                            Layout.fillWidth: true
-                            Layout.fillHeight: true
-
-                            Repeater {
-                                model: DeviceTypeRegistersModel {
-                                    controller: __controller
-                                    deviceTypeId: myDeviceTypeId
-                                }
-
-                                delegate: ColumnLayout {
-                                    property int registerAddress: deviceAddress + index
-
-                                    Layout.fillHeight: true
-
-                                    Label {
-                                        Layout.fillWidth: true
-                                        text: model.registerTypeName
-                                        horizontalAlignment: Text.AlignHCenter
-                                    }
-
-                                    Slider {
-                                        id: slider
-                                        Layout.fillWidth: true
-                                        Layout.fillHeight: true
-
-                                        orientation: Qt.Vertical
-                                        from: 0
-                                        to: 255
-
-                                        onValueChanged: __controller.setChannel(registerAddress, value)
-                                    }
-
-                                    Label {
-                                        Layout.fillWidth: true
-                                        text: Math.round(slider.value)
-                                        horizontalAlignment: Text.AlignHCenter
-                                    }
-                                }
-                            }
-                        }
-                    }
                 }
             }
         }
