@@ -47,7 +47,7 @@ DmxController::DmxController(QObject *parent) :
             }
         },
         .devices {
-            { .id=0,  .name="Test 1",        .deviceTypeId=1, .address=32, .position{1,0,0} },
+            { .id=0,  .name="Test 1",        .deviceTypeId=1, .address=61, .position{1,0,0} },
             { .id=1,  .name="Lampe 1",       .deviceTypeId=2, .address=1,  .position{2,0,0}  },
             { .id=1,  .name="Lampe 2",       .deviceTypeId=2, .address=4,  .position{2,0,0}  },
             { .id=2,  .name="Lampe 3",       .deviceTypeId=2, .address=7,  .position{3,0,0}  },
