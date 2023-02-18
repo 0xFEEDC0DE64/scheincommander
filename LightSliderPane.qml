@@ -70,6 +70,10 @@ Pane {
                             value: masterWhite
                             when: model.registerType === DeviceTypeRegisterType.White
                         }
+                        Binding on value {
+                            value: masterStrobo
+                            when: model.registerType === DeviceTypeRegisterType.Strobo
+                        }
                     }
 
                     Label {

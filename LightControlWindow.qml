@@ -20,6 +20,7 @@ ApplicationWindow {
     property int masterGreen
     property int masterBlue
     property int masterWhite
+    property int masterStrobo
 
     DeviceTypesModel {
         id: deviceTypesModel

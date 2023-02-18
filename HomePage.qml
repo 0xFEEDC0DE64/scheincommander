@@ -74,6 +74,14 @@ Item {
             DmxSlider {
                 onValueChanged: window.masterWhite = value
             }
+
+            Label {
+                text: qsTr("Alle Strobo:")
+            }
+
+            DmxSlider {
+                onValueChanged: window.masterStrobo = value
+            }
         }
 
         Item {
