@@ -30,6 +30,8 @@ Pane {
                 textRole: 'registerTypeName'
 
                 model: deviceTypeRegistersModel
+
+                onRemoveClicked: (index) => deviceTypeRegistersModel.removeRow(index)
             }
         }
 

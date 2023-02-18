@@ -217,7 +217,54 @@ bool DeviceTypeRegistersModel::setData(const QModelIndex &index, const QVariant 
 
 bool DeviceTypeRegistersModel::removeRows(int row, int count, const QModelIndex &parent)
 {
+    if (!m_controller)
+    {
+        qWarning() << "hilfe" << __LINE__;
+        return true;
+    }
 
+    if (m_deviceTypeId == -1)
+    {
+        qWarning() << "hilfe" << __LINE__;
+        return true;
+    }
+
+    auto deviceTypePtr = m_controller->lightProject().deviceTypes.findById(m_deviceTypeId);
+    if (!deviceTypePtr)
+    {
+        qWarning() << "hilfe" << __LINE__;
+        return true;
+    }
+
+    auto &deviceType = *deviceTypePtr;
+
+    if (row < 0)
+    {
+        qWarning() << "hilfe" << __LINE__;
+        return true;
+    }
+
+    auto &registers = deviceType.registers;
+
+    if (row >= registers.size())
+    {
+        qWarning() << "hilfe" << __LINE__;
+        return true;
+    }
+
+    if (row + count > registers.size())
+    {
+        qWarning() << "hilfe" << __LINE__;
+        return true;
+    }
+
+    beginRemoveRows({}, row, row+count-1);
+    auto begin = std::begin(registers) + row;
+    auto end = begin + count;
+    registers.erase(begin, end);
+    endRemoveRows();
+
+    return true;
 }
 
 namespace {
