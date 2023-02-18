@@ -8,14 +8,6 @@ ColumnLayout {
     Label {
         text: qsTr("Device Types Settings")
     }
-    Image {
-        height: 64
-        width: 64
-        source: ":/lightcontrol/icons/movinghead.png"
-        onStatusChanged: console.log(status)
-        Component.onCompleted: console.log(status)
-    }
-
     RowLayout {
         //Layout.fillWidth: true
         Layout.fillHeight: true
@@ -70,9 +62,9 @@ ColumnLayout {
                             }
                     model: ListModel {
                                 id: cbItems
-                                ListElement { imageSource: ":/lightcontrol/icons/movinghead.png"  }
-                                ListElement { imageSource: ":/lightcontrol/icons/nebelmaschine.png"  }
-                                ListElement { imageSource: ":/lightcontrol/icons/rgbstrahler.png"  }
+                                ListElement { imageSource: "qrc:/lightcontrol/icons/movinghead.png"  }
+                                ListElement { imageSource: "qrc:/lightcontrol/icons/nebelmaschine.png"  }
+                                ListElement { imageSource: "qrc:/lightcontrol/icons/rgbstrahler.png"  }
                             }
                 }
                 Label { text: qsTr("Registers:") }

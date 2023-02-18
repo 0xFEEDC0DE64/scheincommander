@@ -172,26 +172,26 @@ bool DeviceTypeRegistersModel::setData(const QModelIndex &index, const QVariant 
     if (!index.isValid())
     {
         qWarning() << "hilfe" << __LINE__;
-        return {};
+        return true;
     }
 
     if (!m_controller)
     {
         qWarning() << "hilfe" << __LINE__;
-        return {};
+        return true;
     }
 
     if (m_deviceTypeId == -1)
     {
         qWarning() << "hilfe" << __LINE__;
-        return {};
+        return true;
     }
 
     auto deviceTypePtr = m_controller->lightProject().deviceTypes.findById(m_deviceTypeId);
     if (!deviceTypePtr)
     {
         qWarning() << "hilfe" << __LINE__;
-        return {};
+        return true;
     }
 
     auto &deviceType = *deviceTypePtr;
@@ -199,24 +199,25 @@ bool DeviceTypeRegistersModel::setData(const QModelIndex &index, const QVariant 
     if (index.row() < 0 || index.row() >= deviceType.registers.size())
     {
         qWarning() << "hilfe" << __LINE__;
-        return {};
+        return true;
     }
 
     if (index.column() != 0)
     {
         qWarning() << "hilfe" << __LINE__;
-        return {};
+        return true;
     }
-
-    qDebug() << value.value<DeviceTypeRegisterType>();
 
     auto &deviceTypeRegister = deviceType.registers.at(index.row());
 
     deviceTypeRegister.type = value.value<DeviceTypeRegisterType>();
     emit dataChanged(index, index, { Qt::DisplayRole, Qt::EditRole });
     return true;
+}
 
-    return false;
+bool DeviceTypeRegistersModel::removeRows(int row, int count, const QModelIndex &parent)
+{
+
 }
 
 namespace {

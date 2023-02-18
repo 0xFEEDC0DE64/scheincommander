@@ -1,7 +1,0 @@
-<RCC>
-    <qresource prefix="/lightcontrol">
-        <file>icons/movinghead.png</file>
-        <file>icons/nebelmaschine.png</file>
-        <file>icons/rgbstrahler.png</file>
-    </qresource>
-</RCC>

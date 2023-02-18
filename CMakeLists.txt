@@ -4,14 +4,12 @@ project(lightcontrol VERSION 0.1 LANGUAGES CXX)
 
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_CXX_STANDARD 23)
-set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS ON)
 
 find_package(Qt6 6.2 REQUIRED COMPONENTS SerialPort Quick)
 
 qt_add_executable(applightcontrol
-    resources.qrc
     main.cpp
     devicetypesmodel.h devicetypesmodel.cpp
     dmxcontroller.h dmxcontroller.cpp
@@ -23,6 +21,10 @@ qt_add_executable(applightcontrol
 
 qt_add_qml_module(applightcontrol
     URI lightcontrol
+    RESOURCES
+        icons/movinghead.png
+        icons/nebelmaschine.png
+        icons/rgbstrahler.png
     VERSION 1.0
     QML_FILES
         main.qml
