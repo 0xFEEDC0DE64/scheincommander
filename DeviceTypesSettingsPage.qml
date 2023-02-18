@@ -69,13 +69,13 @@ ColumnLayout {
                 SpinBox {
                     enabled: false
                     Layout.fillWidth: true
-                    value: listView.currentData.id
+                    value: listView.currentData ? listView.currentData.id : -1
                     onValueModified: listView.currentData.id = value
                 }
                 Label { text: qsTr("Name:") }
                 TextField {
                     Layout.fillWidth: true
-                    text: listView.currentData.name
+                    text: listView.currentData ? listView.currentData.name : ''
                     onTextEdited: listView.currentData.name = text
                 }
                 Label { text: qsTr("Icon:") }
@@ -103,7 +103,7 @@ ColumnLayout {
                     Layout.fillWidth: true
                     Layout.fillHeight: true
 
-                    deviceTypeId: listView.currentData.id
+                    deviceTypeId: listView.currentData ? listView.currentData.id : -1
                 }
             }
             Item {
