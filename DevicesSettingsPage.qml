@@ -1,4 +1,5 @@
 import QtQuick
+import QtQuick.Controls
 import QtQuick.Controls.Material
 import QtQuick.Layouts
 
@@ -20,10 +21,40 @@ ColumnLayout {
 
             model: devicesModel
 
-            onAddClicked: (index) => devicesModel.insertRow(index < 0 ? 0 : index + 1);
-            onRemoveClicked: (index) => devicesModel.removeRow(index)
+            onAddClicked: (index) => { const newIndex = index < 0 ? 0 : index + 1; if (devicesModel.insertRow(newIndex)) currentIndex = newIndex; else console.warn('failed'); }
+            onRemoveClicked: (index) => {
+                const dialog = dialogComponent.createObject(Overlay.overlay);
+                dialog.index = index;
+                dialog.open();
+            }
 
-            onCurrentDataChanged: if (currentData) test.value = currentData.position
+            onCurrentDataChanged: if (currentData) positionField.value = currentData.position
+
+            Component {
+                id: dialogComponent
+
+                Dialog {
+                    property int index
+
+                    anchors.centerIn: parent
+                    standardButtons: DialogButtonBox.Yes | DialogButtonBox.Cancel
+                    modal: true
+                    title: qsTr('Confirmation')
+
+                    onAccepted: devicesModel.removeRow(index)
+
+                    Label {
+                        id: textContainer
+
+                        anchors.fill: parent
+
+                        horizontalAlignment: Qt.AlignLeft
+                        verticalAlignment: Qt.AlignTop
+
+                        text: qsTr('Are you sure you want to remove row %0').arg(index)
+                    }
+                }
+            }
         }
 
         ColumnLayout {
