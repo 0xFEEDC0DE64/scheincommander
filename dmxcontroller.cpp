@@ -18,7 +18,7 @@ DmxController::DmxController(QObject *parent) :
             },
             {
                 .id=1,
-                .name="RGBW Strahler",
+                .name="RGBW Strahler Klein",
                 .registers {
                     DeviceTypeRegisterConfig { .type = DeviceTypeRegisterType::Dimmer },
                     DeviceTypeRegisterConfig { .type = DeviceTypeRegisterType::Red },
@@ -44,10 +44,24 @@ DmxController::DmxController(QObject *parent) :
                 .registers {
                     DeviceTypeRegisterConfig { .type = DeviceTypeRegisterType::Dimmer }
                 }
+            },
+            {
+                .id=4,
+                .name="RGBW Strahler Groß",
+                .registers {
+                    DeviceTypeRegisterConfig { .type = DeviceTypeRegisterType::Dimmer },
+                    DeviceTypeRegisterConfig { .type = DeviceTypeRegisterType::Red },
+                    DeviceTypeRegisterConfig { .type = DeviceTypeRegisterType::Green },
+                    DeviceTypeRegisterConfig { .type = DeviceTypeRegisterType::Blue },
+                    DeviceTypeRegisterConfig { .type = DeviceTypeRegisterType::White },
+                    DeviceTypeRegisterConfig { .type = DeviceTypeRegisterType::Dummy },
+                    DeviceTypeRegisterConfig { .type = DeviceTypeRegisterType::Strobo }
+                }
             }
         },
         .devices {
             { .id=0,  .name="Test 1",        .deviceTypeId=1, .address=61, .position{1,0,0} },
+            { .id=15, .name="Test 2",        .deviceTypeId=4, .address=70, .position{1,0,0} },
             { .id=1,  .name="Lampe 1",       .deviceTypeId=2, .address=1,  .position{2,0,0}  },
             { .id=1,  .name="Lampe 2",       .deviceTypeId=2, .address=4,  .position{2,0,0}  },
             { .id=2,  .name="Lampe 3",       .deviceTypeId=2, .address=7,  .position{3,0,0}  },
