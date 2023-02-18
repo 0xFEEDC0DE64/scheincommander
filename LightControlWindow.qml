@@ -27,6 +27,7 @@ ApplicationWindow {
 
     ListModel {
         id: deviceTypeRegisterTypesModel
+        ListElement { text: qsTr('Dummy');  value: DeviceTypeRegisterType.Dummy }
         ListElement { text: qsTr('Dimmer');  value: DeviceTypeRegisterType.Dimmer }
         ListElement { text: qsTr('Red');     value: DeviceTypeRegisterType.Red }
         ListElement { text: qsTr('Green');   value: DeviceTypeRegisterType.Green }

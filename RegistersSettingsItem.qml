@@ -31,6 +31,7 @@ Pane {
 
                 model: deviceTypeRegistersModel
 
+                onAddClicked: (index) => deviceTypeRegistersModel.insertRow(index < 0 ? 0 : index + 1);
                 onRemoveClicked: (index) => deviceTypeRegistersModel.removeRow(index)
             }
         }

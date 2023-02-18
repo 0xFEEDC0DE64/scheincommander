@@ -215,8 +215,60 @@ bool DeviceTypeRegistersModel::setData(const QModelIndex &index, const QVariant 
     return true;
 }
 
+bool DeviceTypeRegistersModel::insertRows(int row, int count, const QModelIndex &parent)
+{
+    if (parent.isValid())
+    {
+        qWarning() << "hilfe" << __LINE__;
+        return false;
+    }
+
+    if (!m_controller)
+    {
+        qWarning() << "hilfe" << __LINE__;
+        return true;
+    }
+
+    if (m_deviceTypeId == -1)
+    {
+        qWarning() << "hilfe" << __LINE__;
+        return true;
+    }
+
+    auto deviceTypePtr = m_controller->lightProject().deviceTypes.findById(m_deviceTypeId);
+    if (!deviceTypePtr)
+    {
+        qWarning() << "hilfe" << __LINE__;
+        return true;
+    }
+
+    auto &deviceType = *deviceTypePtr;
+
+    if (row < 0)
+    {
+        qWarning() << "hilfe" << __LINE__;
+        return true;
+    }
+
+    auto &registers = deviceType.registers;
+
+    beginInsertRows({}, row, row+count-1);
+    auto iter = std::begin(registers) + row;
+    for (; count > 0; count--)
+        iter = registers.insert(iter, DeviceTypeRegisterConfig{ .type = DeviceTypeRegisterType::Dummy }) + 1;
+    endInsertRows();
+
+    return true;
+}
+
 bool DeviceTypeRegistersModel::removeRows(int row, int count, const QModelIndex &parent)
 {
+    if (parent.isValid())
+    {
+        qWarning() << "hilfe" << __LINE__;
+        return false;
+    }
+
     if (!m_controller)
     {
         qWarning() << "hilfe" << __LINE__;
