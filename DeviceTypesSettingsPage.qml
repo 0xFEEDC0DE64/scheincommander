@@ -77,38 +77,32 @@ ColumnLayout {
                     enabled: false
                     Layout.fillWidth: true
                     value: listView.currentData ? listView.currentData.id : -1
-                    onValueModified: listView.currentData.id = value
+                    onValueModified: if (listView.currentData) listView.currentData.id = value; else console.warn('discarded');
                 }
                 Label { text: qsTr("Name:") }
                 TextField {
                     Layout.fillWidth: true
                     text: listView.currentData ? listView.currentData.name : ''
-                    onTextEdited: listView.currentData.name = text
+                    onTextEdited: if (listView.currentData) listView.currentData.name = text; else console.warn('discarded');
                 }
                 Label { text: qsTr("Icon:") }
-                ComboBox {
+                IconComboBox {
+                    id: iconComboBox
+
                     Layout.fillWidth: true
                     Layout.preferredHeight: 64
-                    id: iconCombobox
-                    textRole: "fileName"
-                    valueRole: "fileUrl"
-                    delegate: ItemDelegate {
-                        height: 64
-                        anchors.left: parent.left
-                        anchors.right: parent.right
-                        contentItem: IconChooserDelegateLayout {
-                            anchors.top: parent.top
-                            anchors.bottom: parent.bottom
-                            text: fileName
-                            iconSource: fileUrl
-                        }
-                    }
-                    contentItem: IconChooserDelegateLayout {
-                        text: iconCombobox.currentText
-                        iconSource: iconCombobox.currentValue
-                    }
+
+                    textRole: "fileBaseName"
+                    valueRole: "fileBaseName"
+                    iconSourceRole: "fileUrl"
 
                     model: iconsModel
+
+                    currentIndex: listView.currentData ? iconComboBox.indexOfValue(listView.currentData.iconName) : -1
+                    onActivated: {
+                        console.log(currentValue);
+                        if (listView.currentData) listView.currentData.iconName = currentValue; else console.warn('discarded');
+                    }
                 }
                 Label { text: qsTr("Registers:") }
                 RegistersSettingsItem {

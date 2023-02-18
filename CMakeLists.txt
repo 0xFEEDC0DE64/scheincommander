@@ -41,6 +41,7 @@ qt_add_qml_module(applightcontrol
         StatusBar.qml
         RegisterGroupsSettingsPage.qml
         RegistersSettingsItem.qml
+        IconComboBox.qml
 )
 
 set_target_properties(applightcontrol PROPERTIES

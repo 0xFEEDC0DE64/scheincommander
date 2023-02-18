@@ -37,6 +37,7 @@ struct DeviceTypeConfig
 {
     int id;
     QString name;
+    QString iconName;
     std::vector<DeviceTypeRegisterConfig> registers;
 };
 

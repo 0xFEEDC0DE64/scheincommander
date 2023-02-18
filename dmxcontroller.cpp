@@ -14,11 +14,13 @@ DmxController::DmxController(QObject *parent) :
         .deviceTypes {
             {
                 .id=0,
-                .name="Stairville MH-X50+"
+                .name="Stairville MH-X50+",
+                .iconName="movinghead"
             },
             {
                 .id=1,
                 .name="RGBW Strahler Klein",
+                .iconName="rgbstrahler",
                 .registers {
                     DeviceTypeRegisterConfig { .type = DeviceTypeRegisterType::Dimmer },
                     DeviceTypeRegisterConfig { .type = DeviceTypeRegisterType::Red },
@@ -32,6 +34,7 @@ DmxController::DmxController(QObject *parent) :
             {
                 .id=2,
                 .name="RGB Strahler",
+                .iconName="rgbstrahler",
                 .registers {
                     DeviceTypeRegisterConfig { .type = DeviceTypeRegisterType::Red },
                     DeviceTypeRegisterConfig { .type = DeviceTypeRegisterType::Green },
@@ -41,6 +44,7 @@ DmxController::DmxController(QObject *parent) :
             {
                 .id=3,
                 .name="Nebelmaschine",
+                .iconName="nebelmaschine",
                 .registers {
                     DeviceTypeRegisterConfig { .type = DeviceTypeRegisterType::Dimmer }
                 }
@@ -48,6 +52,7 @@ DmxController::DmxController(QObject *parent) :
             {
                 .id=4,
                 .name="RGBW Strahler Groß",
+                .iconName="rgbstrahler",
                 .registers {
                     DeviceTypeRegisterConfig { .type = DeviceTypeRegisterType::Dimmer },
                     DeviceTypeRegisterConfig { .type = DeviceTypeRegisterType::Red },

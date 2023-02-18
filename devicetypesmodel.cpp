@@ -6,7 +6,7 @@
 
 enum {
     IdRole = Qt::UserRole,
-    IconRole
+    IconNameRole
 };
 
 void DeviceTypesModel::setController(DmxController *controller)
@@ -69,6 +69,7 @@ QVariant DeviceTypesModel::data(const QModelIndex &index, int role) const
     case Qt::DisplayRole:
     case Qt::EditRole: return deviceType.name;
     case IdRole:       return deviceType.id;
+    case IconNameRole: return deviceType.iconName;
     }
 
     return {};
@@ -106,7 +107,8 @@ QMap<int, QVariant> DeviceTypesModel::itemData(const QModelIndex &index) const
 
     return {
         { Qt::DisplayRole, deviceType.name },
-        { IdRole,          deviceType.id }
+        { IdRole,          deviceType.id },
+        { IconNameRole,    deviceType.iconName }
     };
 }
 
@@ -114,7 +116,8 @@ QHash<int, QByteArray> DeviceTypesModel::roleNames() const
 {
     return {
         { Qt::DisplayRole, "name" },
-        { IdRole,          "id" }
+        { IdRole,          "id" },
+        { IconNameRole,    "iconName" }
     };
 }
 
@@ -166,6 +169,15 @@ bool DeviceTypesModel::setData(const QModelIndex &index, const QVariant &value, 
         }
         deviceType.id = value.toInt();
         emit dataChanged(index, index, { IdRole });
+        return true;
+    case IconNameRole:
+        if (value.userType() != QMetaType::QString)
+        {
+            qWarning() << "hilfe" << __LINE__ << value.userType();
+            return false;
+        }
+        deviceType.iconName = value.toString();
+        emit dataChanged(index, index, { IconNameRole });
         return true;
     }
 
