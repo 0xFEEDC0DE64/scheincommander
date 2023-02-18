@@ -27,7 +27,7 @@ ColumnLayout {
         }
 
         Button {
-            text: qsTr("Remove ") + listView.currentIndex
+            text: qsTr("Remove ")
 
             onClicked: removeClicked(listView.currentIndex)
             enabled: listView.currentIndex >= 0
