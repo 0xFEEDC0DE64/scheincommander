@@ -30,6 +30,7 @@ qt_add_qml_module(applightcontrol
         main.qml
         HomePage.qml
         SettingsPage.qml
+        IconChooserDelegateLayout.qml
         LightControlWindow.qml
         LightSliderPane.qml
         EditableListView.qml

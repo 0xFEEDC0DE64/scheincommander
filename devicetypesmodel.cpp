@@ -4,7 +4,10 @@
 #include <QCoreApplication>
 #include <QQmlEngine>
 
-constexpr auto IdRole = Qt::UserRole;
+enum {
+    IdRole = Qt::UserRole,
+    IconRole
+};
 
 void DeviceTypesModel::setController(DmxController *controller)
 {

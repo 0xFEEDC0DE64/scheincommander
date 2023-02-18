@@ -2,10 +2,17 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Controls.Material
 import QtQuick.Layouts
+import Qt.labs.folderlistmodel 2.4
 
 import com.büro 1.0
 
 ColumnLayout {
+    FolderListModel {
+        id: iconsModel
+        folder: "qrc:/lightcontrol/icons/"
+        showDirs: false
+    }
+
     Label {
         text: qsTr("Device Types Settings")
     }
@@ -81,22 +88,27 @@ ColumnLayout {
                 Label { text: qsTr("Icon:") }
                 ComboBox {
                     Layout.fillWidth: true
+                    Layout.preferredHeight: 64
                     id: iconCombobox
-                    //textRole: "imageSource"
-                    //valueRole: "imageSource"
-                    //currentIndex: iconCombobox.indexOfValue(listView.currentData.deviceTypeId)
-                    //onActivated: if (listView.currentData) listView.currentData.deviceTypeId = currentValue; else console.warn('discarded');
-                    delegate: Image {
-                                height: 64
-                                fillMode: Image.PreserveAspectFit
-                                source: imageSource
-                            }
-                    model: ListModel {
-                                id: cbItems
-                                ListElement { imageSource: "qrc:/lightcontrol/icons/movinghead.png"  }
-                                ListElement { imageSource: "qrc:/lightcontrol/icons/nebelmaschine.png"  }
-                                ListElement { imageSource: "qrc:/lightcontrol/icons/rgbstrahler.png"  }
-                            }
+                    textRole: "fileName"
+                    valueRole: "fileUrl"
+                    delegate: ItemDelegate {
+                        height: 64
+                        anchors.left: parent.left
+                        anchors.right: parent.right
+                        contentItem: IconChooserDelegateLayout {
+                            anchors.top: parent.top
+                            anchors.bottom: parent.bottom
+                            text: fileName
+                            iconSource: fileUrl
+                        }
+                    }
+                    contentItem: IconChooserDelegateLayout {
+                        text: iconCombobox.currentText
+                        iconSource: iconCombobox.currentValue
+                    }
+
+                    model: iconsModel
                 }
                 Label { text: qsTr("Registers:") }
                 RegistersSettingsItem {
