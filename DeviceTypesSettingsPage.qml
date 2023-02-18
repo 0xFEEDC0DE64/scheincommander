@@ -92,7 +92,12 @@ ColumnLayout {
                                     text: qsTr('Type:')
                                 }
                                 ComboBox {
+                                    id: comboBox
+                                    model: deviceTypeRegisterTypesModel
+                                    textRole: "text"
+                                    valueRole: "value"
 
+                                    currentIndex: deviceTypesRegistersListView.currentData ? comboBox.indexOfValue(deviceTypesRegistersListView.currentData.registerType) : -1
                                 }
                             }
 

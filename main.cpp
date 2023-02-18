@@ -47,7 +47,6 @@ int main(int argc, char *argv[])
 
     QQmlApplicationEngine engine;
 
-
     engine.rootContext()->setContextProperty("__controller", &controller);
     engine.rootContext()->setContextProperty("__windowed", windowed);
 

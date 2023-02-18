@@ -55,7 +55,7 @@ ColumnLayout {
                     model: deviceTypesModel
                     textRole: "name"
                     valueRole: "id"
-                    currentIndex: deviceTypeCombobox.indexOfValue(listView.currentData.deviceTypeId)
+                    currentIndex: listView.currentData ? deviceTypeCombobox.indexOfValue(listView.currentData.deviceTypeId) : -1
                     onCurrentValueChanged: if (listView.currentData) listView.currentData.deviceTypeId = currentValue; else console.warn('discarded');
                 }
                 Label { text: qsTr("Address:") }
