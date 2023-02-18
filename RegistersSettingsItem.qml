@@ -31,7 +31,7 @@ Pane {
 
                 model: deviceTypeRegistersModel
 
-                onAddClicked: (index) => deviceTypeRegistersModel.insertRow(index < 0 ? 0 : index + 1);
+                onAddClicked: (index) => { const newIndex = index < 0 ? 0 : index + 1; if (deviceTypeRegistersModel.insertRow(newIndex)) currentIndex = newIndex; else console.warn('failed'); }
                 onRemoveClicked: (index) => deviceTypeRegistersModel.removeRow(index)
             }
         }

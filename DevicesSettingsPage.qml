@@ -70,13 +70,13 @@ ColumnLayout {
                 SpinBox {
                     enabled: false
                     Layout.fillWidth: true
-                    value: listView.currentData.id
+                    value: listView.currentData ? listView.currentData.id : -1
                     onValueModified: listView.currentData.id = value
                 }
                 Label { text: qsTr("Name:") }
                 TextField {
                     Layout.fillWidth: true
-                    text: listView.currentData.name
+                    text: listView.currentData ? listView.currentData.name : ''
                     onTextEdited: listView.currentData.name = text
                 }
                 Label { text: qsTr("DeviceType:") }
@@ -92,12 +92,12 @@ ColumnLayout {
                 Label { text: qsTr("Address:") }
                 SpinBox {
                     Layout.fillWidth: true
-                    value: listView.currentData.address
+                    value: listView.currentData ? listView.currentData.address : -1
                     onValueModified: listView.currentData.address = value
                 }
                 Label { text: qsTr("Position:") }
                 Vector3DField {
-                    id: test
+                    id: positionField
                     Layout.fillWidth: true
                     onValueModified: listView.currentData.position = value;
                     // TODO solve without onCurrentDataChanged
