@@ -42,14 +42,16 @@ int DeviceTypeRegistersModel::rowCount(const QModelIndex &parent) const
     if (m_deviceTypeId == -1)
         return 0;
 
-    auto deviceType = m_controller->lightProject().deviceTypes.findById(m_deviceTypeId);
-    if (!deviceType)
+    auto deviceTypePtr = m_controller->lightProject().deviceTypes.findById(m_deviceTypeId);
+    if (!deviceTypePtr)
     {
         qWarning() << "hilfe" << __LINE__;
         return 0;
     }
 
-    return deviceType->registers.size();
+    const auto &deviceType = *deviceTypePtr;
+
+    return deviceType.registers.size();
 }
 
 QVariant DeviceTypeRegistersModel::data(const QModelIndex &index, int role) const
@@ -72,14 +74,16 @@ QVariant DeviceTypeRegistersModel::data(const QModelIndex &index, int role) cons
         return {};
     }
 
-    auto deviceType = m_controller->lightProject().deviceTypes.findById(m_deviceTypeId);
-    if (!deviceType)
+    auto deviceTypePtr = m_controller->lightProject().deviceTypes.findById(m_deviceTypeId);
+    if (!deviceTypePtr)
     {
         qWarning() << "hilfe" << __LINE__;
         return {};
     }
 
-    if (index.row() < 0 || index.row() >= deviceType->registers.size())
+    const auto &deviceType = *deviceTypePtr;
+
+    if (index.row() < 0 || index.row() >= deviceType.registers.size())
     {
         qWarning() << "hilfe" << __LINE__;
         return {};
@@ -91,7 +95,7 @@ QVariant DeviceTypeRegistersModel::data(const QModelIndex &index, int role) cons
         return {};
     }
 
-    const auto &deviceTypeRegister = deviceType->registers.at(index.row());
+    const auto &deviceTypeRegister = deviceType.registers.at(index.row());
 
     switch (role)
     {
@@ -126,14 +130,16 @@ QMap<int, QVariant> DeviceTypeRegistersModel::itemData(const QModelIndex &index)
         return {};
     }
 
-    auto deviceType = m_controller->lightProject().deviceTypes.findById(m_deviceTypeId);
-    if (!deviceType)
+    auto deviceTypePtr = m_controller->lightProject().deviceTypes.findById(m_deviceTypeId);
+    if (!deviceTypePtr)
     {
         qWarning() << "hilfe" << __LINE__;
         return {};
     }
 
-    if (index.row() < 0 || index.row() >= deviceType->registers.size())
+    auto &deviceType = *deviceTypePtr;
+
+    if (index.row() < 0 || index.row() >= deviceType.registers.size())
     {
         qWarning() << "hilfe" << __LINE__;
         return {};
@@ -145,7 +151,7 @@ QMap<int, QVariant> DeviceTypeRegistersModel::itemData(const QModelIndex &index)
         return {};
     }
 
-    const auto &deviceTypeRegister = deviceType->registers.at(index.row());
+    const auto &deviceTypeRegister = deviceType.registers.at(index.row());
 
     return {
         { Qt::DisplayRole, QMetaEnum::fromType<DeviceTypeRegisterType>().valueToKey(std::to_underlying(deviceTypeRegister.type)) },
@@ -159,6 +165,58 @@ QHash<int, QByteArray> DeviceTypeRegistersModel::roleNames() const
         { Qt::DisplayRole, "registerTypeName" },
         { Qt::EditRole,    "registerType" },
     };
+}
+
+bool DeviceTypeRegistersModel::setData(const QModelIndex &index, const QVariant &value, int role)
+{
+    if (!index.isValid())
+    {
+        qWarning() << "hilfe" << __LINE__;
+        return {};
+    }
+
+    if (!m_controller)
+    {
+        qWarning() << "hilfe" << __LINE__;
+        return {};
+    }
+
+    if (m_deviceTypeId == -1)
+    {
+        qWarning() << "hilfe" << __LINE__;
+        return {};
+    }
+
+    auto deviceTypePtr = m_controller->lightProject().deviceTypes.findById(m_deviceTypeId);
+    if (!deviceTypePtr)
+    {
+        qWarning() << "hilfe" << __LINE__;
+        return {};
+    }
+
+    auto &deviceType = *deviceTypePtr;
+
+    if (index.row() < 0 || index.row() >= deviceType.registers.size())
+    {
+        qWarning() << "hilfe" << __LINE__;
+        return {};
+    }
+
+    if (index.column() != 0)
+    {
+        qWarning() << "hilfe" << __LINE__;
+        return {};
+    }
+
+    qDebug() << value.value<DeviceTypeRegisterType>();
+
+    auto &deviceTypeRegister = deviceType.registers.at(index.row());
+
+    deviceTypeRegister.type = value.value<DeviceTypeRegisterType>();
+    emit dataChanged(index, index, { Qt::DisplayRole, Qt::EditRole });
+    return true;
+
+    return false;
 }
 
 namespace {

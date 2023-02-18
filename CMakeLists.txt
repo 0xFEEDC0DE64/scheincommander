@@ -35,6 +35,7 @@ qt_add_qml_module(applightcontrol
         DmxSlider.qml
         StatusBar.qml
         RegisterGroupsSettingsPage.qml
+        RegistersSettingsItem.qml
 )
 
 set_target_properties(applightcontrol PROPERTIES

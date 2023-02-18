@@ -25,6 +25,8 @@ public:
     QMap<int, QVariant> itemData(const QModelIndex &index) const override;
     QHash<int, QByteArray> roleNames() const override;
 
+    bool setData(const QModelIndex &index, const QVariant &value, int role) override;
+
 signals:
     void controllerChanged(DmxController *controller);
     void deviceTypeIdChanged(int deviceTypeId);

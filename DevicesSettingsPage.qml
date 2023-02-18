@@ -56,7 +56,7 @@ ColumnLayout {
                     textRole: "name"
                     valueRole: "id"
                     currentIndex: listView.currentData ? deviceTypeCombobox.indexOfValue(listView.currentData.deviceTypeId) : -1
-                    onCurrentValueChanged: if (listView.currentData) listView.currentData.deviceTypeId = currentValue; else console.warn('discarded');
+                    onActivated: if (listView.currentData) listView.currentData.deviceTypeId = currentValue; else console.warn('discarded');
                 }
                 Label { text: qsTr("Address:") }
                 SpinBox {

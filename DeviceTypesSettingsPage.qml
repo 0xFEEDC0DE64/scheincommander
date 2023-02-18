@@ -14,7 +14,7 @@ ColumnLayout {
         Layout.fillHeight: true
 
         EditableListView {
-            id: deviceTypesListView
+            id: listView
 
             Layout.preferredWidth: 300
             Layout.maximumWidth: 300
@@ -27,7 +27,7 @@ ColumnLayout {
         }
 
         ColumnLayout {
-            enabled: deviceTypesListView.currentIndex !== -1
+            enabled: listView.currentIndex !== -1
 
             GridLayout {
                 Layout.preferredWidth: 600
@@ -39,74 +39,21 @@ ColumnLayout {
                 SpinBox {
                     enabled: false
                     Layout.fillWidth: true
-                    value: deviceTypesListView.currentData.id
-                    onValueModified: deviceTypesListView.currentData.id = value
+                    value: listView.currentData.id
+                    onValueModified: listView.currentData.id = value
                 }
                 Label { text: qsTr("Name:") }
                 TextField {
                     Layout.fillWidth: true
-                    text: deviceTypesListView.currentData.name
-                    onTextEdited: deviceTypesListView.currentData.name = text
+                    text: listView.currentData.name
+                    onTextEdited: listView.currentData.name = text
                 }
                 Label { text: qsTr("Registers:") }
-                Pane {
+                RegistersSettingsItem {
                     Layout.fillWidth: true
                     Layout.fillHeight: true
 
-                    Material.elevation: 6
-
-                    RowLayout {
-                        anchors.fill: parent
-
-                        Pane {
-                            Layout.preferredWidth: 300
-                            Layout.fillHeight: true
-
-                            Material.elevation: 6
-
-                            EditableListView {
-                                id: deviceTypesRegistersListView
-                                anchors.fill: parent
-
-                                textRole: 'registerTypeName'
-
-                                model: DeviceTypeRegistersModel {
-                                    controller: __controller
-                                    deviceTypeId: deviceTypesListView.currentData.id
-                                }
-                            }
-                        }
-
-                        ColumnLayout {
-                            Layout.fillWidth: true
-                            Layout.fillHeight: true
-
-                            enabled: deviceTypesRegistersListView.currentIndex >= 0
-
-                            GridLayout {
-                                Layout.fillWidth: true
-
-                                columns: 2
-
-                                Label {
-                                    text: qsTr('Type:')
-                                }
-                                ComboBox {
-                                    id: comboBox
-                                    model: deviceTypeRegisterTypesModel
-                                    textRole: "text"
-                                    valueRole: "value"
-
-                                    currentIndex: deviceTypesRegistersListView.currentData ? comboBox.indexOfValue(deviceTypesRegistersListView.currentData.registerType) : -1
-                                }
-                            }
-
-                            Item {
-                                Layout.fillWidth: true
-                                Layout.fillHeight: true
-                            }
-                        }
-                    }
+                    deviceTypeId: listView.currentData.id
                 }
             }
             Item {
