@@ -51,23 +51,23 @@ Pane {
                         onValueChanged: __controller.setChannel(registerAddress, value)
 
                         Binding on value {
-                            value: homePage.masterDimmer
+                            value: masterDimmer
                             when: model.registerType === DeviceTypeRegisterType.Dimmer
                         }
                         Binding on value {
-                            value: homePage.masterRed
+                            value: masterRed
                             when: model.registerType === DeviceTypeRegisterType.Red
                         }
                         Binding on value {
-                            value: homePage.masterGreen
+                            value: masterGreen
                             when: model.registerType === DeviceTypeRegisterType.Green
                         }
                         Binding on value {
-                            value: homePage.masterBlue
+                            value: masterBlue
                             when: model.registerType === DeviceTypeRegisterType.Blue
                         }
                         Binding on value {
-                            value: homePage.masterWhite
+                            value: masterWhite
                             when: model.registerType === DeviceTypeRegisterType.White
                         }
                     }

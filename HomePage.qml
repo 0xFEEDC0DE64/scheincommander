@@ -7,12 +7,6 @@ import com.büro 1.0
 Item {
     id: homePage
 
-    property alias masterDimmer: masterDimmer.value
-    property alias masterRed: masterRed.value
-    property alias masterGreen: masterGreen.value
-    property alias masterBlue: masterBlue.value
-    property alias masterWhite: masterWhite.value
-
     property bool needsRegler: true
 
     Button {
@@ -46,7 +40,7 @@ Item {
             }
 
             DmxSlider {
-                id: masterDimmer
+                onValueChanged: window.masterDimmer = value
             }
 
             Label {
@@ -54,7 +48,7 @@ Item {
             }
 
             DmxSlider {
-                id: masterRed
+                onValueChanged: window.masterRed = value
             }
 
             Label {
@@ -62,7 +56,7 @@ Item {
             }
 
             DmxSlider {
-                id: masterGreen
+                onValueChanged: window.masterGreen = value
             }
 
             Label {
@@ -70,7 +64,7 @@ Item {
             }
 
             DmxSlider {
-                id: masterBlue
+                onValueChanged: window.masterBlue = value
             }
 
             Label {
@@ -78,7 +72,7 @@ Item {
             }
 
             DmxSlider {
-                id: masterWhite
+                onValueChanged: window.masterWhite = value
             }
         }
 

@@ -91,6 +91,7 @@ ColumnLayout {
                 }
                 Label { text: qsTr("Address:") }
                 SpinBox {
+                    to: 512
                     Layout.fillWidth: true
                     value: listView.currentData ? listView.currentData.address : -1
                     onValueModified: listView.currentData.address = value

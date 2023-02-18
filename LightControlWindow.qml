@@ -15,6 +15,12 @@ ApplicationWindow {
     Material.theme: Material.Dark
     Material.accent: Material.Purple
 
+    property int masterDimmer
+    property int masterRed
+    property int masterGreen
+    property int masterBlue
+    property int masterWhite
+
     DeviceTypesModel {
         id: deviceTypesModel
         controller: __controller
