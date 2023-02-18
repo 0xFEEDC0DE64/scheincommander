@@ -33,6 +33,7 @@ qt_add_qml_module(applightcontrol
         DevicesSettingsPage.qml
         Vector3DField.qml
         DmxSlider.qml
+        StatusBar.qml
 )
 
 set_target_properties(applightcontrol PROPERTIES
