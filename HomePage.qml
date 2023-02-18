@@ -13,6 +13,8 @@ Item {
     property alias masterBlue: masterBlue.value
     property alias masterWhite: masterWhite.value
 
+    property bool needsRegler: true
+
     Button {
         anchors.top: parent.top
         anchors.right: parent.right
@@ -83,39 +85,6 @@ Item {
         Item {
             Layout.fillWidth: true
             Layout.fillHeight: true
-        }
-    }
-
-    Flickable {
-        anchors.left: parent.left
-        anchors.right: parent.right
-        anchors.bottom: parent.bottom
-
-        height: 300
-
-        contentWidth: theFlow.width
-        contentHeight: theFlow.height
-
-        flickableDirection: Flickable.HorizontalFlick
-
-        RowLayout {
-            id: theFlow
-
-            height: parent.height
-
-            spacing: 5
-
-            Repeater {
-                model: devicesModel
-
-                delegate: LightSliderPane {
-                    light: model
-
-                    //Layout.fillHeight: true
-
-                    height: theFlow.height
-                }
-            }
         }
     }
 }

@@ -34,6 +34,7 @@ qt_add_qml_module(applightcontrol
         Vector3DField.qml
         DmxSlider.qml
         StatusBar.qml
+        RegisterGroupsSettingsPage.qml
 )
 
 set_target_properties(applightcontrol PROPERTIES

@@ -43,5 +43,22 @@ Item {
                 }
             }
         }
+
+        Button {
+            id: button2
+            text: qsTr("Register\nGroups")
+
+            Layout.preferredWidth: 100
+            Layout.preferredHeight: 100
+
+            onClicked: stackview.push(registerGroupsSettingsPage)
+
+            Component {
+                id: registerGroupsSettingsPage
+
+                RegisterGroupsSettingsPage {
+                }
+            }
+        }
     }
 }

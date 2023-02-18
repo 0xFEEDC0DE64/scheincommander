@@ -82,6 +82,77 @@ ApplicationWindow {
         }
     }
 
+    Flickable {
+        id: test
+
+        z: 98
+        x: 0
+        height: 300
+        y: window.height - height
+        width: window.width
+        property bool active: typeof stackview.currentItem.needsRegler == 'boolean' ? stackview.currentItem.needsRegler : false
+
+        states: State {
+            name: "invisible"
+            when: !test.active
+            PropertyChanges {
+                target: test
+                y: window.height
+            }
+        }
+        transitions: [
+            Transition {
+                from: "invisible"
+                to: ""
+                reversible: false
+                ParallelAnimation {
+                    NumberAnimation {
+                        properties: "y"
+                        duration: 1000
+                        easing.type: Easing.OutBounce
+                    }
+                }
+            },
+            Transition {
+                from: ""
+                to: "invisible"
+                reversible: false
+                ParallelAnimation {
+                    NumberAnimation {
+                        properties: "y"
+                        duration: 1000
+                        easing.type: Easing.OutBounce
+                    }
+                }
+            }
+        ]
+
+        contentWidth: theFlow.width
+        contentHeight: theFlow.height
+
+        flickableDirection: Flickable.HorizontalFlick
+
+        RowLayout {
+            id: theFlow
+
+            height: parent.height
+
+            spacing: 5
+
+            Repeater {
+                model: devicesModel
+
+                delegate: LightSliderPane {
+                    light: model
+
+                    //Layout.fillHeight: true
+
+                    height: theFlow.height
+                }
+            }
+        }
+    }
+
     Button {
         id: closeButton
 
