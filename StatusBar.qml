@@ -39,6 +39,13 @@ Pane {
             }
         }
 
+        Label {
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+
+            text: __controller.performance + ' FPS'
+        }
+
         Button {
             Layout.fillHeight: true
 

@@ -149,6 +149,8 @@ void DmxController::sendDmxBuffer()
     if (m_lastInfo.msecsTo(now) >= 1000)
     {
         qInfo("%i per second", m_counter);
+        m_lastCounter = m_counter;
+        emit performanceChanged(m_counter);
         m_counter = 0;
         m_lastInfo = now;
     }

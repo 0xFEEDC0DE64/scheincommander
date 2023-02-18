@@ -11,6 +11,7 @@
 class DmxController : public QObject
 {
     Q_OBJECT
+    Q_PROPERTY(int performance READ performance NOTIFY performanceChanged)
 
 public:
     explicit DmxController(QObject *parent = nullptr);
@@ -23,6 +24,11 @@ public:
     const LightProject &lightProject() const { return m_lightProject; }
 
     QReadWriteLock &projectLock() { return m_projectLock; }
+
+    int performance() const { return m_lastCounter; }
+
+signals:
+    void performanceChanged(int performance);
 
 protected:
     friend class DmxControllerThread;
@@ -41,4 +47,5 @@ private:
 
     QDateTime m_lastInfo;
     int m_counter;
+    std::atomic<int> m_lastCounter;
 };
