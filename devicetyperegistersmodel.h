@@ -33,6 +33,11 @@ signals:
     void controllerChanged(DmxController *controller);
     void deviceTypeIdChanged(int deviceTypeId);
 
+private slots:
+    void otherDeviceTypeRegisterInserted(const DeviceTypeConfig &deviceType, int first, int last);
+    void otherDeviceTypeRegisterRemoved(const DeviceTypeConfig &deviceType, int first, int last);
+    void otherDeviceTypeRegisterTypeChanged(const DeviceTypeConfig &deviceType, int index, DeviceTypeRegisterType type);
+
 private:
     DmxController *m_controller{};
     int m_deviceTypeId{-1};

@@ -12,8 +12,31 @@ void DeviceTypeRegistersModel::setController(DmxController *controller)
         return;
 
     beginResetModel();
+
+    if (m_controller)
+    {
+        disconnect(m_controller, &DmxController::deviceTypeRegisterInserted,
+                   this, &DeviceTypeRegistersModel::otherDeviceTypeRegisterInserted);
+        disconnect(m_controller, &DmxController::deviceTypeRegisterRemoved,
+                   this, &DeviceTypeRegistersModel::otherDeviceTypeRegisterRemoved);
+        disconnect(m_controller, &DmxController::deviceTypeRegisterTypeChanged,
+                   this, &DeviceTypeRegistersModel::otherDeviceTypeRegisterTypeChanged);
+    }
+
     m_controller = controller;
+
+    if (m_controller)
+    {
+        connect(m_controller, &DmxController::deviceTypeRegisterInserted,
+                this, &DeviceTypeRegistersModel::otherDeviceTypeRegisterInserted);
+        connect(m_controller, &DmxController::deviceTypeRegisterRemoved,
+                this, &DeviceTypeRegistersModel::otherDeviceTypeRegisterRemoved);
+        connect(m_controller, &DmxController::deviceTypeRegisterTypeChanged,
+                this, &DeviceTypeRegistersModel::otherDeviceTypeRegisterTypeChanged);
+    }
+
     endResetModel();
+
     emit controllerChanged(m_controller);
 }
 
@@ -172,26 +195,26 @@ bool DeviceTypeRegistersModel::setData(const QModelIndex &index, const QVariant 
     if (!index.isValid())
     {
         qWarning() << "hilfe" << __LINE__;
-        return true;
+        return false;
     }
 
     if (!m_controller)
     {
         qWarning() << "hilfe" << __LINE__;
-        return true;
+        return false;
     }
 
     if (m_deviceTypeId == -1)
     {
         qWarning() << "hilfe" << __LINE__;
-        return true;
+        return false;
     }
 
     auto deviceTypePtr = m_controller->lightProject().deviceTypes.findById(m_deviceTypeId);
     if (!deviceTypePtr)
     {
         qWarning() << "hilfe" << __LINE__;
-        return true;
+        return false;
     }
 
     auto &deviceType = *deviceTypePtr;
@@ -199,20 +222,35 @@ bool DeviceTypeRegistersModel::setData(const QModelIndex &index, const QVariant 
     if (index.row() < 0 || index.row() >= deviceType.registers.size())
     {
         qWarning() << "hilfe" << __LINE__;
-        return true;
+        return false;
     }
 
     if (index.column() != 0)
     {
         qWarning() << "hilfe" << __LINE__;
-        return true;
+        return false;
     }
 
     auto &deviceTypeRegister = deviceType.registers.at(index.row());
 
-    deviceTypeRegister.type = value.value<DeviceTypeRegisterType>();
-    emit dataChanged(index, index, { Qt::DisplayRole, Qt::EditRole });
-    return true;
+    switch (role)
+    {
+    case Qt::EditRole:
+        deviceTypeRegister.type = value.value<DeviceTypeRegisterType>();
+        emit dataChanged(index, index, { Qt::DisplayRole, Qt::EditRole });
+
+        disconnect(m_controller, &DmxController::deviceTypeRegisterTypeChanged,
+                   this, &DeviceTypeRegistersModel::otherDeviceTypeRegisterTypeChanged);
+        emit m_controller->deviceTypeRegisterTypeChanged(deviceType, index.row(), deviceTypeRegister.type);
+        connect(m_controller, &DmxController::deviceTypeRegisterTypeChanged,
+                this, &DeviceTypeRegistersModel::otherDeviceTypeRegisterTypeChanged);
+
+        return true;
+
+    default:
+        qWarning() << "hilfe" << __LINE__;
+        return false;
+    }
 }
 
 bool DeviceTypeRegistersModel::insertRows(int row, int count, const QModelIndex &parent)
@@ -257,6 +295,12 @@ bool DeviceTypeRegistersModel::insertRows(int row, int count, const QModelIndex 
     for (; count > 0; count--)
         iter = registers.insert(iter, DeviceTypeRegisterConfig{ .type = DeviceTypeRegisterType::Dummy }) + 1;
     endInsertRows();
+
+    disconnect(m_controller, &DmxController::deviceTypeRegisterInserted,
+               this, &DeviceTypeRegistersModel::otherDeviceTypeRegisterInserted);
+    emit m_controller->deviceTypeRegisterInserted(deviceType, row, row+count-1);
+    connect(m_controller, &DmxController::deviceTypeRegisterInserted,
+            this, &DeviceTypeRegistersModel::otherDeviceTypeRegisterInserted);
 
     return true;
 }
@@ -316,7 +360,28 @@ bool DeviceTypeRegistersModel::removeRows(int row, int count, const QModelIndex 
     registers.erase(begin, end);
     endRemoveRows();
 
+    disconnect(m_controller, &DmxController::deviceTypeRegisterRemoved,
+               this, &DeviceTypeRegistersModel::otherDeviceTypeRegisterRemoved);
+    emit m_controller->deviceTypeRegisterRemoved(deviceType, row, row+count-1);
+    connect(m_controller, &DmxController::deviceTypeRegisterRemoved,
+            this, &DeviceTypeRegistersModel::otherDeviceTypeRegisterRemoved);
+
     return true;
+}
+
+void DeviceTypeRegistersModel::otherDeviceTypeRegisterInserted(const DeviceTypeConfig &deviceType, int first, int last)
+{
+    // TODO
+}
+
+void DeviceTypeRegistersModel::otherDeviceTypeRegisterRemoved(const DeviceTypeConfig &deviceType, int first, int last)
+{
+    // TODO
+}
+
+void DeviceTypeRegistersModel::otherDeviceTypeRegisterTypeChanged(const DeviceTypeConfig &deviceType, int index, DeviceTypeRegisterType type)
+{
+    // TODO
 }
 
 namespace {

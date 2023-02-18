@@ -30,6 +30,10 @@ public:
 signals:
     void performanceChanged(int performance);
 
+    void deviceTypeRegisterInserted(const DeviceTypeConfig &deviceType, int first, int last);
+    void deviceTypeRegisterRemoved(const DeviceTypeConfig &deviceType, int first, int last);
+    void deviceTypeRegisterTypeChanged(const DeviceTypeConfig &deviceType, int index, DeviceTypeRegisterType type);
+
 protected:
     friend class DmxControllerThread;
 
