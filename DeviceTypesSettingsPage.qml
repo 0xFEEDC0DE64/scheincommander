@@ -8,6 +8,13 @@ ColumnLayout {
     Label {
         text: qsTr("Device Types Settings")
     }
+    Image {
+        height: 64
+        width: 64
+        source: ":/lightcontrol/icons/movinghead.png"
+        onStatusChanged: console.log(status)
+        Component.onCompleted: console.log(status)
+    }
 
     RowLayout {
         //Layout.fillWidth: true
@@ -47,6 +54,26 @@ ColumnLayout {
                     Layout.fillWidth: true
                     text: listView.currentData.name
                     onTextEdited: listView.currentData.name = text
+                }
+                Label { text: qsTr("Icon:") }
+                ComboBox {
+                    Layout.fillWidth: true
+                    id: iconCombobox
+                    //textRole: "imageSource"
+                    //valueRole: "imageSource"
+                    //currentIndex: iconCombobox.indexOfValue(listView.currentData.deviceTypeId)
+                    //onActivated: if (listView.currentData) listView.currentData.deviceTypeId = currentValue; else console.warn('discarded');
+                    delegate: Image {
+                                height: 64
+                                fillMode: Image.PreserveAspectFit
+                                source: imageSource
+                            }
+                    model: ListModel {
+                                id: cbItems
+                                ListElement { imageSource: ":/lightcontrol/icons/movinghead.png"  }
+                                ListElement { imageSource: ":/lightcontrol/icons/nebelmaschine.png"  }
+                                ListElement { imageSource: ":/lightcontrol/icons/rgbstrahler.png"  }
+                            }
                 }
                 Label { text: qsTr("Registers:") }
                 RegistersSettingsItem {
