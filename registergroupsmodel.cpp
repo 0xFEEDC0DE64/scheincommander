@@ -14,7 +14,29 @@ void RegisterGroupsModel::setController(DmxController *controller)
         return;
 
     beginResetModel();
+
+    if (m_controller)
+    {
+        disconnect(m_controller, &DmxController::registerGroupInserted,
+                   this, &RegisterGroupsModel::otherRegisterGroupInserted);
+        disconnect(m_controller, &DmxController::registerGroupRemoved,
+                   this, &RegisterGroupsModel::otherRegisterGroupRemoved);
+        disconnect(m_controller, &DmxController::registerGroupNameChanged,
+                   this, &RegisterGroupsModel::otherRegisterGroupNameChanged);
+    }
+
     m_controller = controller;
+
+    if (m_controller)
+    {
+        connect(m_controller, &DmxController::registerGroupInserted,
+                this, &RegisterGroupsModel::otherRegisterGroupInserted);
+        connect(m_controller, &DmxController::registerGroupRemoved,
+                this, &RegisterGroupsModel::otherRegisterGroupRemoved);
+        connect(m_controller, &DmxController::registerGroupNameChanged,
+                this, &RegisterGroupsModel::otherRegisterGroupNameChanged);
+    }
+
     endResetModel();
     emit controllerChanged(m_controller);
 }
@@ -157,6 +179,13 @@ bool RegisterGroupsModel::setData(const QModelIndex &index, const QVariant &valu
         }
         registerGroup.name = value.toString();
         emit dataChanged(index, index, { Qt::DisplayRole, Qt::EditRole });
+
+        disconnect(m_controller, &DmxController::registerGroupNameChanged,
+                   this, &RegisterGroupsModel::otherRegisterGroupNameChanged);
+        emit m_controller->registerGroupNameChanged(index.row(), registerGroup.name);
+        connect(m_controller, &DmxController::registerGroupNameChanged,
+                this, &RegisterGroupsModel::otherRegisterGroupNameChanged);
+
         return true;
     case IdRole:
         if (value.userType() != QMetaType::Int)
@@ -187,7 +216,7 @@ bool RegisterGroupsModel::insertRows(int row, int count, const QModelIndex &pare
         return false;
     }
 
-    auto &devices = m_controller->lightProject().devices;
+    auto &registerGroups = m_controller->lightProject().registerGroups;
 
     if (row < 0)
     {
@@ -195,20 +224,26 @@ bool RegisterGroupsModel::insertRows(int row, int count, const QModelIndex &pare
         return false;
     }
 
-    if (row > devices.size())
+    if (row > registerGroups.size())
     {
         qWarning() << "hilfe" << __LINE__;
         return false;
     }
 
-    auto max_iter = std::max_element(std::cbegin(devices), std::cend(devices), [](const auto &l, const auto &r){ return l.id < r.id; });
-    auto id = max_iter != std::cend(devices) ? max_iter->id + 1 : 0;
+    auto max_iter = std::max_element(std::cbegin(registerGroups), std::cend(registerGroups), [](const auto &l, const auto &r){ return l.id < r.id; });
+    auto id = max_iter != std::cend(registerGroups) ? max_iter->id + 1 : 0;
 
     beginInsertRows({}, row, row+count-1);
-    auto iter = std::begin(devices) + row;
+    auto iter = std::begin(registerGroups) + row;
     for (auto i = 0; i < count; i++)
-        iter = devices.insert(iter, LightConfig{ .id=id++, .name="<neu>", .deviceTypeId=0, .address=0, .position={} }) + 1;
+        iter = registerGroups.insert(iter, RegisterGroupConfig{ .id=id++, .name="<neu>" }) + 1;
     endInsertRows();
+
+    disconnect(m_controller, &DmxController::registerGroupInserted,
+               this, &RegisterGroupsModel::otherRegisterGroupInserted);
+    emit m_controller->registerGroupInserted(row, row+count-1);
+    connect(m_controller, &DmxController::registerGroupInserted,
+            this, &RegisterGroupsModel::otherRegisterGroupInserted);
 
     return true;
 }
@@ -227,7 +262,7 @@ bool RegisterGroupsModel::removeRows(int row, int count, const QModelIndex &pare
         return false;
     }
 
-    auto &devices = m_controller->lightProject().devices;
+    auto &registerGroups = m_controller->lightProject().registerGroups;
 
     if (row < 0)
     {
@@ -235,25 +270,67 @@ bool RegisterGroupsModel::removeRows(int row, int count, const QModelIndex &pare
         return false;
     }
 
-    if (row >= devices.size())
+    if (row >= registerGroups.size())
     {
         qWarning() << "hilfe" << __LINE__;
         return false;
     }
 
-    if (row + count > devices.size())
+    if (row + count > registerGroups.size())
     {
         qWarning() << "hilfe" << __LINE__;
         return false;
     }
 
     beginRemoveRows({}, row, row+count-1);
-    auto begin = std::begin(devices) + row;
+    auto begin = std::begin(registerGroups) + row;
     auto end = begin + count;
-    devices.erase(begin, end);
+    registerGroups.erase(begin, end);
     endRemoveRows();
 
+    disconnect(m_controller, &DmxController::registerGroupRemoved,
+               this, &RegisterGroupsModel::otherRegisterGroupRemoved);
+    emit m_controller->registerGroupRemoved(row, row+count-1);
+    connect(m_controller, &DmxController::registerGroupRemoved,
+            this, &RegisterGroupsModel::otherRegisterGroupRemoved);
+
     return true;
+}
+
+void RegisterGroupsModel::otherRegisterGroupInserted(int first, int last)
+{
+    if (!m_controller)
+    {
+        qWarning() << "hilfe" << __LINE__;
+        return;
+    }
+
+    beginInsertRows({}, first, last);
+    endInsertRows();
+}
+
+void RegisterGroupsModel::otherRegisterGroupRemoved(int first, int last)
+{
+    if (!m_controller)
+    {
+        qWarning() << "hilfe" << __LINE__;
+        return;
+    }
+
+    beginRemoveRows({}, first, last);
+    endRemoveRows();
+}
+
+void RegisterGroupsModel::otherRegisterGroupNameChanged(int row, const QString &name)
+{
+    if (!m_controller)
+    {
+        qWarning() << "hilfe" << __LINE__;
+        return;
+    }
+
+    const auto index = this->index(row);
+    emit dataChanged(index, index, { Qt::DisplayRole, Qt::EditRole });
 }
 
 namespace {

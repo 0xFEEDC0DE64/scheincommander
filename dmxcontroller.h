@@ -32,19 +32,23 @@ signals:
 
     void deviceTypeInserted(int first, int last);
     void deviceTypeRemoved(int first, int last);
-    void deviceTypeNameChanged(int index, const QString &name);
-    void deviceTypeIconNameChanged(int index, const QString &iconName);
+    void deviceTypeNameChanged(int row, const QString &name);
+    void deviceTypeIconNameChanged(int row, const QString &iconName);
 
     void deviceTypeRegisterInserted(const DeviceTypeConfig &deviceType, int first, int last);
     void deviceTypeRegisterRemoved(const DeviceTypeConfig &deviceType, int first, int last);
-    void deviceTypeRegisterTypeChanged(const DeviceTypeConfig &deviceType, int index, DeviceTypeRegisterType type);
+    void deviceTypeRegisterTypeChanged(const DeviceTypeConfig &deviceType, int row, DeviceTypeRegisterType type);
 
     void deviceInserted(int first, int last);
     void deviceRemoved(int first, int last);
-    void deviceNameChanged(int index, const QString &name);
-    void deviceDeviceTypeIdChanged(int index, int deviceTypeId);
-    void deviceAddressChanged(int index, int address);
-    void devicePositionChanged(int index, const QVector3D &position);
+    void deviceNameChanged(int row, const QString &name);
+    void deviceDeviceTypeIdChanged(int row, int deviceTypeId);
+    void deviceAddressChanged(int row, int address);
+    void devicePositionChanged(int row, const QVector3D &position);
+
+    void registerGroupInserted(int first, int last);
+    void registerGroupRemoved(int first, int last);
+    void registerGroupNameChanged(int row, const QString &name);
 
 protected:
     friend class DmxControllerThread;

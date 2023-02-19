@@ -23,11 +23,11 @@ qt_add_executable(applightcontrol
 
 qt_add_qml_module(applightcontrol
     URI lightcontrol
+    VERSION 1.0
     RESOURCES
         icons/movinghead.png
         icons/nebelmaschine.png
         icons/rgbstrahler.png
-    VERSION 1.0
     QML_FILES
         main.qml
         HomePage.qml

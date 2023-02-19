@@ -28,6 +28,11 @@ public:
 signals:
     void controllerChanged(DmxController *controller);
 
+private slots:
+    void otherRegisterGroupInserted(int first, int last);
+    void otherRegisterGroupRemoved(int first, int last);
+    void otherRegisterGroupNameChanged(int row, const QString &name);
+
 private:
     DmxController *m_controller{};
 };

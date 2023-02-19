@@ -444,4 +444,3 @@ void registrierDenShit()
 }
 }
 Q_COREAPP_STARTUP_FUNCTION(registrierDenShit)
-

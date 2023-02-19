@@ -18,8 +18,25 @@ enum class DeviceTypeRegisterType
     Green,
     Blue,
     White,
-    Strobo,
-    Shutter
+    Shutter,
+    Pan,
+    PanFine,
+    Tilt,
+    TiltFine,
+    Color,
+    Cyan,
+    Magenta,
+    Yellow,
+    Gobo,
+    Rotation,
+    Prism,
+    Frost,
+    Focus,
+    Speed,
+    Iris,
+    Zoom,
+    Extra1,
+    Extra2
 };
 Q_ENUM_NS(DeviceTypeRegisterType)
 } // namespace hilfe

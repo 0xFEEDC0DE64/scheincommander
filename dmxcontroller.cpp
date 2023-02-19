@@ -15,7 +15,23 @@ DmxController::DmxController(QObject *parent) :
             {
                 .id=0,
                 .name="Stairville MH-X50+",
-                .iconName="movinghead"
+                .iconName="movinghead",
+                .registers {
+                    DeviceTypeRegisterConfig { .type = DeviceTypeRegisterType::Pan },
+                    DeviceTypeRegisterConfig { .type = DeviceTypeRegisterType::Tilt },
+                    DeviceTypeRegisterConfig { .type = DeviceTypeRegisterType::PanFine },
+                    DeviceTypeRegisterConfig { .type = DeviceTypeRegisterType::TiltFine },
+                    DeviceTypeRegisterConfig { .type = DeviceTypeRegisterType::Speed },
+                    DeviceTypeRegisterConfig { .type = DeviceTypeRegisterType::Color },
+                    DeviceTypeRegisterConfig { .type = DeviceTypeRegisterType::Shutter },
+                    DeviceTypeRegisterConfig { .type = DeviceTypeRegisterType::Dimmer },
+                    DeviceTypeRegisterConfig { .type = DeviceTypeRegisterType::Gobo },
+                    DeviceTypeRegisterConfig { .type = DeviceTypeRegisterType::Rotation },
+                    DeviceTypeRegisterConfig { .type = DeviceTypeRegisterType::Extra1 },
+                    DeviceTypeRegisterConfig { .type = DeviceTypeRegisterType::Extra2 },
+                    DeviceTypeRegisterConfig { .type = DeviceTypeRegisterType::Prism },
+                    DeviceTypeRegisterConfig { .type = DeviceTypeRegisterType::Focus }
+                }
             },
             {
                 .id=1,
@@ -27,8 +43,8 @@ DmxController::DmxController(QObject *parent) :
                     DeviceTypeRegisterConfig { .type = DeviceTypeRegisterType::Green },
                     DeviceTypeRegisterConfig { .type = DeviceTypeRegisterType::Blue },
                     DeviceTypeRegisterConfig { .type = DeviceTypeRegisterType::White },
-                    DeviceTypeRegisterConfig { .type = DeviceTypeRegisterType::Strobo },
-                    DeviceTypeRegisterConfig { .type = DeviceTypeRegisterType::Dummy }
+                    DeviceTypeRegisterConfig { .type = DeviceTypeRegisterType::Shutter },
+                    DeviceTypeRegisterConfig { .type = DeviceTypeRegisterType::Extra1 }
                 }
             },
             {
@@ -59,8 +75,8 @@ DmxController::DmxController(QObject *parent) :
                     DeviceTypeRegisterConfig { .type = DeviceTypeRegisterType::Green },
                     DeviceTypeRegisterConfig { .type = DeviceTypeRegisterType::Blue },
                     DeviceTypeRegisterConfig { .type = DeviceTypeRegisterType::White },
-                    DeviceTypeRegisterConfig { .type = DeviceTypeRegisterType::Dummy },
-                    DeviceTypeRegisterConfig { .type = DeviceTypeRegisterType::Strobo }
+                    DeviceTypeRegisterConfig { .type = DeviceTypeRegisterType::Extra1 },
+                    DeviceTypeRegisterConfig { .type = DeviceTypeRegisterType::Shutter }
                 }
             }
         },
@@ -92,19 +108,19 @@ DmxController::DmxController(QObject *parent) :
             { .id=2,  .name="Alle Grünen"  },
             { .id=3,  .name="Alle Blauen"  },
             { .id=4,  .name="Alle Weißen"  },
-            { .id=5,  .name="Alle Strobo"  },
+            { .id=5,  .name="Alle Shutter"  },
             { .id=6,  .name="2n Dimmmer"   },
             { .id=7,  .name="2n Roten"     },
             { .id=8,  .name="2n Grünen"    },
             { .id=9,  .name="2n Blauen"    },
             { .id=10, .name="2n Weißen"    },
-            { .id=11, .name="2n Strobo"    },
+            { .id=11, .name="2n Shutter"    },
             { .id=12, .name="2n+1 Dimmmer" },
             { .id=13, .name="2n+1 Roten"   },
             { .id=14, .name="2n+1 Grünen"  },
             { .id=15, .name="2n+1 Blauen"  },
             { .id=16, .name="2n+1 Weißen"  },
-            { .id=17, .name="2n+1 Strobo"  },
+            { .id=17, .name="2n+1 Shutter"  },
         }
     }
 {
@@ -152,7 +168,6 @@ bool DmxController::start()
 
 void DmxController::setChannel(int channel, int value)
 {
-    //qDebug() << channel << value;
     Q_ASSERT(channel >= 0 && channel < std::size(buf));
     buf[channel] = value;
 }
