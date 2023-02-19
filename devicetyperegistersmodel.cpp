@@ -65,7 +65,8 @@ int DeviceTypeRegistersModel::rowCount(const QModelIndex &parent) const
     if (m_deviceTypeId == -1)
         return 0;
 
-    auto deviceTypePtr = m_controller->lightProject().deviceTypes.findById(m_deviceTypeId);
+    const auto &deviceTypes = m_controller->lightProject().deviceTypes;
+    auto deviceTypePtr = deviceTypes.findById(m_deviceTypeId);
     if (!deviceTypePtr)
     {
         qWarning() << "hilfe" << __LINE__;
@@ -97,7 +98,8 @@ QVariant DeviceTypeRegistersModel::data(const QModelIndex &index, int role) cons
         return {};
     }
 
-    auto deviceTypePtr = m_controller->lightProject().deviceTypes.findById(m_deviceTypeId);
+    const auto &deviceTypes = m_controller->lightProject().deviceTypes;
+    auto deviceTypePtr = deviceTypes.findById(m_deviceTypeId);
     if (!deviceTypePtr)
     {
         qWarning() << "hilfe" << __LINE__;
@@ -153,7 +155,8 @@ QMap<int, QVariant> DeviceTypeRegistersModel::itemData(const QModelIndex &index)
         return {};
     }
 
-    auto deviceTypePtr = m_controller->lightProject().deviceTypes.findById(m_deviceTypeId);
+    const auto &deviceTypes = m_controller->lightProject().deviceTypes;
+    auto deviceTypePtr = deviceTypes.findById(m_deviceTypeId);
     if (!deviceTypePtr)
     {
         qWarning() << "hilfe" << __LINE__;
@@ -210,7 +213,8 @@ bool DeviceTypeRegistersModel::setData(const QModelIndex &index, const QVariant 
         return false;
     }
 
-    auto deviceTypePtr = m_controller->lightProject().deviceTypes.findById(m_deviceTypeId);
+    auto &deviceTypes = m_controller->lightProject().deviceTypes;
+    auto deviceTypePtr = deviceTypes.findById(m_deviceTypeId);
     if (!deviceTypePtr)
     {
         qWarning() << "hilfe" << __LINE__;
@@ -273,7 +277,8 @@ bool DeviceTypeRegistersModel::insertRows(int row, int count, const QModelIndex 
         return false;
     }
 
-    auto deviceTypePtr = m_controller->lightProject().deviceTypes.findById(m_deviceTypeId);
+    auto &deviceTypes = m_controller->lightProject().deviceTypes;
+    auto deviceTypePtr = deviceTypes.findById(m_deviceTypeId);
     if (!deviceTypePtr)
     {
         qWarning() << "hilfe" << __LINE__;
@@ -325,7 +330,8 @@ bool DeviceTypeRegistersModel::removeRows(int row, int count, const QModelIndex 
         return false;
     }
 
-    auto deviceTypePtr = m_controller->lightProject().deviceTypes.findById(m_deviceTypeId);
+    auto &deviceTypes = m_controller->lightProject().deviceTypes;
+    auto deviceTypePtr = deviceTypes.findById(m_deviceTypeId);
     if (!deviceTypePtr)
     {
         qWarning() << "hilfe" << __LINE__;
@@ -433,10 +439,10 @@ void DeviceTypeRegistersModel::otherDeviceTypeRegisterTypeChanged(const DeviceTy
 }
 
 namespace {
-void registerDenShit()
+void registrierDenShit()
 {
-    qmlRegisterType<DeviceTypeRegistersModel>("com.büro", 1, 0, "DeviceTypeRegistersModel");
+    qmlRegisterType<DeviceTypeRegistersModel>("lightcontrol", 1, 0, "DeviceTypeRegistersModel");
 }
 }
-Q_COREAPP_STARTUP_FUNCTION(registerDenShit)
+Q_COREAPP_STARTUP_FUNCTION(registrierDenShit)
 

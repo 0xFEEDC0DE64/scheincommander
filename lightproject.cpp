@@ -4,9 +4,9 @@
 #include <QQmlEngine>
 
 namespace {
-void registerDenShit()
+void registrierDenShit()
 {
-    qmlRegisterUncreatableMetaObject(hilfe::staticMetaObject, "com.büro", 1, 0, "DeviceTypeRegisterType", "lass es du depp");
+    qmlRegisterUncreatableMetaObject(hilfe::staticMetaObject, "lightcontrol", 1, 0, "DeviceTypeRegisterType", "lass es du depp");
 }
 }
-Q_COREAPP_STARTUP_FUNCTION(registerDenShit)
+Q_COREAPP_STARTUP_FUNCTION(registrierDenShit)

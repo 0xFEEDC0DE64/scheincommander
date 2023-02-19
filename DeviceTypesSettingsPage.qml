@@ -3,7 +3,7 @@ import QtQuick.Controls
 import QtQuick.Controls.Material
 import QtQuick.Layouts
 
-import com.büro 1.0
+import lightcontrol
 
 ColumnLayout {
     Label {

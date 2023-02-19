@@ -1,6 +1,6 @@
 import QtQuick
 
-import com.büro
+import lightcontrol
 
 ListModel {
     ListElement { text: qsTr('Dummy');   value: DeviceTypeRegisterType.Dummy }

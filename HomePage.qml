@@ -2,8 +2,6 @@ import QtQuick
 import QtQuick.Controls.Material
 import QtQuick.Layouts
 
-import com.büro 1.0
-
 Item {
     id: homePage
 

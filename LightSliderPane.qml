@@ -4,7 +4,7 @@ import QtQuick.Layouts
 import QtQuick.Window
 import QtQuick.VirtualKeyboard
 
-import com.büro 1.0
+import lightcontrol
 
 Pane {
     property variant light

@@ -72,8 +72,15 @@ struct LightConfig
     QVector3D position;
 };
 
+struct RegisterGroupConfig
+{
+    int id;
+    QString name;
+};
+
 struct LightProject
 {
     DeviceTypesContainer deviceTypes;
     std::vector<LightConfig> devices;
+    std::vector<RegisterGroupConfig> registerGroups;
 };

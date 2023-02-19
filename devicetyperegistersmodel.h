@@ -1,6 +1,6 @@
 #pragma once
 
-#include <QAbstractItemModel>
+#include <QAbstractListModel>
 
 #include "dmxcontroller.h"
 

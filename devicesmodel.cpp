@@ -6,10 +6,12 @@
 #include <QCoreApplication>
 #include <QQmlEngine>
 
-constexpr auto IdRole = Qt::UserRole;
-constexpr auto DeviceTypeIdRole = Qt::UserRole + 1;
-constexpr auto AddressRole = Qt::UserRole + 2;
-constexpr auto PositionRole = Qt::UserRole + 3;
+enum {
+    IdRole = Qt::UserRole,
+    DeviceTypeIdRole,
+    AddressRole,
+    PositionRole
+};
 
 void DevicesModel::setController(DmxController *controller)
 {
@@ -33,7 +35,8 @@ int DevicesModel::rowCount(const QModelIndex &parent) const
     if (!m_controller)
         return 0;
 
-    return m_controller->lightProject().devices.size();
+    const auto &devices = m_controller->lightProject().devices;
+    return devices.size();
 }
 
 QVariant DevicesModel::data(const QModelIndex &index, int role) const
@@ -291,9 +294,9 @@ bool DevicesModel::removeRows(int row, int count, const QModelIndex &parent)
 }
 
 namespace {
-void registerDenShit()
+void registrierDenShit()
 {
-    qmlRegisterType<DevicesModel>("com.büro", 1, 0, "DevicesModel");
+    qmlRegisterType<DevicesModel>("lightcontrol", 1, 0, "DevicesModel");
 }
 }
-Q_COREAPP_STARTUP_FUNCTION(registerDenShit)
+Q_COREAPP_STARTUP_FUNCTION(registrierDenShit)

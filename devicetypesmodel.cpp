@@ -53,7 +53,8 @@ int DeviceTypesModel::rowCount(const QModelIndex &parent) const
     if (!m_controller)
         return 0;
 
-    return m_controller->lightProject().deviceTypes.size();
+    const auto &deviceTypes = m_controller->lightProject().deviceTypes;
+    return deviceTypes.size();
 }
 
 QVariant DeviceTypesModel::data(const QModelIndex &index, int role) const
@@ -345,9 +346,9 @@ void DeviceTypesModel::otherDeviceTypeNameChanged(int row, const QString &name)
 }
 
 namespace {
-void registerDenShit()
+void registrierDenShit()
 {
-    qmlRegisterType<DeviceTypesModel>("com.büro", 1, 0, "DeviceTypesModel");
+    qmlRegisterType<DeviceTypesModel>("lightcontrol", 1, 0, "DeviceTypesModel");
 }
 }
-Q_COREAPP_STARTUP_FUNCTION(registerDenShit)
+Q_COREAPP_STARTUP_FUNCTION(registrierDenShit)

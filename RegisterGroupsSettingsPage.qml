@@ -3,7 +3,7 @@ import QtQuick.Controls
 import QtQuick.Controls.Material
 import QtQuick.Layouts
 
-import com.büro 1.0
+import lightcontrol
 
 ColumnLayout {
     property bool needsRegler: true
@@ -21,6 +21,10 @@ ColumnLayout {
             Layout.preferredWidth: 300
             Layout.maximumWidth: 300
             Layout.fillHeight: true
+
+            model: RegisterGroupsModel {
+                controller: __controller
+            }
         }
 
         ColumnLayout {

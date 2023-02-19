@@ -65,7 +65,7 @@ DmxController::DmxController(QObject *parent) :
             }
         },
         .devices {
-            { .id=1,  .name="Lampe 1",       .deviceTypeId=4, .address=1  },
+            { .id=0,  .name="Lampe 1",       .deviceTypeId=4, .address=1  },
             { .id=1,  .name="Lampe 2",       .deviceTypeId=4, .address=8  },
             { .id=2,  .name="Lampe 3",       .deviceTypeId=4, .address=15 },
             { .id=3,  .name="Lampe 4",       .deviceTypeId=4, .address=22 },
@@ -75,26 +75,40 @@ DmxController::DmxController(QObject *parent) :
             { .id=7,  .name="Lampe 8",       .deviceTypeId=4, .address=50 },
             { .id=8,  .name="Lampe 9",       .deviceTypeId=4, .address=57 },
             { .id=9,  .name="Lampe 10",      .deviceTypeId=4, .address=64 },
-            { .id=1,  .name="Lampe 11",      .deviceTypeId=4, .address=71 },
-            { .id=1,  .name="Lampe 12",      .deviceTypeId=4, .address=78 },
-            { .id=2,  .name="Lampe 13",      .deviceTypeId=4, .address=85 },
-            { .id=0,  .name="Test 1",        .deviceTypeId=1, .address=95 },
-            { .id=15, .name="Test 2",        .deviceTypeId=2, .address=120 },
-            { .id=11, .name="Moving Head 1", .deviceTypeId=0, .address=150 },
-            { .id=12, .name="Moving Head 2", .deviceTypeId=0, .address=160 },
-            { .id=13, .name="Moving Head 3", .deviceTypeId=0, .address=170 },
-            { .id=14, .name="Moving Head 4", .deviceTypeId=0, .address=180 },
-            { .id=0,  .name="Nebelmaschine", .deviceTypeId=3, .address=200 }
+            { .id=10, .name="Lampe 11",      .deviceTypeId=4, .address=71 },
+            { .id=11, .name="Lampe 12",      .deviceTypeId=4, .address=78 },
+            { .id=12, .name="Lampe 13",      .deviceTypeId=4, .address=85 },
+            { .id=13, .name="Test 1",        .deviceTypeId=1, .address=95 },
+            { .id=14, .name="Test 2",        .deviceTypeId=2, .address=120 },
+            { .id=15, .name="Moving Head 1", .deviceTypeId=0, .address=150 },
+            { .id=16, .name="Moving Head 2", .deviceTypeId=0, .address=160 },
+            { .id=17, .name="Moving Head 3", .deviceTypeId=0, .address=170 },
+            { .id=18, .name="Moving Head 4", .deviceTypeId=0, .address=180 },
+            { .id=19, .name="Nebelmaschine", .deviceTypeId=3, .address=200 }
+        },
+        .registerGroups {
+            { .id=0,  .name="Alle Dimmmer" },
+            { .id=1,  .name="Alle Roten"   },
+            { .id=2,  .name="Alle Grünen"  },
+            { .id=3,  .name="Alle Blauen"  },
+            { .id=4,  .name="Alle Weißen"  },
+            { .id=5,  .name="Alle Strobo"  },
+            { .id=6,  .name="2n Dimmmer"   },
+            { .id=7,  .name="2n Roten"     },
+            { .id=8,  .name="2n Grünen"    },
+            { .id=9,  .name="2n Blauen"    },
+            { .id=10, .name="2n Weißen"    },
+            { .id=11, .name="2n Strobo"    },
+            { .id=12, .name="2n+1 Dimmmer" },
+            { .id=13, .name="2n+1 Roten"   },
+            { .id=14, .name="2n+1 Grünen"  },
+            { .id=15, .name="2n+1 Blauen"  },
+            { .id=16, .name="2n+1 Weißen"  },
+            { .id=17, .name="2n+1 Strobo"  },
         }
     }
 {
     std::fill(std::begin(buf), std::end(buf), 0);
-
-    buf[32] = 255;
-    buf[33] = 255;
-    buf[34] = 0;
-    buf[35] = 0;
-//    buf[36] = 255;
 }
 
 bool DmxController::start()
