@@ -30,6 +30,7 @@ qt_add_qml_module(applightcontrol
         icons/movinghead.png
         icons/nebelmaschine.png
         icons/rgbstrahler.png
+        ui-icons/MaterialIcons-Regular.ttf
     QML_FILES
         main.qml
         HomePage.qml

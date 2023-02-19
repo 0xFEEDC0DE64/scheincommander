@@ -17,7 +17,9 @@ ColumnLayout {
         Layout.fillWidth: true
 
         Button {
-            text: qsTr("Add")
+            text: "\ue145"
+            font.family: materialIcons.font.family
+            font.pixelSize: 20
 
             onClicked: addClicked(listView.currentIndex)
         }
@@ -27,7 +29,9 @@ ColumnLayout {
         }
 
         Button {
-            text: qsTr("Remove")
+            text: "\ue872"
+            font.family: materialIcons.font.family
+            font.pixelSize: 20
 
             onClicked: removeClicked(listView.currentIndex)
             enabled: listView.currentIndex >= 0

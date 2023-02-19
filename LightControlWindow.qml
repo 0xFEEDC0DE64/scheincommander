@@ -12,6 +12,11 @@ ApplicationWindow {
     Material.theme: Material.Dark
     Material.accent: Material.Purple
 
+    FontLoader {
+        id: materialIcons
+        source: "qrc:/lightcontrol/ui-icons/MaterialIcons-Regular.ttf"
+    }
+
     ColumnLayout {
         anchors.left: parent.left
         anchors.top: parent.top
