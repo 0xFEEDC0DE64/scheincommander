@@ -173,6 +173,89 @@ bool RegisterGroupsModel::setData(const QModelIndex &index, const QVariant &valu
     }
 }
 
+bool RegisterGroupsModel::insertRows(int row, int count, const QModelIndex &parent)
+{
+    if (parent.isValid())
+    {
+        qWarning() << "hilfe" << __LINE__;
+        return false;
+    }
+
+    if (!m_controller)
+    {
+        qWarning() << "hilfe" << __LINE__;
+        return false;
+    }
+
+    auto &devices = m_controller->lightProject().devices;
+
+    if (row < 0)
+    {
+        qWarning() << "hilfe" << __LINE__;
+        return false;
+    }
+
+    if (row > devices.size())
+    {
+        qWarning() << "hilfe" << __LINE__;
+        return false;
+    }
+
+    auto max_iter = std::max_element(std::cbegin(devices), std::cend(devices), [](const auto &l, const auto &r){ return l.id < r.id; });
+    auto id = max_iter != std::cend(devices) ? max_iter->id + 1 : 0;
+
+    beginInsertRows({}, row, row+count-1);
+    auto iter = std::begin(devices) + row;
+    for (auto i = 0; i < count; i++)
+        iter = devices.insert(iter, LightConfig{ .id=id++, .name="<neu>", .deviceTypeId=0, .address=0, .position={} }) + 1;
+    endInsertRows();
+
+    return true;
+}
+
+bool RegisterGroupsModel::removeRows(int row, int count, const QModelIndex &parent)
+{
+    if (parent.isValid())
+    {
+        qWarning() << "hilfe" << __LINE__;
+        return false;
+    }
+
+    if (!m_controller)
+    {
+        qWarning() << "hilfe" << __LINE__;
+        return false;
+    }
+
+    auto &devices = m_controller->lightProject().devices;
+
+    if (row < 0)
+    {
+        qWarning() << "hilfe" << __LINE__;
+        return false;
+    }
+
+    if (row >= devices.size())
+    {
+        qWarning() << "hilfe" << __LINE__;
+        return false;
+    }
+
+    if (row + count > devices.size())
+    {
+        qWarning() << "hilfe" << __LINE__;
+        return false;
+    }
+
+    beginRemoveRows({}, row, row+count-1);
+    auto begin = std::begin(devices) + row;
+    auto end = begin + count;
+    devices.erase(begin, end);
+    endRemoveRows();
+
+    return true;
+}
+
 namespace {
 void registrierDenShit()
 {

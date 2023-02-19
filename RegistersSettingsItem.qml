@@ -5,12 +5,12 @@ import QtQuick.Layouts
 import lightcontrol
 
 Pane {
-    property alias deviceTypeId: deviceTypeRegistersModel.deviceTypeId
+    property alias deviceTypeId: model.deviceTypeId
 
     Material.elevation: 6
 
     DeviceTypeRegistersModel {
-        id: deviceTypeRegistersModel
+        id: model
         controller: __controller
     }
 
@@ -29,10 +29,10 @@ Pane {
 
                 textRole: 'registerTypeName'
 
-                model: deviceTypeRegistersModel
+                model: model
 
-                onAddClicked: (index) => { const newIndex = index < 0 ? 0 : index + 1; if (deviceTypeRegistersModel.insertRow(newIndex)) currentIndex = newIndex; else console.warn('failed'); }
-                onRemoveClicked: (index) => deviceTypeRegistersModel.removeRow(index)
+                onAddClicked: (index) => { const newIndex = index < 0 ? 0 : index + 1; if (model.insertRow(newIndex)) currentIndex = newIndex; else console.warn('failed'); }
+                onRemoveClicked: (index) => model.removeRow(index)
             }
         }
 

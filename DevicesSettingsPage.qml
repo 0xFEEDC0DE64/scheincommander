@@ -21,9 +21,12 @@ ColumnLayout {
             Layout.maximumWidth: 300
             Layout.fillHeight: true
 
-            model: devicesModel
+            model: DevicesModel {
+                id: model
+                controller: __controller
+            }
 
-            onAddClicked: (index) => { const newIndex = index < 0 ? 0 : index + 1; if (devicesModel.insertRow(newIndex)) currentIndex = newIndex; else console.warn('failed'); }
+            onAddClicked: (index) => { const newIndex = index < 0 ? 0 : index + 1; if (model.insertRow(newIndex)) currentIndex = newIndex; else console.warn('failed'); }
             onRemoveClicked: (index) => {
                 const dialog = dialogComponent.createObject(Overlay.overlay);
                 dialog.index = index;
@@ -43,7 +46,7 @@ ColumnLayout {
                     modal: true
                     title: qsTr('Confirmation')
 
-                    onAccepted: devicesModel.removeRow(index)
+                    onAccepted: model.removeRow(index)
 
                     Label {
                         id: textContainer

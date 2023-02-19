@@ -46,6 +46,9 @@ qt_add_qml_module(applightcontrol
         IconComboBox.qml
         IconsModel.qml
         DeviceTypeRegisterTypesModel.qml
+        LampRegistersPanel.qml
+        AnimatedInputPanel.qml
+        AnimatedStackView.qml
 )
 
 set_target_properties(applightcontrol PROPERTIES

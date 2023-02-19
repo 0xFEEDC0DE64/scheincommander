@@ -2,9 +2,6 @@ import QtQuick
 import QtQuick.Controls.Material
 import QtQuick.Layouts
 import QtQuick.Window
-import QtQuick.VirtualKeyboard
-
-import lightcontrol
 
 ApplicationWindow {
     id: window
@@ -22,11 +19,6 @@ ApplicationWindow {
     property int masterWhite
     property int masterStrobo
 
-    DevicesModel {
-        id: devicesModel
-        controller: __controller
-    }
-
     ColumnLayout {
         anchors.left: parent.left
         anchors.top: parent.top
@@ -38,124 +30,27 @@ ApplicationWindow {
             Layout.preferredHeight: 75
         }
 
-        StackView {
+        AnimatedStackView {
             id: stackview
             Layout.fillWidth: true
             Layout.fillHeight: true
 
-            initialItem: homePage
-
-            Component {
-                id: homePage
-
+            initialItem: Component {
                 HomePage {
-                }
-            }
-
-            pushEnter: Transition {
-                PropertyAnimation {
-                    property: "opacity"
-                    from: 0
-                    to:1
-                    duration: 200
-                }
-            }
-            pushExit: Transition {
-                PropertyAnimation {
-                    property: "opacity"
-                    from: 1
-                    to:0
-                    duration: 200
-                }
-            }
-            popEnter: Transition {
-                PropertyAnimation {
-                    property: "opacity"
-                    from: 0
-                    to:1
-                    duration: 200
-                }
-            }
-            popExit: Transition {
-                PropertyAnimation {
-                    property: "opacity"
-                    from: 1
-                    to:0
-                    duration: 200
                 }
             }
         }
     }
 
-    Flickable {
+    LampRegistersPanel {
         id: lampRegistersPanel
-
         z: 98
         x: 0
         height: 300
         y: window.height - height
         width: window.width
-        property bool active: typeof stackview.currentItem.needsRegler == 'boolean' ? stackview.currentItem.needsRegler : false
 
-        states: State {
-            name: "invisible"
-            when: !lampRegistersPanel.active
-            PropertyChanges {
-                target: lampRegistersPanel
-                y: window.height
-            }
-        }
-        transitions: [
-            Transition {
-                from: "invisible"
-                to: ""
-                reversible: false
-                ParallelAnimation {
-                    NumberAnimation {
-                        properties: "y"
-                        duration: 1000
-                        easing.type: Easing.OutBounce
-                    }
-                }
-            },
-            Transition {
-                from: ""
-                to: "invisible"
-                reversible: false
-                ParallelAnimation {
-                    NumberAnimation {
-                        properties: "y"
-                        duration: 1000
-                        easing.type: Easing.OutBounce
-                    }
-                }
-            }
-        ]
-
-        contentWidth: theFlow.width
-        contentHeight: theFlow.height
-
-        flickableDirection: Flickable.HorizontalFlick
-
-        RowLayout {
-            id: theFlow
-
-            height: parent.height
-
-            spacing: 5
-
-            Repeater {
-                model: devicesModel
-
-                delegate: LightSliderPane {
-                    light: model
-
-                    //Layout.fillHeight: true
-
-                    height: theFlow.height
-                }
-            }
-        }
+        active: typeof stackview.currentItem.needsRegler == 'boolean' ? stackview.currentItem.needsRegler : false
     }
 
     Button {
@@ -175,46 +70,12 @@ ApplicationWindow {
         focus: false
     }
 
-    InputPanel {
+    AnimatedInputPanel {
         id: inputPanel
+
         z: 99
         x: 0
         y: window.height
         width: window.width
-
-        states: State {
-            name: "visible"
-            when: inputPanel.active
-            PropertyChanges {
-                target: inputPanel
-                y: window.height - inputPanel.height
-            }
-        }
-        transitions: [
-            Transition {
-                from: "visible"
-                to: ""
-                reversible: false
-                ParallelAnimation {
-                    NumberAnimation {
-                        properties: "y"
-                        duration: 1000
-                        easing.type: Easing.OutBounce
-                    }
-                }
-            },
-            Transition {
-                from: ""
-                to: "visible"
-                reversible: false
-                ParallelAnimation {
-                    NumberAnimation {
-                        properties: "y"
-                        duration: 1000
-                        easing.type: Easing.OutBounce
-                    }
-                }
-            }
-        ]
     }
 }
