@@ -264,20 +264,20 @@ bool DeviceTypeRegistersModel::insertRows(int row, int count, const QModelIndex 
     if (!m_controller)
     {
         qWarning() << "hilfe" << __LINE__;
-        return true;
+        return false;
     }
 
     if (m_deviceTypeId == -1)
     {
         qWarning() << "hilfe" << __LINE__;
-        return true;
+        return false;
     }
 
     auto deviceTypePtr = m_controller->lightProject().deviceTypes.findById(m_deviceTypeId);
     if (!deviceTypePtr)
     {
         qWarning() << "hilfe" << __LINE__;
-        return true;
+        return false;
     }
 
     auto &deviceType = *deviceTypePtr;
@@ -285,14 +285,14 @@ bool DeviceTypeRegistersModel::insertRows(int row, int count, const QModelIndex 
     if (row < 0)
     {
         qWarning() << "hilfe" << __LINE__;
-        return true;
+        return false;
     }
 
     auto &registers = deviceType.registers;
 
     beginInsertRows({}, row, row+count-1);
     auto iter = std::begin(registers) + row;
-    for (; count > 0; count--)
+    for (auto i = 0; i < count; i++)
         iter = registers.insert(iter, DeviceTypeRegisterConfig{ .type = DeviceTypeRegisterType::Dummy }) + 1;
     endInsertRows();
 
@@ -316,20 +316,20 @@ bool DeviceTypeRegistersModel::removeRows(int row, int count, const QModelIndex 
     if (!m_controller)
     {
         qWarning() << "hilfe" << __LINE__;
-        return true;
+        return false;
     }
 
     if (m_deviceTypeId == -1)
     {
         qWarning() << "hilfe" << __LINE__;
-        return true;
+        return false;
     }
 
     auto deviceTypePtr = m_controller->lightProject().deviceTypes.findById(m_deviceTypeId);
     if (!deviceTypePtr)
     {
         qWarning() << "hilfe" << __LINE__;
-        return true;
+        return false;
     }
 
     auto &deviceType = *deviceTypePtr;
@@ -337,7 +337,7 @@ bool DeviceTypeRegistersModel::removeRows(int row, int count, const QModelIndex 
     if (row < 0)
     {
         qWarning() << "hilfe" << __LINE__;
-        return true;
+        return false;
     }
 
     auto &registers = deviceType.registers;
@@ -345,13 +345,13 @@ bool DeviceTypeRegistersModel::removeRows(int row, int count, const QModelIndex 
     if (row >= registers.size())
     {
         qWarning() << "hilfe" << __LINE__;
-        return true;
+        return false;
     }
 
     if (row + count > registers.size())
     {
         qWarning() << "hilfe" << __LINE__;
-        return true;
+        return false;
     }
 
     beginRemoveRows({}, row, row+count-1);
@@ -371,17 +371,65 @@ bool DeviceTypeRegistersModel::removeRows(int row, int count, const QModelIndex 
 
 void DeviceTypeRegistersModel::otherDeviceTypeRegisterInserted(const DeviceTypeConfig &deviceType, int first, int last)
 {
-    // TODO
+    if (!m_controller)
+    {
+        qWarning() << "hilfe" << __LINE__;
+        return;
+    }
+
+    if (m_deviceTypeId == -1)
+    {
+        qWarning() << "hilfe" << __LINE__;
+        return;
+    }
+
+    if (m_deviceTypeId != deviceType.id)
+        return;
+
+    beginInsertRows({}, first, last);
+    endInsertRows();
 }
 
 void DeviceTypeRegistersModel::otherDeviceTypeRegisterRemoved(const DeviceTypeConfig &deviceType, int first, int last)
 {
-    // TODO
+    if (!m_controller)
+    {
+        qWarning() << "hilfe" << __LINE__;
+        return;
+    }
+
+    if (m_deviceTypeId == -1)
+    {
+        qWarning() << "hilfe" << __LINE__;
+        return;
+    }
+
+    if (m_deviceTypeId != deviceType.id)
+        return;
+
+    beginRemoveRows({}, first, last);
+    endRemoveRows();
 }
 
-void DeviceTypeRegistersModel::otherDeviceTypeRegisterTypeChanged(const DeviceTypeConfig &deviceType, int index, DeviceTypeRegisterType type)
+void DeviceTypeRegistersModel::otherDeviceTypeRegisterTypeChanged(const DeviceTypeConfig &deviceType, int row, DeviceTypeRegisterType type)
 {
-    // TODO
+    if (!m_controller)
+    {
+        qWarning() << "hilfe" << __LINE__;
+        return;
+    }
+
+    if (m_deviceTypeId == -1)
+    {
+        qWarning() << "hilfe" << __LINE__;
+        return;
+    }
+
+    if (m_deviceTypeId != deviceType.id)
+        return;
+
+    const auto index = this->index(row);
+    emit dataChanged(index, index, { Qt::DisplayRole, Qt::EditRole });
 }
 
 namespace {
