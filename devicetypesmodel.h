@@ -32,6 +32,7 @@ private slots:
     void otherDeviceTypeInserted(int first, int last);
     void otherDeviceTypeRemoved(int first, int last);
     void otherDeviceTypeNameChanged(int row, const QString &name);
+    void otherDeviceTypeIconNameChanged(int row, const QString &name);
 
 private:
     DmxController *m_controller{};

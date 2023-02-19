@@ -19,7 +19,41 @@ void DevicesModel::setController(DmxController *controller)
         return;
 
     beginResetModel();
+
+    if (m_controller)
+    {
+        disconnect(m_controller, &DmxController::deviceInserted,
+                   this, &DevicesModel::otherDeviceInserted);
+        disconnect(m_controller, &DmxController::deviceRemoved,
+                   this, &DevicesModel::otherDeviceRemoved);
+        disconnect(m_controller, &DmxController::deviceNameChanged,
+                   this, &DevicesModel::otherDeviceNameChanged);
+        disconnect(m_controller, &DmxController::deviceDeviceTypeIdChanged,
+                   this, &DevicesModel::otherDeviceDeviceTypeIdChanged);
+        disconnect(m_controller, &DmxController::deviceAddressChanged,
+                   this, &DevicesModel::otherDeviceAddressChanged);
+        disconnect(m_controller, &DmxController::devicePositionChanged,
+                   this, &DevicesModel::otherDevicePositionChanged);
+    }
+
     m_controller = controller;
+
+    if (m_controller)
+    {
+        connect(m_controller, &DmxController::deviceInserted,
+                this, &DevicesModel::otherDeviceInserted);
+        connect(m_controller, &DmxController::deviceRemoved,
+                this, &DevicesModel::otherDeviceRemoved);
+        connect(m_controller, &DmxController::deviceNameChanged,
+                this, &DevicesModel::otherDeviceNameChanged);
+        connect(m_controller, &DmxController::deviceDeviceTypeIdChanged,
+                this, &DevicesModel::otherDeviceDeviceTypeIdChanged);
+        connect(m_controller, &DmxController::deviceAddressChanged,
+                this, &DevicesModel::otherDeviceAddressChanged);
+        connect(m_controller, &DmxController::devicePositionChanged,
+                this, &DevicesModel::otherDevicePositionChanged);
+    }
+
     endResetModel();
     emit controllerChanged(m_controller);
 }
@@ -168,6 +202,13 @@ bool DevicesModel::setData(const QModelIndex &index, const QVariant &value, int 
         }
         device.name = value.toString();
         emit dataChanged(index, index, { Qt::DisplayRole, Qt::EditRole });
+
+        disconnect(m_controller, &DmxController::deviceNameChanged,
+                   this, &DevicesModel::otherDeviceNameChanged);
+        emit m_controller->deviceNameChanged(index.row(), device.name);
+        connect(m_controller, &DmxController::deviceNameChanged,
+                this, &DevicesModel::otherDeviceNameChanged);
+
         return true;
     case IdRole:
         if (value.userType() != QMetaType::Int)
@@ -186,6 +227,13 @@ bool DevicesModel::setData(const QModelIndex &index, const QVariant &value, int 
         }
         device.deviceTypeId = value.toInt();
         emit dataChanged(index, index, { DeviceTypeIdRole });
+
+        disconnect(m_controller, &DmxController::deviceDeviceTypeIdChanged,
+                   this, &DevicesModel::otherDeviceDeviceTypeIdChanged);
+        emit m_controller->deviceDeviceTypeIdChanged(index.row(), device.deviceTypeId);
+        connect(m_controller, &DmxController::deviceDeviceTypeIdChanged,
+                this, &DevicesModel::otherDeviceDeviceTypeIdChanged);
+
         return true;
     case AddressRole:
         if (value.userType() != QMetaType::Int)
@@ -195,6 +243,13 @@ bool DevicesModel::setData(const QModelIndex &index, const QVariant &value, int 
         }
         device.address = value.toInt();
         emit dataChanged(index, index, { AddressRole });
+
+        disconnect(m_controller, &DmxController::deviceAddressChanged,
+                   this, &DevicesModel::otherDeviceAddressChanged);
+        emit m_controller->deviceAddressChanged(index.row(), device.address);
+        connect(m_controller, &DmxController::deviceAddressChanged,
+                this, &DevicesModel::otherDeviceAddressChanged);
+
         return true;
     case PositionRole:
         if (value.userType() != QMetaType::QVector3D)
@@ -204,6 +259,13 @@ bool DevicesModel::setData(const QModelIndex &index, const QVariant &value, int 
         }
         device.position = value.value<QVector3D>();
         emit dataChanged(index, index, { PositionRole });
+
+        disconnect(m_controller, &DmxController::devicePositionChanged,
+                   this, &DevicesModel::otherDevicePositionChanged);
+        emit m_controller->devicePositionChanged(index.row(), device.position);
+        connect(m_controller, &DmxController::devicePositionChanged,
+                this, &DevicesModel::otherDevicePositionChanged);
+
         return true;
     default:
         qWarning() << "hilfe" << __LINE__;
@@ -244,9 +306,15 @@ bool DevicesModel::insertRows(int row, int count, const QModelIndex &parent)
 
     beginInsertRows({}, row, row+count-1);
     auto iter = std::begin(devices) + row;
-    for (; count > 0; count--)
+    for (auto i = 0; i < count; i++)
         iter = devices.insert(iter, LightConfig{ .id=id++, .name="<neu>", .deviceTypeId=0, .address=0, .position={} }) + 1;
     endInsertRows();
+
+    disconnect(m_controller, &DmxController::deviceInserted,
+               this, &DevicesModel::otherDeviceInserted);
+    emit m_controller->deviceInserted(row, row+count-1);
+    connect(m_controller, &DmxController::deviceInserted,
+            this, &DevicesModel::otherDeviceInserted);
 
     return true;
 }
@@ -291,7 +359,85 @@ bool DevicesModel::removeRows(int row, int count, const QModelIndex &parent)
     devices.erase(begin, end);
     endRemoveRows();
 
+    disconnect(m_controller, &DmxController::deviceRemoved,
+               this, &DevicesModel::otherDeviceRemoved);
+    emit m_controller->deviceRemoved(row, row+count-1);
+    connect(m_controller, &DmxController::deviceRemoved,
+            this, &DevicesModel::otherDeviceRemoved);
+
     return true;
+}
+
+void DevicesModel::otherDeviceInserted(int first, int last)
+{
+    if (!m_controller)
+    {
+        qWarning() << "hilfe" << __LINE__;
+        return;
+    }
+
+    beginInsertRows({}, first, last);
+    endInsertRows();
+}
+
+void DevicesModel::otherDeviceRemoved(int first, int last)
+{
+    if (!m_controller)
+    {
+        qWarning() << "hilfe" << __LINE__;
+        return;
+    }
+
+    beginRemoveRows({}, first, last);
+    endRemoveRows();
+}
+
+void DevicesModel::otherDeviceNameChanged(int row, const QString &name)
+{
+    if (!m_controller)
+    {
+        qWarning() << "hilfe" << __LINE__;
+        return;
+    }
+
+    const auto index = this->index(row);
+    emit dataChanged(index, index, { Qt::DisplayRole, Qt::EditRole });
+}
+
+void DevicesModel::otherDeviceDeviceTypeIdChanged(int row, int deviceTypeId)
+{
+    if (!m_controller)
+    {
+        qWarning() << "hilfe" << __LINE__;
+        return;
+    }
+
+    const auto index = this->index(row);
+    emit dataChanged(index, index, { DeviceTypeIdRole });
+}
+
+void DevicesModel::otherDeviceAddressChanged(int row, int address)
+{
+    if (!m_controller)
+    {
+        qWarning() << "hilfe" << __LINE__;
+        return;
+    }
+
+    const auto index = this->index(row);
+    emit dataChanged(index, index, { AddressRole });
+}
+
+void DevicesModel::otherDevicePositionChanged(int row, const QVector3D &position)
+{
+    if (!m_controller)
+    {
+        qWarning() << "hilfe" << __LINE__;
+        return;
+    }
+
+    const auto index = this->index(row);
+    emit dataChanged(index, index, { PositionRole });
 }
 
 namespace {

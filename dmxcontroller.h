@@ -39,6 +39,13 @@ signals:
     void deviceTypeRegisterRemoved(const DeviceTypeConfig &deviceType, int first, int last);
     void deviceTypeRegisterTypeChanged(const DeviceTypeConfig &deviceType, int index, DeviceTypeRegisterType type);
 
+    void deviceInserted(int first, int last);
+    void deviceRemoved(int first, int last);
+    void deviceNameChanged(int index, const QString &name);
+    void deviceDeviceTypeIdChanged(int index, int deviceTypeId);
+    void deviceAddressChanged(int index, int address);
+    void devicePositionChanged(int index, const QVector3D &position);
+
 protected:
     friend class DmxControllerThread;
 

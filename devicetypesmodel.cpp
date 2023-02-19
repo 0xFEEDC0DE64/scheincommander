@@ -24,6 +24,8 @@ void DeviceTypesModel::setController(DmxController *controller)
                    this, &DeviceTypesModel::otherDeviceTypeRemoved);
         disconnect(m_controller, &DmxController::deviceTypeNameChanged,
                    this, &DeviceTypesModel::otherDeviceTypeNameChanged);
+        disconnect(m_controller, &DmxController::deviceTypeIconNameChanged,
+                   this, &DeviceTypesModel::otherDeviceTypeIconNameChanged);
     }
 
     m_controller = controller;
@@ -36,6 +38,8 @@ void DeviceTypesModel::setController(DmxController *controller)
                 this, &DeviceTypesModel::otherDeviceTypeRemoved);
         connect(m_controller, &DmxController::deviceTypeNameChanged,
                 this, &DeviceTypesModel::otherDeviceTypeNameChanged);
+        connect(m_controller, &DmxController::deviceTypeIconNameChanged,
+                this, &DeviceTypesModel::otherDeviceTypeIconNameChanged);
     }
 
     endResetModel();
@@ -208,6 +212,13 @@ bool DeviceTypesModel::setData(const QModelIndex &index, const QVariant &value, 
         }
         deviceType.iconName = value.toString();
         emit dataChanged(index, index, { IconNameRole });
+
+        disconnect(m_controller, &DmxController::deviceTypeIconNameChanged,
+                   this, &DeviceTypesModel::otherDeviceTypeIconNameChanged);
+        emit m_controller->deviceTypeIconNameChanged(index.row(), deviceType.iconName);
+        connect(m_controller, &DmxController::deviceTypeIconNameChanged,
+                this, &DeviceTypesModel::otherDeviceTypeIconNameChanged);
+
         return true;
     default:
         qWarning() << "hilfe" << __LINE__;
@@ -248,7 +259,7 @@ bool DeviceTypesModel::insertRows(int row, int count, const QModelIndex &parent)
 
     beginInsertRows({}, row, row+count-1);
     auto iter = std::begin(deviceTypes) + row;
-    for (; count > 0; count--)
+    for (auto i = 0; i < count; i++)
         iter = deviceTypes.insert(iter, DeviceTypeConfig{ .id=id++, .name="<neu>" }) + 1;
     endInsertRows();
 
@@ -344,6 +355,18 @@ void DeviceTypesModel::otherDeviceTypeNameChanged(int row, const QString &name)
 
     const auto index = this->index(row);
     emit dataChanged(index, index, { Qt::DisplayRole, Qt::EditRole });
+}
+
+void DeviceTypesModel::otherDeviceTypeIconNameChanged(int row, const QString &name)
+{
+    if (!m_controller)
+    {
+        qWarning() << "hilfe" << __LINE__;
+        return;
+    }
+
+    const auto index = this->index(row);
+    emit dataChanged(index, index, { IconNameRole });
 }
 
 namespace {

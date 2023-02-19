@@ -28,6 +28,14 @@ public:
 signals:
     void controllerChanged(DmxController *controller);
 
+private slots:
+    void otherDeviceInserted(int first, int last);
+    void otherDeviceRemoved(int first, int last);
+    void otherDeviceNameChanged(int row, const QString &name);
+    void otherDeviceDeviceTypeIdChanged(int row, int deviceTypeId);
+    void otherDeviceAddressChanged(int row, int address);
+    void otherDevicePositionChanged(int row, const QVector3D &position);
+
 private:
     DmxController *m_controller{};
 };
