@@ -52,7 +52,8 @@ Pane {
                 }
                 ComboBox {
                     id: comboBox
-                    model: deviceTypeRegisterTypesModel
+                    model: DeviceTypeRegisterTypesModel {
+                    }
                     textRole: "text"
                     valueRole: "value"
 

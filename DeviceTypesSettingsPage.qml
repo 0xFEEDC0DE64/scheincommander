@@ -2,17 +2,10 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Controls.Material
 import QtQuick.Layouts
-import Qt.labs.folderlistmodel 2.4
 
 import com.büro 1.0
 
 ColumnLayout {
-    FolderListModel {
-        id: iconsModel
-        folder: "qrc:/lightcontrol/icons/"
-        showDirs: false
-    }
-
     Label {
         text: qsTr("Device Types Settings")
     }
@@ -99,7 +92,9 @@ ColumnLayout {
                     valueRole: "fileBaseName"
                     iconSourceRole: "fileUrl"
 
-                    model: iconsModel
+                    model: IconsModel {
+                        id: iconsModel
+                    }
 
                     currentIndex: listView.currentData ? iconComboBox.indexOfValue(listView.currentData.iconName) : -1
                     Component.onCompleted: {
@@ -108,10 +103,7 @@ ColumnLayout {
                         });
                     }
 
-                    onActivated: {
-                        console.log(currentValue);
-                        if (listView.currentData) listView.currentData.iconName = currentValue; else console.warn('discarded');
-                    }
+                    onActivated: if (listView.currentData) listView.currentData.iconName = currentValue; else console.warn('discarded');
                 }
                 Label { text: qsTr("Registers:") }
                 RegistersSettingsItem {

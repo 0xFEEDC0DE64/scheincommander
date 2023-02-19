@@ -42,6 +42,8 @@ qt_add_qml_module(applightcontrol
         RegisterGroupsSettingsPage.qml
         RegistersSettingsItem.qml
         IconComboBox.qml
+        IconsModel.qml
+        DeviceTypeRegisterTypesModel.qml
 )
 
 set_target_properties(applightcontrol PROPERTIES

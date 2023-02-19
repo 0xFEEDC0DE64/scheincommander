@@ -27,20 +27,11 @@ ApplicationWindow {
         controller: __controller
     }
 
-    ListModel {
-        id: deviceTypeRegisterTypesModel
-        ListElement { text: qsTr('Dummy');  value: DeviceTypeRegisterType.Dummy }
-        ListElement { text: qsTr('Dimmer');  value: DeviceTypeRegisterType.Dimmer }
-        ListElement { text: qsTr('Red');     value: DeviceTypeRegisterType.Red }
-        ListElement { text: qsTr('Green');   value: DeviceTypeRegisterType.Green }
-        ListElement { text: qsTr('Blue');    value: DeviceTypeRegisterType.Blue }
-        ListElement { text: qsTr('White');   value: DeviceTypeRegisterType.White }
-        ListElement { text: qsTr('Strobo');  value: DeviceTypeRegisterType.Strobo }
-        ListElement { text: qsTr('Shutter'); value: DeviceTypeRegisterType.Shutter }
-    }
-
     ColumnLayout {
-        anchors.fill: parent
+        anchors.left: parent.left
+        anchors.top: parent.top
+        anchors.right: parent.right
+        anchors.bottom: lampRegistersPanel.top
 
         StatusBar {
             Layout.fillWidth: true
@@ -97,7 +88,7 @@ ApplicationWindow {
     }
 
     Flickable {
-        id: test
+        id: lampRegistersPanel
 
         z: 98
         x: 0
@@ -108,9 +99,9 @@ ApplicationWindow {
 
         states: State {
             name: "invisible"
-            when: !test.active
+            when: !lampRegistersPanel.active
             PropertyChanges {
-                target: test
+                target: lampRegistersPanel
                 y: window.height
             }
         }
