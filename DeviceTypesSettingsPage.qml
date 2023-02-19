@@ -99,6 +99,12 @@ ColumnLayout {
                     model: iconsModel
 
                     currentIndex: listView.currentData ? iconComboBox.indexOfValue(listView.currentData.iconName) : -1
+                    Component.onCompleted: {
+                        iconsModel.onRowCountChanged.connect(function(){
+                            currentIndex = Qt.binding(function() { return listView.currentData ? iconComboBox.indexOfValue(listView.currentData.iconName) : -1});
+                        });
+                    }
+
                     onActivated: {
                         console.log(currentValue);
                         if (listView.currentData) listView.currentData.iconName = currentValue; else console.warn('discarded');
