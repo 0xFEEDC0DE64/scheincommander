@@ -16,7 +16,11 @@ RowLayout {
         fillMode: Image.PreserveAspectFit
     }
     Label {
+        Layout.preferredHeight: layout.height
         text: layout.text
+        verticalAlignment: Label.AlignVCenter
+        fontSizeMode: Text.VerticalFit
+        font.pixelSize: 20
     }
     Item {
         Layout.fillWidth: true

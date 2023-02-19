@@ -51,24 +51,16 @@ ColumnLayout {
             width: listView.width
             height: 45
 
-            Rectangle {
+            ItemDelegate {
                 anchors.fill: parent
-
-                color: isCurrentItem ?
-                           Material.color(Material.Purple) :
-                           Material.background
-                radius: 0
-
-                Label {
+                contentItem: IconChooserDelegateLayout {
                     anchors.fill: parent
-                    //anchors.verticalCenter: parent.verticalCenter
-                    id: text
                     text: model[textRole]
-                    padding: 10
-                    fontSizeMode: Text.VerticalFit
-                    minimumPixelSize: 10;
-                    font.pixelSize: 72
+                    // TODO
+                    //iconSource: comboBox.getIconUrl(index)
                 }
+                onClicked: listView.currentIndex = index
+                down: listView.currentIndex === index
             }
 
             Rectangle {
@@ -78,11 +70,6 @@ ColumnLayout {
                 anchors.right: parent.right
                 anchors.bottom: parent.bottom
                 visible: index !== (listView.count - 1)
-            }
-
-            MouseArea {
-                anchors.fill: parent
-                onClicked: listView.currentIndex = index
             }
         }
         focus: true
