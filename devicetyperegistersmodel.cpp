@@ -250,7 +250,6 @@ bool DeviceTypeRegistersModel::setData(const QModelIndex &index, const QVariant 
                 this, &DeviceTypeRegistersModel::otherDeviceTypeRegisterTypeChanged);
 
         return true;
-
     default:
         qWarning() << "hilfe" << __LINE__;
         return false;

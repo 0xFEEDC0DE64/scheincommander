@@ -209,9 +209,10 @@ bool DeviceTypesModel::setData(const QModelIndex &index, const QVariant &value, 
         deviceType.iconName = value.toString();
         emit dataChanged(index, index, { IconNameRole });
         return true;
+    default:
+        qWarning() << "hilfe" << __LINE__;
+        return false;
     }
-
-    return false;
 }
 
 bool DeviceTypesModel::insertRows(int row, int count, const QModelIndex &parent)

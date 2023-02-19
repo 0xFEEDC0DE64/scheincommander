@@ -40,6 +40,14 @@ ColumnLayout {
                 SpinBox {
                     enabled: false
                     Layout.fillWidth: true
+                    value: listView.currentData ? listView.currentData.id : -1
+                    onValueModified: if (listView.currentData) listView.currentData.id = value; else console.warn('discarded');
+                }
+                Label { text: qsTr("Name:") }
+                TextField {
+                    Layout.fillWidth: true
+                    text: listView.currentData ? listView.currentData.name : ''
+                    onTextEdited: if (listView.currentData) listView.currentData.name = text; else console.warn('discarded');
                 }
             }
             Item {

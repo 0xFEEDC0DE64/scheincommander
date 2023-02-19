@@ -118,6 +118,61 @@ QHash<int, QByteArray> RegisterGroupsModel::roleNames() const
     };
 }
 
+bool RegisterGroupsModel::setData(const QModelIndex &index, const QVariant &value, int role)
+{
+    if (!index.isValid())
+    {
+        qWarning() << "hilfe" << __LINE__;
+        return false;
+    }
+
+    if (!m_controller)
+    {
+        qWarning() << "hilfe" << __LINE__;
+        return false;
+    }
+
+    auto &registerGroups = m_controller->lightProject().registerGroups;
+    if (index.row() < 0 || index.row() >= registerGroups.size())
+    {
+        qWarning() << "hilfe" << __LINE__;
+        return false;
+    }
+
+    if (index.column() != 0)
+    {
+        qWarning() << "hilfe" << __LINE__;
+        return false;
+    }
+
+    auto &registerGroup = registerGroups.at(index.row());
+    switch (role)
+    {
+    case Qt::DisplayRole:
+    case Qt::EditRole:
+        if (value.userType() != QMetaType::QString)
+        {
+            qWarning() << "hilfe" << __LINE__ << value.userType();
+            return false;
+        }
+        registerGroup.name = value.toString();
+        emit dataChanged(index, index, { Qt::DisplayRole, Qt::EditRole });
+        return true;
+    case IdRole:
+        if (value.userType() != QMetaType::Int)
+        {
+            qWarning() << "hilfe" << __LINE__ << value.userType();
+            return false;
+        }
+        registerGroup.id = value.toInt();
+        emit dataChanged(index, index, { IdRole });
+        return true;
+    default:
+        qWarning() << "hilfe" << __LINE__;
+        return false;
+    }
+}
+
 namespace {
 void registrierDenShit()
 {

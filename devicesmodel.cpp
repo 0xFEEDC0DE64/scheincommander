@@ -205,9 +205,10 @@ bool DevicesModel::setData(const QModelIndex &index, const QVariant &value, int 
         device.position = value.value<QVector3D>();
         emit dataChanged(index, index, { PositionRole });
         return true;
+    default:
+        qWarning() << "hilfe" << __LINE__;
+        return false;
     }
-
-    return false;
 }
 
 bool DevicesModel::insertRows(int row, int count, const QModelIndex &parent)
