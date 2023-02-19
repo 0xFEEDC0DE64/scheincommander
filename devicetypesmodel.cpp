@@ -1,5 +1,7 @@
 #include "devicetypesmodel.h"
 
+#include <algorithm>
+
 #include <QDebug>
 #include <QCoreApplication>
 #include <QQmlEngine>

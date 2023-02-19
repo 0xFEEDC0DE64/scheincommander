@@ -1,8 +1,6 @@
 import QtQuick
 import QtQuick.Controls.Material
 import QtQuick.Layouts
-import QtQuick.Window
-import QtQuick.VirtualKeyboard
 
 import lightcontrol
 
@@ -41,39 +39,22 @@ Pane {
                         horizontalAlignment: Text.AlignHCenter
                     }
 
+                    DeviceRegisterValueHelper {
+                        id: helper
+                        controller: __controller
+                        deviceId: light.id
+                        registerIndex: index
+                        value: slider.value
+                    }
+
                     DmxSlider {
                         id: slider
                         Layout.fillWidth: true
                         Layout.fillHeight: true
 
+                        value: helper.value
+
                         orientation: Qt.Vertical
-
-                        onValueChanged: __controller.setChannel(registerAddress, value)
-
-                        Binding on value {
-                            value: masterDimmer
-                            when: model.registerType === DeviceTypeRegisterType.Dimmer
-                        }
-                        Binding on value {
-                            value: masterRed
-                            when: model.registerType === DeviceTypeRegisterType.Red
-                        }
-                        Binding on value {
-                            value: masterGreen
-                            when: model.registerType === DeviceTypeRegisterType.Green
-                        }
-                        Binding on value {
-                            value: masterBlue
-                            when: model.registerType === DeviceTypeRegisterType.Blue
-                        }
-                        Binding on value {
-                            value: masterWhite
-                            when: model.registerType === DeviceTypeRegisterType.White
-                        }
-                        Binding on value {
-                            value: masterStrobo
-                            when: model.registerType === DeviceTypeRegisterType.Strobo
-                        }
                     }
 
                     Label {

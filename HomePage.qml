@@ -2,6 +2,8 @@ import QtQuick
 import QtQuick.Controls.Material
 import QtQuick.Layouts
 
+import lightcontrol
+
 Item {
     id: homePage
 
@@ -25,66 +27,23 @@ Item {
         }
     }
 
-    ColumnLayout {
+    Flow{
         anchors.fill: parent
+        flow: Flow.TopToBottom
 
-        GridLayout {
-            Layout.fillWidth: true
-
-            columns: 2
-
-            Label {
-                text: qsTr("Alle Dimmer:")
+        Repeater {
+            model: RegisterGroupsModel {
+                controller: __controller
             }
 
-            DmxSlider {
-                onValueChanged: window.masterDimmer = value
+            delegate: RowLayout {
+                Label {
+                    text: model.name
+                }
+                DmxSlider {
+                    onValueChanged: __controller.setRegisterGroup(model.id, value);
+                }
             }
-
-            Label {
-                text: qsTr("Alle Rot:")
-            }
-
-            DmxSlider {
-                onValueChanged: window.masterRed = value
-            }
-
-            Label {
-                text: qsTr("Alle Grün:")
-            }
-
-            DmxSlider {
-                onValueChanged: window.masterGreen = value
-            }
-
-            Label {
-                text: qsTr("Alle Blau:")
-            }
-
-            DmxSlider {
-                onValueChanged: window.masterBlue = value
-            }
-
-            Label {
-                text: qsTr("Alle Weiß:")
-            }
-
-            DmxSlider {
-                onValueChanged: window.masterWhite = value
-            }
-
-            Label {
-                text: qsTr("Alle Strobo:")
-            }
-
-            DmxSlider {
-                onValueChanged: window.masterStrobo = value
-            }
-        }
-
-        Item {
-            Layout.fillWidth: true
-            Layout.fillHeight: true
         }
     }
 }

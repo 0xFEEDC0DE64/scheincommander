@@ -307,7 +307,7 @@ bool DevicesModel::insertRows(int row, int count, const QModelIndex &parent)
     beginInsertRows({}, row, row+count-1);
     auto iter = std::begin(devices) + row;
     for (auto i = 0; i < count; i++)
-        iter = devices.insert(iter, LightConfig{ .id=id++, .name="<neu>", .deviceTypeId=0, .address=0, .position={} }) + 1;
+        iter = devices.insert(iter, DeviceConfig{ .id=id++, .name="<neu>", .deviceTypeId=0, .address=0, .position={} }) + 1;
     endInsertRows();
 
     disconnect(m_controller, &DmxController::deviceInserted,

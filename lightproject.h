@@ -80,7 +80,7 @@ public:
     }
 };
 
-struct LightConfig
+struct DeviceConfig
 {
     int id;
     QString name;
@@ -89,15 +89,62 @@ struct LightConfig
     QVector3D position;
 };
 
+class DevicesContainer : public std::vector<DeviceConfig>
+{
+    using base_t = std::vector<DeviceConfig>;
+
+public:
+    using base_t::base_t;
+
+    DeviceConfig *findById(int id)
+    {
+        auto iter = std::find_if(std::begin(*this), std::end(*this),
+                                 [&id](const DeviceConfig &device){ return device.id == id; });
+        return iter != std::end(*this) ? &*iter : nullptr;
+    }
+
+    const DeviceConfig *findById(int id) const
+    {
+        auto iter = std::find_if(std::begin(*this), std::end(*this),
+                                 [&id](const DeviceConfig &device){ return device.id == id; });
+        return iter != std::end(*this) ? &*iter : nullptr;
+    }
+};
+
+using sliders_state_t = std::vector<std::vector<int>>;
+
 struct RegisterGroupConfig
 {
     int id;
     QString name;
+    sliders_state_t sliders;
+};
+
+class RegisterGroupsContainer : public std::vector<RegisterGroupConfig>
+{
+    using base_t = std::vector<RegisterGroupConfig>;
+
+public:
+    using base_t::base_t;
+
+    RegisterGroupConfig *findById(int id)
+    {
+        auto iter = std::find_if(std::begin(*this), std::end(*this),
+                                 [&id](const RegisterGroupConfig &registerGroup){ return registerGroup.id == id; });
+        return iter != std::end(*this) ? &*iter : nullptr;
+    }
+
+    const RegisterGroupConfig *findById(int id) const
+    {
+        auto iter = std::find_if(std::begin(*this), std::end(*this),
+                                 [&id](const RegisterGroupConfig &registerGroup){ return registerGroup.id == id; });
+        return iter != std::end(*this) ? &*iter : nullptr;
+    }
 };
 
 struct LightProject
 {
     DeviceTypesContainer deviceTypes;
-    std::vector<LightConfig> devices;
-    std::vector<RegisterGroupConfig> registerGroups;
+    DevicesContainer devices;
+    RegisterGroupsContainer registerGroups;
 };

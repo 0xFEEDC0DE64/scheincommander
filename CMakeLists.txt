@@ -19,6 +19,8 @@ qt_add_executable(applightcontrol
     devicesmodel.h devicesmodel.cpp
     devicetyperegistersmodel.h devicetyperegistersmodel.cpp
     registergroupsmodel.h registergroupsmodel.cpp
+    deviceregistervaluehelper.h deviceregistervaluehelper.cpp
+    registergroupmodel.h registergroupmodel.cpp
 )
 
 qt_add_qml_module(applightcontrol

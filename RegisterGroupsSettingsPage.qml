@@ -65,8 +65,8 @@ ColumnLayout {
             enabled: listView.currentIndex !== -1
 
             GridLayout {
-                Layout.preferredWidth: 600
-                Layout.maximumWidth: 600
+                Layout.preferredWidth: 300
+                Layout.maximumWidth: 300
 
                 columns: 2
 
@@ -84,6 +84,36 @@ ColumnLayout {
                     onTextEdited: if (listView.currentData) listView.currentData.name = text; else console.warn('discarded');
                 }
             }
+
+            GridLayout {
+                Layout.fillWidth: true
+
+                columns: 2
+
+                RegisterGroupModel {
+                    id: registerGroupModel
+                    controller: __controller
+                    registerGroupId: listView.currentData ? listView.currentData.id : -1
+                }
+
+                Button {
+                    text: qsTr('Auf Schieberegler\nunten kopieren');
+                    onPressed: registerGroupModel.copyToFaders()
+                }
+                Button {
+                    text: qsTr('Von Schieberegler\nunten kopieren');
+                    onPressed: registerGroupModel.copyFromFaders()
+                }
+                Button {
+                    text: qsTr('Alle auf\n0 setzen');
+                    onPressed: registerGroupModel.setAllFadersLow()
+                }
+                Button {
+                    text: qsTr('Alle auf\nMaximum setzen');
+                    onPressed: registerGroupModel.setAllFadersMax()
+                }
+            }
+
             Item {
                 Layout.fillHeight: true
             }

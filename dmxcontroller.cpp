@@ -95,32 +95,32 @@ DmxController::DmxController(QObject *parent) :
             { .id=11, .name="Lampe 12",      .deviceTypeId=4, .address=78 },
             { .id=12, .name="Lampe 13",      .deviceTypeId=4, .address=85 },
             { .id=13, .name="Test 1",        .deviceTypeId=1, .address=95 },
-            { .id=14, .name="Test 2",        .deviceTypeId=2, .address=120 },
-            { .id=15, .name="Moving Head 1", .deviceTypeId=0, .address=150 },
-            { .id=16, .name="Moving Head 2", .deviceTypeId=0, .address=160 },
-            { .id=17, .name="Moving Head 3", .deviceTypeId=0, .address=170 },
-            { .id=18, .name="Moving Head 4", .deviceTypeId=0, .address=180 },
-            { .id=19, .name="Nebelmaschine", .deviceTypeId=3, .address=200 }
+            { .id=14, .name="Test 2",        .deviceTypeId=2, .address=105 },
+            { .id=15, .name="Moving Head 1", .deviceTypeId=0, .address=115 },
+            { .id=16, .name="Moving Head 2", .deviceTypeId=0, .address=131 },
+            { .id=17, .name="Moving Head 3", .deviceTypeId=0, .address=147 },
+            { .id=18, .name="Moving Head 4", .deviceTypeId=0, .address=163 },
+            { .id=19, .name="Nebelmaschine", .deviceTypeId=3, .address=179 }
         },
         .registerGroups {
-            { .id=0,  .name="Alle Dimmmer" },
+            { .id=0,  .name="Alle Dimmer" },
             { .id=1,  .name="Alle Roten"   },
             { .id=2,  .name="Alle Grünen"  },
             { .id=3,  .name="Alle Blauen"  },
             { .id=4,  .name="Alle Weißen"  },
-            { .id=5,  .name="Alle Shutter"  },
-            { .id=6,  .name="2n Dimmmer"   },
+            { .id=5,  .name="Alle Shutter" },
+            { .id=6,  .name="2n Dimmer"   },
             { .id=7,  .name="2n Roten"     },
             { .id=8,  .name="2n Grünen"    },
             { .id=9,  .name="2n Blauen"    },
             { .id=10, .name="2n Weißen"    },
-            { .id=11, .name="2n Shutter"    },
-            { .id=12, .name="2n+1 Dimmmer" },
+            { .id=11, .name="2n Shutter"   },
+            { .id=12, .name="2n+1 Dimmer" },
             { .id=13, .name="2n+1 Roten"   },
             { .id=14, .name="2n+1 Grünen"  },
             { .id=15, .name="2n+1 Blauen"  },
             { .id=16, .name="2n+1 Weißen"  },
-            { .id=17, .name="2n+1 Shutter"  },
+            { .id=17, .name="2n+1 Shutter" },
         }
     }
 {
@@ -166,10 +166,21 @@ bool DmxController::start()
     return true;
 }
 
-void DmxController::setChannel(int channel, int value)
+void DmxController::setRegisterGroup(int registerGroupId, quint8 value)
 {
-    Q_ASSERT(channel >= 0 && channel < std::size(buf));
-    buf[channel] = value;
+    qDebug() << registerGroupId << value;
+}
+
+void DmxController::setSliderStates(sliders_state_t &&sliderStates)
+{
+    m_sliderStates = std::move(sliderStates);
+    emit sliderStatesChanged(m_sliderStates);
+}
+
+void DmxController::setSliderStates(const sliders_state_t &sliderStates)
+{
+    m_sliderStates = sliderStates;
+    emit sliderStatesChanged(m_sliderStates);
 }
 
 void DmxController::sendDmxBuffer()

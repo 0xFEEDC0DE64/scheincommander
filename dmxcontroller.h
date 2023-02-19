@@ -18,7 +18,7 @@ public:
 
     bool start();
 
-    Q_INVOKABLE void setChannel(int channel, int value);
+    Q_INVOKABLE void setRegisterGroup(int registerGroupId, quint8 value);
 
     LightProject &lightProject() { return m_lightProject; }
     const LightProject &lightProject() const { return m_lightProject; }
@@ -26,6 +26,11 @@ public:
     QReadWriteLock &projectLock() { return m_projectLock; }
 
     int performance() const { return m_lastCounter; }
+
+    sliders_state_t &sliderStates() { return m_sliderStates; }
+    const sliders_state_t &sliderStates() const { return m_sliderStates; }
+    void setSliderStates(sliders_state_t &&sliderStates);
+    void setSliderStates(const sliders_state_t &sliderStates);
 
 signals:
     void performanceChanged(int performance);
@@ -50,6 +55,8 @@ signals:
     void registerGroupRemoved(int first, int last);
     void registerGroupNameChanged(int row, const QString &name);
 
+    void sliderStatesChanged(const sliders_state_t &sliderStates);
+
 protected:
     friend class DmxControllerThread;
 
@@ -68,4 +75,6 @@ private:
     QDateTime m_lastInfo;
     int m_counter;
     std::atomic<int> m_lastCounter;
+
+    sliders_state_t m_sliderStates;
 };

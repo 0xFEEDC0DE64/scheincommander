@@ -12,18 +12,11 @@ ApplicationWindow {
     Material.theme: Material.Dark
     Material.accent: Material.Purple
 
-    property int masterDimmer
-    property int masterRed
-    property int masterGreen
-    property int masterBlue
-    property int masterWhite
-    property int masterStrobo
-
     ColumnLayout {
         anchors.left: parent.left
         anchors.top: parent.top
         anchors.right: parent.right
-        anchors.bottom: lampRegistersPanel.top
+        height: window.height - (lampRegistersPanel.active ? lampRegistersPanel.height : 0)
 
         StatusBar {
             Layout.fillWidth: true

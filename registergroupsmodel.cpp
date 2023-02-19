@@ -1,5 +1,7 @@
 #include "registergroupsmodel.h"
 
+#include <algorithm>
+
 #include <QDebug>
 #include <QCoreApplication>
 #include <QQmlEngine>
