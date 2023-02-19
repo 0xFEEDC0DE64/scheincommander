@@ -3,6 +3,8 @@ import QtQuick.Controls
 import QtQuick.Controls.Material
 import QtQuick.Layouts
 
+import com.büro
+
 ColumnLayout {
     Label {
         text: qsTr("Devices Settings")
@@ -83,7 +85,9 @@ ColumnLayout {
                 ComboBox {
                     id: deviceTypeCombobox
                     Layout.fillWidth: true
-                    model: deviceTypesModel
+                    model: DeviceTypesModel {
+                        controller: __controller
+                    }
                     textRole: "name"
                     valueRole: "id"
                     currentIndex: listView.currentData ? deviceTypeCombobox.indexOfValue(listView.currentData.deviceTypeId) : -1

@@ -15,7 +15,29 @@ void DeviceTypesModel::setController(DmxController *controller)
         return;
 
     beginResetModel();
+
+    if (m_controller)
+    {
+        disconnect(m_controller, &DmxController::deviceTypeInserted,
+                   this, &DeviceTypesModel::otherDeviceTypeInserted);
+        disconnect(m_controller, &DmxController::deviceTypeRemoved,
+                   this, &DeviceTypesModel::otherDeviceTypeRemoved);
+        disconnect(m_controller, &DmxController::deviceTypeNameChanged,
+                   this, &DeviceTypesModel::otherDeviceTypeNameChanged);
+    }
+
     m_controller = controller;
+
+    if (m_controller)
+    {
+        connect(m_controller, &DmxController::deviceTypeInserted,
+                this, &DeviceTypesModel::otherDeviceTypeInserted);
+        connect(m_controller, &DmxController::deviceTypeRemoved,
+                this, &DeviceTypesModel::otherDeviceTypeRemoved);
+        connect(m_controller, &DmxController::deviceTypeNameChanged,
+                this, &DeviceTypesModel::otherDeviceTypeNameChanged);
+    }
+
     endResetModel();
     emit controllerChanged(m_controller);
 }
@@ -160,6 +182,13 @@ bool DeviceTypesModel::setData(const QModelIndex &index, const QVariant &value, 
         }
         deviceType.name = value.toString();
         emit dataChanged(index, index, { Qt::DisplayRole, Qt::EditRole });
+
+        disconnect(m_controller, &DmxController::deviceTypeNameChanged,
+                   this, &DeviceTypesModel::otherDeviceTypeNameChanged);
+        emit m_controller->deviceTypeNameChanged(index.row(), deviceType.name);
+        connect(m_controller, &DmxController::deviceTypeNameChanged,
+                this, &DeviceTypesModel::otherDeviceTypeNameChanged);
+
         return true;
     case IdRole:
         if (value.userType() != QMetaType::Int)
@@ -221,6 +250,12 @@ bool DeviceTypesModel::insertRows(int row, int count, const QModelIndex &parent)
         iter = deviceTypes.insert(iter, DeviceTypeConfig{ .id=id++, .name="<neu>" }) + 1;
     endInsertRows();
 
+    disconnect(m_controller, &DmxController::deviceTypeInserted,
+               this, &DeviceTypesModel::otherDeviceTypeInserted);
+    emit m_controller->deviceTypeInserted(row, row+count-1);
+    connect(m_controller, &DmxController::deviceTypeInserted,
+            this, &DeviceTypesModel::otherDeviceTypeInserted);
+
     return true;
 }
 
@@ -264,7 +299,49 @@ bool DeviceTypesModel::removeRows(int row, int count, const QModelIndex &parent)
     deviceTypes.erase(begin, end);
     endRemoveRows();
 
+    disconnect(m_controller, &DmxController::deviceTypeRemoved,
+               this, &DeviceTypesModel::otherDeviceTypeRemoved);
+    emit m_controller->deviceTypeRemoved(row, row+count-1);
+    connect(m_controller, &DmxController::deviceTypeRemoved,
+            this, &DeviceTypesModel::otherDeviceTypeRemoved);
+
     return true;
+}
+
+void DeviceTypesModel::otherDeviceTypeInserted(int first, int last)
+{
+    if (!m_controller)
+    {
+        qWarning() << "hilfe" << __LINE__;
+        return;
+    }
+
+    beginInsertRows({}, first, last);
+    endInsertRows();
+}
+
+void DeviceTypesModel::otherDeviceTypeRemoved(int first, int last)
+{
+    if (!m_controller)
+    {
+        qWarning() << "hilfe" << __LINE__;
+        return;
+    }
+
+    beginRemoveRows({}, first, last);
+    endRemoveRows();
+}
+
+void DeviceTypesModel::otherDeviceTypeNameChanged(int row, const QString &name)
+{
+    if (!m_controller)
+    {
+        qWarning() << "hilfe" << __LINE__;
+        return;
+    }
+
+    const auto index = this->index(row);
+    emit dataChanged(index, index, { Qt::DisplayRole, Qt::EditRole });
 }
 
 namespace {

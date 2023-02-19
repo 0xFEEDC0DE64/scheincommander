@@ -27,7 +27,10 @@ ColumnLayout {
             Layout.maximumWidth: 300
             Layout.fillHeight: true
 
-            model: deviceTypesModel
+            model: DeviceTypesModel {
+                id: deviceTypesModel
+                controller: __controller
+            }
 
             onAddClicked: (index) => { const newIndex = index < 0 ? 0 : index + 1; if (deviceTypesModel.insertRow(newIndex)) currentIndex = newIndex; else console.warn('failed'); }
             onRemoveClicked: (index) => {

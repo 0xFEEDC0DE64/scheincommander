@@ -22,11 +22,6 @@ ApplicationWindow {
     property int masterWhite
     property int masterStrobo
 
-    DeviceTypesModel {
-        id: deviceTypesModel
-        controller: __controller
-    }
-
     DevicesModel {
         id: devicesModel
         controller: __controller

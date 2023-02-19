@@ -30,6 +30,11 @@ public:
 signals:
     void performanceChanged(int performance);
 
+    void deviceTypeInserted(int first, int last);
+    void deviceTypeRemoved(int first, int last);
+    void deviceTypeNameChanged(int index, const QString &name);
+    void deviceTypeIconNameChanged(int index, const QString &iconName);
+
     void deviceTypeRegisterInserted(const DeviceTypeConfig &deviceType, int first, int last);
     void deviceTypeRegisterRemoved(const DeviceTypeConfig &deviceType, int first, int last);
     void deviceTypeRegisterTypeChanged(const DeviceTypeConfig &deviceType, int index, DeviceTypeRegisterType type);
