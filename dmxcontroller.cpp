@@ -198,7 +198,45 @@ void DmxController::sendDmxBuffer()
     {
         QMutexLocker locker{&m_mutex};
 
-        // TODO magic
+//        if (m_sliderStates.size() < m_lightProject.devices.size())
+//            m_sliderStates.resize(m_lightProject.devices.size());
+
+        auto iter = std::cbegin(m_sliderStates);
+
+        for (const auto &light : m_lightProject.devices)
+        {
+            auto deviceTypePtr = m_lightProject.deviceTypes.findById(light.deviceTypeId);
+            if (!deviceTypePtr)
+            {
+                if (iter != std::cend(m_sliderStates))
+                    iter++;
+                continue;
+            }
+            const auto &deviceType = *deviceTypePtr;
+
+            std::vector<int>::const_iterator iter2;
+            if (iter != std::cend(m_sliderStates))
+                iter2 = std::cbegin(*iter);
+
+            int i{};
+            for (const auto &register_ : deviceType.registers)
+            {
+                const auto address = light.address + (i++);
+
+                if (iter != std::cend(m_sliderStates) && iter2 != std::cend(*iter))
+                {
+                    buf[address] = *iter2;
+                }
+                else
+                    buf[address] = 0;
+
+                if (iter != std::cend(m_sliderStates) && iter2 != std::cend(*iter))
+                    iter2++;
+            }
+
+            if (iter != std::cend(m_sliderStates))
+                iter++;
+        }
     }
 
     m_serialPort.setBreakEnabled(true);
