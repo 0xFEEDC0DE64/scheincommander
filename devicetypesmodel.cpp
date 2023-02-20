@@ -5,6 +5,7 @@
 #include <QDebug>
 #include <QCoreApplication>
 #include <QQmlEngine>
+#include <QMutexLocker>
 
 enum {
     IdRole = Qt::UserRole,
@@ -198,14 +199,16 @@ bool DeviceTypesModel::setData(const QModelIndex &index, const QVariant &value, 
 
         return true;
     case IdRole:
-        if (value.userType() != QMetaType::Int)
-        {
-            qWarning() << "hilfe" << __LINE__ << value.userType();
-            return false;
-        }
-        deviceType.id = value.toInt();
-        emit dataChanged(index, index, { IdRole });
-        return true;
+//        if (value.userType() != QMetaType::Int)
+//        {
+//            qWarning() << "hilfe" << __LINE__ << value.userType();
+//            return false;
+//        }
+//        deviceType.id = value.toInt();
+//        emit dataChanged(index, index, { IdRole });
+//        return true;
+        qWarning() << "hilfe" << __LINE__;
+        return false;
     case IconNameRole:
         if (value.userType() != QMetaType::QString)
         {
@@ -260,9 +263,12 @@ bool DeviceTypesModel::insertRows(int row, int count, const QModelIndex &parent)
     auto id = max_iter != std::cend(deviceTypes) ? max_iter->id + 1 : 0;
 
     beginInsertRows({}, row, row+count-1);
-    auto iter = std::begin(deviceTypes) + row;
-    for (auto i = 0; i < count; i++)
-        iter = deviceTypes.insert(iter, DeviceTypeConfig{ .id=id++, .name="<neu>" }) + 1;
+    {
+        QMutexLocker locker{&m_controller->mutex()};
+        auto iter = std::begin(deviceTypes) + row;
+        for (auto i = 0; i < count; i++)
+            iter = deviceTypes.insert(iter, DeviceTypeConfig{ .id=id++, .name="<neu>" }) + 1;
+    }
     endInsertRows();
 
     disconnect(m_controller, &DmxController::deviceTypeInserted,
@@ -309,9 +315,12 @@ bool DeviceTypesModel::removeRows(int row, int count, const QModelIndex &parent)
     }
 
     beginRemoveRows({}, row, row+count-1);
-    auto begin = std::begin(deviceTypes) + row;
-    auto end = begin + count;
-    deviceTypes.erase(begin, end);
+    {
+        QMutexLocker locker{&m_controller->mutex()};
+        auto begin = std::begin(deviceTypes) + row;
+        auto end = begin + count;
+        deviceTypes.erase(begin, end);
+    }
     endRemoveRows();
 
     disconnect(m_controller, &DmxController::deviceTypeRemoved,

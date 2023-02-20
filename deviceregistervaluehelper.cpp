@@ -3,6 +3,7 @@
 #include <QDebug>
 #include <QCoreApplication>
 #include <QQmlEngine>
+#include <QMutexLocker>
 
 void DeviceRegisterValueHelper::setController(DmxController *controller)
 {
@@ -125,7 +126,10 @@ void DeviceRegisterValueHelper::setValue(quint8 value)
     if (sliderState.size() <= m_registerIndex)
         sliderState.resize(m_registerIndex + 1);
 
-    sliderState[m_registerIndex] = value;
+    {
+        QMutexLocker locker{&m_controller->mutex()};
+        sliderState[m_registerIndex] = value;
+    }
     emit valueChanged(value);
 }
 

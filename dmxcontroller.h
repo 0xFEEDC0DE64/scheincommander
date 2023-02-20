@@ -3,7 +3,7 @@
 #include <QObject>
 #include <QSerialPort>
 #include <QDateTime>
-#include <QReadWriteLock>
+#include <QMutex>
 
 #include "dmxcontrollerthread.h"
 #include "lightproject.h"
@@ -23,14 +23,14 @@ public:
     LightProject &lightProject() { return m_lightProject; }
     const LightProject &lightProject() const { return m_lightProject; }
 
-    QReadWriteLock &projectLock() { return m_projectLock; }
-
-    int performance() const { return m_lastCounter; }
+    QMutex &mutex() { return m_mutex; }
 
     sliders_state_t &sliderStates() { return m_sliderStates; }
     const sliders_state_t &sliderStates() const { return m_sliderStates; }
     void setSliderStates(sliders_state_t &&sliderStates);
     void setSliderStates(const sliders_state_t &sliderStates);
+
+    int performance() const { return m_lastCounter; }
 
 signals:
     void performanceChanged(int performance);
@@ -67,14 +67,11 @@ private:
 
     DmxControllerThread m_thread;
 
-    char buf[513];
-
     LightProject m_lightProject;
-    QReadWriteLock m_projectLock;
+    QMutex m_mutex;
+    sliders_state_t m_sliderStates;
 
     QDateTime m_lastInfo;
     int m_counter;
     std::atomic<int> m_lastCounter;
-
-    sliders_state_t m_sliderStates;
 };

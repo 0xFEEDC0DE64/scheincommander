@@ -5,6 +5,7 @@
 #include <QDebug>
 #include <QCoreApplication>
 #include <QQmlEngine>
+#include <QMutexLocker>
 
 void DeviceTypeRegistersModel::setController(DmxController *controller)
 {
@@ -240,7 +241,10 @@ bool DeviceTypeRegistersModel::setData(const QModelIndex &index, const QVariant 
     switch (role)
     {
     case Qt::EditRole:
-        deviceTypeRegister.type = value.value<DeviceTypeRegisterType>();
+        {
+            QMutexLocker locker{&m_controller->mutex()};
+            deviceTypeRegister.type = value.value<DeviceTypeRegisterType>();
+        }
         emit dataChanged(index, index, { Qt::DisplayRole, Qt::EditRole });
 
         disconnect(m_controller, &DmxController::deviceTypeRegisterTypeChanged,
@@ -295,9 +299,12 @@ bool DeviceTypeRegistersModel::insertRows(int row, int count, const QModelIndex 
     auto &registers = deviceType.registers;
 
     beginInsertRows({}, row, row+count-1);
-    auto iter = std::begin(registers) + row;
-    for (auto i = 0; i < count; i++)
-        iter = registers.insert(iter, DeviceTypeRegisterConfig{ .type = DeviceTypeRegisterType::Dummy }) + 1;
+    {
+        QMutexLocker locker{&m_controller->mutex()};
+        auto iter = std::begin(registers) + row;
+        for (auto i = 0; i < count; i++)
+            iter = registers.insert(iter, DeviceTypeRegisterConfig{ .type = DeviceTypeRegisterType::Dummy }) + 1;
+    }
     endInsertRows();
 
     disconnect(m_controller, &DmxController::deviceTypeRegisterInserted,
@@ -360,9 +367,12 @@ bool DeviceTypeRegistersModel::removeRows(int row, int count, const QModelIndex 
     }
 
     beginRemoveRows({}, row, row+count-1);
-    auto begin = std::begin(registers) + row;
-    auto end = begin + count;
-    registers.erase(begin, end);
+    {
+        QMutexLocker locker{&m_controller->mutex()};
+        auto begin = std::begin(registers) + row;
+        auto end = begin + count;
+        registers.erase(begin, end);
+    }
     endRemoveRows();
 
     disconnect(m_controller, &DmxController::deviceTypeRegisterRemoved,

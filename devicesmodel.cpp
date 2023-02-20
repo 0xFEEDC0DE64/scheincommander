@@ -5,6 +5,7 @@
 #include <QDebug>
 #include <QCoreApplication>
 #include <QQmlEngine>
+#include <QMutexLocker>
 
 enum {
     IdRole = Qt::UserRole,
@@ -211,21 +212,27 @@ bool DevicesModel::setData(const QModelIndex &index, const QVariant &value, int 
 
         return true;
     case IdRole:
-        if (value.userType() != QMetaType::Int)
-        {
-            qWarning() << "hilfe" << __LINE__ << value.userType();
-            return false;
-        }
-        device.id = value.toInt();
-        emit dataChanged(index, index, { IdRole });
-        return true;
+//        if (value.userType() != QMetaType::Int)
+//        {
+//            qWarning() << "hilfe" << __LINE__ << value.userType();
+//            return false;
+//        }
+//        device.id = value.toInt();
+//        emit dataChanged(index, index, { IdRole });
+//        return true;
+        qWarning() << "hilfe" << __LINE__;
+        return false;
     case DeviceTypeIdRole:
         if (value.userType() != QMetaType::Int)
         {
             qWarning() << "hilfe" << __LINE__ << value.userType();
             return false;
         }
-        device.deviceTypeId = value.toInt();
+
+        {
+            QMutexLocker locker{&m_controller->mutex()};
+            device.deviceTypeId = value.toInt();
+        }
         emit dataChanged(index, index, { DeviceTypeIdRole });
 
         disconnect(m_controller, &DmxController::deviceDeviceTypeIdChanged,
@@ -241,7 +248,11 @@ bool DevicesModel::setData(const QModelIndex &index, const QVariant &value, int 
             qWarning() << "hilfe" << __LINE__ << value.userType();
             return false;
         }
-        device.address = value.toInt();
+
+        {
+            QMutexLocker locker{&m_controller->mutex()};
+            device.address = value.toInt();
+        }
         emit dataChanged(index, index, { AddressRole });
 
         disconnect(m_controller, &DmxController::deviceAddressChanged,
@@ -257,7 +268,11 @@ bool DevicesModel::setData(const QModelIndex &index, const QVariant &value, int 
             qWarning() << "hilfe" << __LINE__ << value.userType();
             return false;
         }
-        device.position = value.value<QVector3D>();
+
+        {
+            QMutexLocker locker{&m_controller->mutex()};
+            device.position = value.value<QVector3D>();
+        }
         emit dataChanged(index, index, { PositionRole });
 
         disconnect(m_controller, &DmxController::devicePositionChanged,
@@ -305,9 +320,12 @@ bool DevicesModel::insertRows(int row, int count, const QModelIndex &parent)
     auto id = max_iter != std::cend(devices) ? max_iter->id + 1 : 0;
 
     beginInsertRows({}, row, row+count-1);
-    auto iter = std::begin(devices) + row;
-    for (auto i = 0; i < count; i++)
-        iter = devices.insert(iter, DeviceConfig{ .id=id++, .name="<neu>", .deviceTypeId=0, .address=0, .position={} }) + 1;
+    {
+        QMutexLocker locker{&m_controller->mutex()};
+        auto iter = std::begin(devices) + row;
+        for (auto i = 0; i < count; i++)
+            iter = devices.insert(iter, DeviceConfig{ .id=id++, .name="<neu>", .deviceTypeId=0, .address=0, .position={} }) + 1;
+    }
     endInsertRows();
 
     disconnect(m_controller, &DmxController::deviceInserted,
@@ -354,9 +372,12 @@ bool DevicesModel::removeRows(int row, int count, const QModelIndex &parent)
     }
 
     beginRemoveRows({}, row, row+count-1);
-    auto begin = std::begin(devices) + row;
-    auto end = begin + count;
-    devices.erase(begin, end);
+    {
+        QMutexLocker locker{&m_controller->mutex()};
+        auto begin = std::begin(devices) + row;
+        auto end = begin + count;
+        devices.erase(begin, end);
+    }
     endRemoveRows();
 
     disconnect(m_controller, &DmxController::deviceRemoved,

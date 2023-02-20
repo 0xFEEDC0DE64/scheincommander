@@ -5,6 +5,7 @@
 #include <QDebug>
 #include <QCoreApplication>
 #include <QQmlEngine>
+#include <QMutexLocker>
 
 enum {
     IdRole = Qt::UserRole,
@@ -190,14 +191,16 @@ bool RegisterGroupsModel::setData(const QModelIndex &index, const QVariant &valu
 
         return true;
     case IdRole:
-        if (value.userType() != QMetaType::Int)
-        {
-            qWarning() << "hilfe" << __LINE__ << value.userType();
-            return false;
-        }
-        registerGroup.id = value.toInt();
-        emit dataChanged(index, index, { IdRole });
-        return true;
+//        if (value.userType() != QMetaType::Int)
+//        {
+//            qWarning() << "hilfe" << __LINE__ << value.userType();
+//            return false;
+//        }
+//        registerGroup.id = value.toInt();
+//        emit dataChanged(index, index, { IdRole });
+//        return true;
+        qWarning() << "hilfe" << __LINE__;
+        return false;
     default:
         qWarning() << "hilfe" << __LINE__;
         return false;
@@ -236,9 +239,12 @@ bool RegisterGroupsModel::insertRows(int row, int count, const QModelIndex &pare
     auto id = max_iter != std::cend(registerGroups) ? max_iter->id + 1 : 0;
 
     beginInsertRows({}, row, row+count-1);
-    auto iter = std::begin(registerGroups) + row;
-    for (auto i = 0; i < count; i++)
-        iter = registerGroups.insert(iter, RegisterGroupConfig{ .id=id++, .name="<neu>" }) + 1;
+    {
+        QMutexLocker locker{&m_controller->mutex()};
+        auto iter = std::begin(registerGroups) + row;
+        for (auto i = 0; i < count; i++)
+            iter = registerGroups.insert(iter, RegisterGroupConfig{ .id=id++, .name="<neu>" }) + 1;
+    }
     endInsertRows();
 
     disconnect(m_controller, &DmxController::registerGroupInserted,
@@ -285,9 +291,12 @@ bool RegisterGroupsModel::removeRows(int row, int count, const QModelIndex &pare
     }
 
     beginRemoveRows({}, row, row+count-1);
-    auto begin = std::begin(registerGroups) + row;
-    auto end = begin + count;
-    registerGroups.erase(begin, end);
+    {
+        QMutexLocker locker{&m_controller->mutex()};
+        auto begin = std::begin(registerGroups) + row;
+        auto end = begin + count;
+        registerGroups.erase(begin, end);
+    }
     endRemoveRows();
 
     disconnect(m_controller, &DmxController::registerGroupRemoved,

@@ -4,6 +4,7 @@
 #include <sys/ioctl.h>
 
 #include <QDebug>
+#include <QMutexLocker>
 
 DmxController::DmxController(QObject *parent) :
     QObject{parent},
@@ -124,7 +125,6 @@ DmxController::DmxController(QObject *parent) :
         }
     }
 {
-    std::fill(std::begin(buf), std::end(buf), 0);
 }
 
 bool DmxController::start()
@@ -173,19 +173,33 @@ void DmxController::setRegisterGroup(int registerGroupId, quint8 value)
 
 void DmxController::setSliderStates(sliders_state_t &&sliderStates)
 {
-    m_sliderStates = std::move(sliderStates);
+    {
+        QMutexLocker locker{&m_mutex};
+        m_sliderStates = std::move(sliderStates);
+    }
     emit sliderStatesChanged(m_sliderStates);
 }
 
 void DmxController::setSliderStates(const sliders_state_t &sliderStates)
 {
-    m_sliderStates = sliderStates;
+    {
+        QMutexLocker locker{&m_mutex};
+        m_sliderStates = sliderStates;
+    }
     emit sliderStatesChanged(m_sliderStates);
 }
 
 void DmxController::sendDmxBuffer()
 {
     const auto now = QDateTime::currentDateTime();
+
+    char buf[513] {0};
+
+    {
+        QMutexLocker locker{&m_mutex};
+
+        // TODO magic
+    }
 
     m_serialPort.setBreakEnabled(true);
     QThread::usleep(88);

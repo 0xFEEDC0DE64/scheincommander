@@ -3,6 +3,7 @@
 #include <QDebug>
 #include <QCoreApplication>
 #include <QQmlEngine>
+#include <QMutexLocker>
 
 void RegisterGroupModel::setController(DmxController *controller)
 {
@@ -59,7 +60,10 @@ void RegisterGroupModel::copyFromFaders()
 
     auto &registerGroup = *registerGroupPtr;
 
-    registerGroup.sliders = m_controller->sliderStates();
+    {
+        QMutexLocker locker{&m_controller->mutex()};
+        registerGroup.sliders = m_controller->sliderStates();
+    }
 }
 
 void RegisterGroupModel::copyToFaders()
