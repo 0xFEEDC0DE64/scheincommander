@@ -88,7 +88,7 @@ ColumnLayout {
             GridLayout {
                 Layout.fillWidth: true
 
-                columns: 2
+                columns: 3
 
                 RegisterGroupModel {
                     id: registerGroupModel
@@ -104,6 +104,10 @@ ColumnLayout {
                     text: qsTr('Von Schieberegler\nunten kopieren');
                     onPressed: registerGroupModel.copyFromFaders()
                 }
+                Item {
+                    Layout.rowSpan: 2
+                    Layout.fillWidth: true
+                }
                 Button {
                     text: qsTr('Alle auf\n0 setzen');
                     onPressed: registerGroupModel.setAllFadersLow()
@@ -111,6 +115,37 @@ ColumnLayout {
                 Button {
                     text: qsTr('Alle auf\nMaximum setzen');
                     onPressed: registerGroupModel.setAllFadersMax()
+                }
+                RowLayout {
+                    Layout.columnSpan: 3
+
+                    SpinBox {
+                        id: nSpinBox
+                        Layout.preferredWidth: 120
+                        from: 1
+                    }
+
+                    SpinBox {
+                        id: kSpinBox
+                        Layout.preferredWidth: 120
+                    }
+
+                    ComboBox {
+                        id: registerTypeComboBox
+                        model: DeviceTypeRegisterTypesModel {
+                        }
+                        textRole: "text"
+                        valueRole: "value"
+                    }
+
+                    DmxSlider {
+                        id: valueSlider
+                    }
+
+                    Button {
+                        text: qsTr('Set')
+                        onPressed: registerGroupModel.setPattern(nSpinBox.value, kSpinBox.value, registerTypeComboBox.currentValue, valueSlider.value)
+                    }
                 }
             }
 

@@ -24,6 +24,7 @@ public:
     Q_INVOKABLE void copyToFaders();
     Q_INVOKABLE void setAllFadersLow();
     Q_INVOKABLE void setAllFadersMax();
+    Q_INVOKABLE void setPattern(int n, int k, DeviceTypeRegisterType registerType, quint8 value);
 
 signals:
     void controllerChanged(DmxController *controller);
