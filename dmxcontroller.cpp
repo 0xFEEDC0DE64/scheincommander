@@ -166,9 +166,25 @@ bool DmxController::start()
     return true;
 }
 
-void DmxController::setRegisterGroup(int registerGroupId, quint8 value)
+void DmxController::setRegisterGroupSlider(int registerGroupId, quint8 value)
 {
-    qDebug() << registerGroupId << value;
+    const auto registerGroupPtr = m_lightProject.registerGroups.findById(registerGroupId);
+    if (!registerGroupPtr)
+    {
+        qWarning() << "hilfe" << __LINE__;
+        return;
+    }
+
+    const auto index = registerGroupPtr - &*std::cbegin(m_lightProject.registerGroups);
+
+    {
+        QMutexLocker locker{&m_mutex};
+
+        if (index >= m_registerGroupStates.size())
+            m_registerGroupStates.resize(index + 1);
+
+        m_registerGroupStates[index] = value;
+    }
 }
 
 void DmxController::setSliderStates(sliders_state_t &&sliderStates)
@@ -198,44 +214,63 @@ void DmxController::sendDmxBuffer()
     {
         QMutexLocker locker{&m_mutex};
 
-//        if (m_sliderStates.size() < m_lightProject.devices.size())
-//            m_sliderStates.resize(m_lightProject.devices.size());
+        const auto apply = [&](const sliders_state_t &sliders, quint8 factor){
+            auto iter = std::cbegin(sliders);
 
-        auto iter = std::cbegin(m_sliderStates);
-
-        for (const auto &light : m_lightProject.devices)
-        {
-            auto deviceTypePtr = m_lightProject.deviceTypes.findById(light.deviceTypeId);
-            if (!deviceTypePtr)
+            for (const auto &light : m_lightProject.devices)
             {
-                if (iter != std::cend(m_sliderStates))
+                auto deviceTypePtr = m_lightProject.deviceTypes.findById(light.deviceTypeId);
+                if (!deviceTypePtr)
+                {
+                    if (iter != std::cend(sliders))
+                        iter++;
+                    continue;
+                }
+                const auto &deviceType = *deviceTypePtr;
+
+                {
+                    std::vector<quint8>::const_iterator iter2;
+                    if (iter != std::cend(sliders))
+                        iter2 = std::cbegin(*iter);
+
+                    int i{};
+                    for (const auto &register_ : deviceType.registers)
+                    {
+                        const auto address = light.address + (i++);
+
+                        if (iter != std::cend(sliders) && iter2 != std::cend(*iter))
+                        {
+                            const auto result = int(*iter2) * factor / 255;
+                            if (result > buf[address])
+                                buf[address] = result;
+                        }
+//                          else
+//                              buf[address] = 0;
+
+                        if (iter != std::cend(sliders) && iter2 != std::cend(*iter))
+                            iter2++;
+                    }
+                }
+
+                if (iter != std::cend(sliders))
                     iter++;
+            }
+        };
+
+        apply(m_sliderStates, 255);
+
+        auto iter = std::cbegin(m_registerGroupStates);
+        for (const auto &registerGroup : m_lightProject.registerGroups)
+        {
+            if (iter == std::cend(m_registerGroupStates))
+                break;
+            if (!*iter)
+            {
+                iter++;
                 continue;
             }
-            const auto &deviceType = *deviceTypePtr;
-
-            std::vector<int>::const_iterator iter2;
-            if (iter != std::cend(m_sliderStates))
-                iter2 = std::cbegin(*iter);
-
-            int i{};
-            for (const auto &register_ : deviceType.registers)
-            {
-                const auto address = light.address + (i++);
-
-                if (iter != std::cend(m_sliderStates) && iter2 != std::cend(*iter))
-                {
-                    buf[address] = *iter2;
-                }
-                else
-                    buf[address] = 0;
-
-                if (iter != std::cend(m_sliderStates) && iter2 != std::cend(*iter))
-                    iter2++;
-            }
-
-            if (iter != std::cend(m_sliderStates))
-                iter++;
+            apply(registerGroup.sliders, *iter);
+            iter++;
         }
     }
 

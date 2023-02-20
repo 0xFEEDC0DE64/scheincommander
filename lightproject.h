@@ -111,7 +111,7 @@ public:
     }
 };
 
-using sliders_state_t = std::vector<std::vector<int>>;
+using sliders_state_t = std::vector<std::vector<quint8>>;
 
 struct RegisterGroupConfig
 {

@@ -107,7 +107,7 @@ void RegisterGroupModel::setAllFadersLow()
 
     for (const auto &device : devices)
     {
-        std::vector<int> sliderState;
+        std::vector<quint8> sliderState;
 
         if (device.deviceTypeId != -1)
         {
@@ -145,7 +145,7 @@ void RegisterGroupModel::setAllFadersMax()
 
     for (const auto &device : devices)
     {
-        std::vector<int> sliderState;
+        std::vector<quint8> sliderState;
 
         if (device.deviceTypeId != -1)
         {

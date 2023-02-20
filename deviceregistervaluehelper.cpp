@@ -118,16 +118,17 @@ void DeviceRegisterValueHelper::setValue(quint8 value)
 
     auto &sliderStates = m_controller->sliderStates();
 
-    if (sliderStates.size() <= index)
-        sliderStates.resize(index + 1);
-
-    auto &sliderState = sliderStates.at(index);
-
-    if (sliderState.size() <= m_registerIndex)
-        sliderState.resize(m_registerIndex + 1);
-
     {
         QMutexLocker locker{&m_controller->mutex()};
+
+        if (sliderStates.size() <= index)
+            sliderStates.resize(index + 1);
+
+        auto &sliderState = sliderStates.at(index);
+
+        if (sliderState.size() <= m_registerIndex)
+            sliderState.resize(m_registerIndex + 1);
+
         sliderState[m_registerIndex] = value;
     }
     emit valueChanged(value);

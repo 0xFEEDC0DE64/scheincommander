@@ -18,7 +18,7 @@ public:
 
     bool start();
 
-    Q_INVOKABLE void setRegisterGroup(int registerGroupId, quint8 value);
+    Q_INVOKABLE void setRegisterGroupSlider(int registerGroupId, quint8 value);
 
     LightProject &lightProject() { return m_lightProject; }
     const LightProject &lightProject() const { return m_lightProject; }
@@ -70,6 +70,7 @@ private:
     LightProject m_lightProject;
     QMutex m_mutex;
     sliders_state_t m_sliderStates;
+    std::vector<quint8> m_registerGroupStates;
 
     QDateTime m_lastInfo;
     int m_counter;

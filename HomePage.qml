@@ -41,7 +41,7 @@ Item {
                     text: model.name
                 }
                 DmxSlider {
-                    onValueChanged: __controller.setRegisterGroup(model.id, value);
+                    onValueChanged: __controller.setRegisterGroupSlider(model.id, value);
                 }
             }
         }
