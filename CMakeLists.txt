@@ -8,6 +8,12 @@ set(CMAKE_AUTOMOC ON)
 #set(CMAKE_CXX_EXTENSIONS ON)
 add_compile_options(-std=c++2b)
 
+find_program(CCACHE_FOUND ccache)
+if(CCACHE_FOUND)
+    set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE ccache)
+    set_property(GLOBAL PROPERTY RULE_LAUNCH_LINK ccache)
+endif(CCACHE_FOUND)
+
 find_package(Qt6 6.2 REQUIRED COMPONENTS SerialPort Quick)
 
 qt_add_executable(appscheincommander
