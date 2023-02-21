@@ -337,6 +337,13 @@ void DmxController::sendDmxBuffer()
 
             for (const auto &light : m_lightProject.devices)
             {
+                if (!light.address)
+                {
+                    if (iter != std::cend(sliders))
+                        iter++;
+                    continue;
+                }
+
                 auto deviceTypePtr = m_lightProject.deviceTypes.findById(light.deviceTypeId);
                 if (!deviceTypePtr)
                 {
