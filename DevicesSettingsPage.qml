@@ -115,5 +115,10 @@ ColumnLayout {
                 Layout.fillHeight: true
             }
         }
+
+        Devices3dView {
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+        }
     }
 }

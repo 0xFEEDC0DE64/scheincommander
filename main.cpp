@@ -22,7 +22,8 @@ int main(int argc, char *argv[])
                                       "%{function}(): "
                                       "%{message}"));
 
-    qputenv("QT_IM_MODULE", QByteArray("qtvirtualkeyboard"));
+    qputenv("QT_IM_MODULE", QByteArrayLiteral("qtvirtualkeyboard"));
+    qputenv("QSG_RHI_BACKEND", QByteArrayLiteral("opengl"));
 
     QCoreApplication::setOrganizationDomain("com.büro");
     QCoreApplication::setOrganizationName("büro");
