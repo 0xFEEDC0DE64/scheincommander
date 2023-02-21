@@ -4,7 +4,10 @@
 #include <sys/ioctl.h>
 
 #include <QDebug>
+#include <QFile>
 #include <QMutexLocker>
+
+#include "projectloader.h"
 
 DmxController::DmxController(QObject *parent) :
     QObject{parent},
@@ -127,8 +130,80 @@ DmxController::DmxController(QObject *parent) :
 {
 }
 
+bool DmxController::loadProject(QString name) {
+    QFile readJsonFile(name);
+    if (!readJsonFile.exists())
+    {
+        qDebug() << "Project file does not exist";
+        return false;
+    }
+
+    if (!readJsonFile.open(QIODevice::ReadOnly))
+    {
+        qDebug() << "Error opening project file: " << readJsonFile.errorString();
+        return false;
+    }
+
+    QByteArray json = readJsonFile.readAll();
+    if (json.size() == 0)
+    {
+        qDebug() << "Error reading project file";
+        return false;
+    }
+
+    QJsonParseError error;
+    QJsonDocument jd = QJsonDocument::fromJson(json, &error);
+    if (jd.isNull())
+    {
+        qDebug() << "Error parsing JSON: " << error.errorString();
+        return false;
+    }
+
+    if (auto proj = ProjectLoader::loadProject(jd); proj)
+    {
+        m_lightProject = proj.value();
+    }
+    else
+    {
+        qDebug() << proj.error();
+        return false;
+    }
+
+    return true;
+}
+
+bool DmxController::saveProject(QString name)
+{
+    QFile jsonFile(name);
+    if (!jsonFile.open(QIODevice::ReadWrite))
+    {
+        qDebug() << "Error opening file: " << jsonFile.errorString();
+        return false;
+    }
+
+    auto proj = ProjectLoader::saveProject(m_lightProject);
+    if (!proj)
+    {
+        qDebug() << proj.error();
+        return false;
+    }
+
+    QByteArray json = proj.value().toJson();
+    if (jsonFile.write(json) != json.size())
+    {
+        qDebug() << "Error writing file: " << jsonFile.errorString();
+        return false;
+    }
+
+    return true;
+}
+
 bool DmxController::start()
 {
+    saveProject("project_default.json");
+
+    loadProject("project.json");
+
     m_serialPort.setPortName("/dev/ttyAMA0");
     if (!m_serialPort.setBaudRate(250000))
     {

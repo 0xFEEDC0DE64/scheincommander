@@ -16,6 +16,8 @@ class DmxController : public QObject
 public:
     explicit DmxController(QObject *parent = nullptr);
 
+    bool loadProject(QString name);
+    bool saveProject(QString name);
     bool start();
 
     Q_INVOKABLE void setRegisterGroupSlider(int registerGroupId, quint8 value);
