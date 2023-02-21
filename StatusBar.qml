@@ -1,5 +1,6 @@
 import QtQuick
 import QtQuick.Controls.Material
+import QtQuick.Dialogs
 import QtQuick.Layouts
 
 Pane {
@@ -18,6 +19,33 @@ Pane {
             fontSizeMode: Text.VerticalFit
             minimumPixelSize: 10;
             font.pixelSize: 72
+        }
+
+        Button {
+            text: "\ue161"
+            font.family: materialIcons.font.family
+            font.pixelSize: 20
+            onPressed: {
+                if (typeof __controller.settings.lastProjectFile == "string" && __controller.settings.lastProjectFile !== "") {
+                    console.log(__controller.settings.lastProjectFile);
+                    if (!__controller.saveProject(__controller.settings.lastProjectFile)) {
+                        console.warn('failed to save');
+                    }
+                } else {
+                    fileDialog.open();
+                }
+            }
+
+            FileDialog {
+                id: fileDialog
+                title: qsTr("Please select where to save the project file")
+                fileMode: FileDialog.SaveFile
+                onAccepted: {
+                    if (!__controller.saveProject(fileDialog.selectedFile)) {
+                        console.warn('failed to save');
+                    }
+                }
+            }
         }
 
         Label {

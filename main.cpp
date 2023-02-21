@@ -3,7 +3,9 @@
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
 #include <QDebug>
+
 #include "dmxcontroller.h"
+#include "scheincommandersettings.h"
 
 #define STR(x) #x
 
@@ -32,6 +34,7 @@ int main(int argc, char *argv[])
     QCommandLineParser parser;
     parser.addHelpOption();
     parser.addVersionOption();
+    parser.addPositionalArgument("project-file", QCoreApplication::translate("main", "Project file to load."));
 
     QCommandLineOption windowedOption {
         QStringList{"w", "windowed"},
@@ -41,13 +44,21 @@ int main(int argc, char *argv[])
 
     if (!parser.parse(app.arguments()))
     {
-        qFatal("could not parse arguments!");
+        qFatal("could not parse arguments: %s", qPrintable(parser.errorText()));
         return -1;
     }
 
     const auto windowed = parser.isSet(windowedOption);
 
-    DmxController controller{&app};
+    ScheinCommanderSettings settings;
+
+    DmxController controller{settings, &app};
+
+    if (!parser.positionalArguments().isEmpty())
+        controller.loadProject(parser.positionalArguments().first());
+    else if (const auto &lastProjectFile = settings.lastProjectFile(); !lastProjectFile.isEmpty())
+        controller.loadProject(lastProjectFile);
+
     if (!controller.start() && !windowed)
         return -1;
 

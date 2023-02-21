@@ -22,6 +22,7 @@ qt_add_executable(appscheincommander
     deviceregistervaluehelper.h deviceregistervaluehelper.cpp
     registergroupmodel.h registergroupmodel.cpp
     projectloader.h projectloader.cpp
+    scheincommandersettings.h scheincommandersettings.cpp
 )
 
 qt_add_qml_module(appscheincommander

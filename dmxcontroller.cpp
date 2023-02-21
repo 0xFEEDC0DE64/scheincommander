@@ -9,8 +9,9 @@
 
 #include "projectloader.h"
 
-DmxController::DmxController(QObject *parent) :
+DmxController::DmxController(ScheinCommanderSettings &settings, QObject *parent) :
     QObject{parent},
+    m_settings{settings},
     m_thread{*this},
     m_lastInfo{QDateTime::currentDateTime()},
     m_counter{},
@@ -85,26 +86,65 @@ DmxController::DmxController(QObject *parent) :
             }
         },
         .devices {
-            { .id=0,  .name="Lampe 1",       .deviceTypeId=4, .address=1  },
-            { .id=1,  .name="Lampe 2",       .deviceTypeId=4, .address=8  },
-            { .id=2,  .name="Lampe 3",       .deviceTypeId=4, .address=15 },
-            { .id=3,  .name="Lampe 4",       .deviceTypeId=4, .address=22 },
-            { .id=4,  .name="Lampe 5",       .deviceTypeId=4, .address=29 },
-            { .id=5,  .name="Lampe 6",       .deviceTypeId=4, .address=36 },
-            { .id=6,  .name="Lampe 7",       .deviceTypeId=4, .address=43 },
-            { .id=7,  .name="Lampe 8",       .deviceTypeId=4, .address=50 },
-            { .id=8,  .name="Lampe 9",       .deviceTypeId=4, .address=57 },
-            { .id=9,  .name="Lampe 10",      .deviceTypeId=4, .address=64 },
-            { .id=10, .name="Lampe 11",      .deviceTypeId=4, .address=71 },
-            { .id=11, .name="Lampe 12",      .deviceTypeId=4, .address=78 },
-            { .id=12, .name="Lampe 13",      .deviceTypeId=4, .address=85 },
-            { .id=13, .name="Test 1",        .deviceTypeId=1, .address=95 },
-            { .id=14, .name="Test 2",        .deviceTypeId=2, .address=105 },
-            { .id=15, .name="Moving Head 1", .deviceTypeId=0, .address=115 },
-            { .id=16, .name="Moving Head 2", .deviceTypeId=0, .address=131 },
-            { .id=17, .name="Moving Head 3", .deviceTypeId=0, .address=147 },
-            { .id=18, .name="Moving Head 4", .deviceTypeId=0, .address=163 },
-            { .id=19, .name="Nebelmaschine", .deviceTypeId=3, .address=179 }
+            { .id=0,   .name="Lampe 1",        .deviceTypeId=4, .address=1   },
+            { .id=1,   .name="Lampe 2",        .deviceTypeId=4, .address=8   },
+            { .id=2,   .name="Lampe 3",        .deviceTypeId=4, .address=15  },
+            { .id=3,   .name="Lampe 4",        .deviceTypeId=4, .address=22  },
+            { .id=4,   .name="Lampe 5",        .deviceTypeId=4, .address=29  },
+            { .id=5,   .name="Lampe 6",        .deviceTypeId=4, .address=36  },
+            { .id=6,   .name="Lampe 7",        .deviceTypeId=4, .address=43  },
+            { .id=7,   .name="Lampe 8",        .deviceTypeId=4, .address=50  },
+            { .id=8,   .name="Lampe 9",        .deviceTypeId=4, .address=57  },
+            { .id=9,   .name="Lampe 10",       .deviceTypeId=4, .address=64  },
+            { .id=10,  .name="Lampe 11",       .deviceTypeId=4, .address=71  },
+            { .id=11,  .name="Lampe 12",       .deviceTypeId=4, .address=78  },
+            { .id=12,  .name="Lampe 13",       .deviceTypeId=4, .address=85  },
+            { .id=13,  .name="Lampe 14",       .deviceTypeId=4, .address=92  },
+            { .id=14,  .name="Lampe 15",       .deviceTypeId=4, .address=99  },
+            { .id=15,  .name="Lampe 16",       .deviceTypeId=4, .address=106 },
+            { .id=16,  .name="Lampe 17",       .deviceTypeId=4, .address=113 },
+            { .id=17,  .name="Lampe 18",       .deviceTypeId=4, .address=120 },
+            { .id=18,  .name="Lampe 19",       .deviceTypeId=4, .address=127 },
+            { .id=19,  .name="Lampe 20",       .deviceTypeId=4, .address=134 },
+            { .id=20,  .name="Lampe 21",       .deviceTypeId=4, .address=141 },
+            { .id=21,  .name="Lampe 22",       .deviceTypeId=4, .address=148 },
+            { .id=22,  .name="Lampe 23",       .deviceTypeId=4, .address=155 },
+            { .id=23,  .name="Lampe 24",       .deviceTypeId=4, .address=162 },
+            { .id=24,  .name="Lampe 25",       .deviceTypeId=4, .address=169 },
+            { .id=25,  .name="Lampe 26",       .deviceTypeId=4, .address=176 },
+            { .id=26,  .name="Lampe 27",       .deviceTypeId=4, .address=183 },
+            { .id=27,  .name="Lampe 28",       .deviceTypeId=4, .address=190 },
+            { .id=28,  .name="Lampe 29",       .deviceTypeId=4, .address=197 },
+            { .id=29,  .name="Lampe 30",       .deviceTypeId=4, .address=204 },
+            { .id=30,  .name="Lampe 31",       .deviceTypeId=4, .address=211 },
+            { .id=31,  .name="Lampe 32",       .deviceTypeId=4, .address=218 },
+            { .id=32,  .name="Lampe 33",       .deviceTypeId=4, .address=225 },
+            { .id=33,  .name="Lampe 34",       .deviceTypeId=4, .address=232 },
+            { .id=34,  .name="Lampe 35",       .deviceTypeId=4, .address=239 },
+            { .id=35,  .name="Lampe 36",       .deviceTypeId=4, .address=246 },
+            { .id=36,  .name="Lampe 37",       .deviceTypeId=4, .address=253 },
+            { .id=37,  .name="Lampe 38",       .deviceTypeId=4, .address=260 },
+            { .id=38,  .name="Lampe 39",       .deviceTypeId=4, .address=267 },
+            { .id=39,  .name="Lampe 40",       .deviceTypeId=4, .address=274 },
+            { .id=40,  .name="Lampe 41",       .deviceTypeId=4, .address=281 },
+            { .id=41,  .name="Lampe 42",       .deviceTypeId=4, .address=288 },
+            { .id=42,  .name="Lampe 43",       .deviceTypeId=4, .address=295 },
+            { .id=43,  .name="Lampe 44",       .deviceTypeId=4, .address=302 },
+            { .id=44,  .name="Lampe 45",       .deviceTypeId=4, .address=309 },
+            { .id=45,  .name="Lampe 46",       .deviceTypeId=4, .address=316 },
+            { .id=46,  .name="Lampe 47",       .deviceTypeId=4, .address=323 },
+            { .id=47,  .name="Lampe 48",       .deviceTypeId=4, .address=330 },
+            { .id=48,  .name="Lampe 49",       .deviceTypeId=4, .address=337 },
+            { .id=49,  .name="Lampe 50",       .deviceTypeId=4, .address=344 },
+            { .id=50,  .name="Lampe 51",       .deviceTypeId=4, .address=351 },
+            { .id=51,  .name="Lampe 52",       .deviceTypeId=4, .address=358 },
+//            { .id=13, .name="Test 1",        .deviceTypeId=1, .address=95 },
+//            { .id=14, .name="Test 2",        .deviceTypeId=2, .address=105 },
+//            { .id=15, .name="Moving Head 1", .deviceTypeId=0, .address=115 },
+//            { .id=16, .name="Moving Head 2", .deviceTypeId=0, .address=131 },
+//            { .id=17, .name="Moving Head 3", .deviceTypeId=0, .address=147 },
+//            { .id=18, .name="Moving Head 4", .deviceTypeId=0, .address=163 },
+//            { .id=19, .name="Nebelmaschine", .deviceTypeId=3, .address=179 }
         },
         .registerGroups {
             { .id=0,  .name="Alle Dimmer" },
@@ -130,81 +170,8 @@ DmxController::DmxController(QObject *parent) :
 {
 }
 
-bool DmxController::loadProject(QString name)
-{
-    QFile readJsonFile(name);
-    if (!readJsonFile.exists())
-    {
-        qDebug() << "Project file does not exist";
-        return false;
-    }
-
-    if (!readJsonFile.open(QIODevice::ReadOnly))
-    {
-        qDebug() << "Error opening project file: " << readJsonFile.errorString();
-        return false;
-    }
-
-    QByteArray json = readJsonFile.readAll();
-    if (json.size() == 0)
-    {
-        qDebug() << "Error reading project file";
-        return false;
-    }
-
-    QJsonParseError error;
-    QJsonDocument jd = QJsonDocument::fromJson(json, &error);
-    if (jd.isNull())
-    {
-        qDebug() << "Error parsing JSON: " << error.errorString();
-        return false;
-    }
-
-    if (auto proj = ProjectLoader::loadProject(jd); proj)
-    {
-        m_lightProject = proj.value();
-    }
-    else
-    {
-        qDebug() << proj.error();
-        return false;
-    }
-
-    return true;
-}
-
-bool DmxController::saveProject(QString name)
-{
-    QFile jsonFile(name);
-    if (!jsonFile.open(QIODevice::ReadWrite))
-    {
-        qDebug() << "Error opening file: " << jsonFile.errorString();
-        return false;
-    }
-
-    auto proj = ProjectLoader::saveProject(m_lightProject);
-    if (!proj)
-    {
-        qDebug() << proj.error();
-        return false;
-    }
-
-    QByteArray json = proj.value().toJson();
-    if (jsonFile.write(json) != json.size())
-    {
-        qDebug() << "Error writing file: " << jsonFile.errorString();
-        return false;
-    }
-
-    return true;
-}
-
 bool DmxController::start()
 {
-    saveProject("project_default.json");
-
-    loadProject("project.json");
-
     m_serialPort.setPortName("/dev/ttyAMA0");
     if (!m_serialPort.setBaudRate(250000))
     {
@@ -240,6 +207,81 @@ bool DmxController::start()
     m_thread.start(QThread::TimeCriticalPriority);
 
     return true;
+}
+
+bool DmxController::loadProject(const QString &name)
+{
+    QFile file{name};
+    if (!file.open(QIODevice::ReadOnly))
+    {
+        qDebug() << "Error opening project file: " << file.errorString();
+        return false;
+    }
+
+    QByteArray json = file.readAll();
+    if (json.size() == 0)
+    {
+        qDebug() << "Error reading project file";
+        return false;
+    }
+
+    QJsonParseError error;
+    QJsonDocument jd = QJsonDocument::fromJson(json, &error);
+    if (jd.isNull())
+    {
+        qDebug() << "Error parsing JSON: " << error.errorString();
+        return false;
+    }
+
+    if (auto proj = ProjectLoader::loadProject(jd); proj)
+    {
+        m_lightProject = proj.value();
+    }
+    else
+    {
+        qDebug() << proj.error();
+        return false;
+    }
+
+    return true;
+}
+
+bool DmxController::loadProject(const QUrl &url)
+{
+    return loadProject(url.toLocalFile());
+}
+
+bool DmxController::saveProject(const QString &name)
+{
+    QFile file{name};
+    if (!file.open(QIODevice::WriteOnly))
+    {
+        qDebug() << "Error opening file: " << file.errorString();
+        return false;
+    }
+
+    auto proj = ProjectLoader::saveProject(m_lightProject);
+    if (!proj)
+    {
+        qDebug() << proj.error();
+        return false;
+    }
+
+    QByteArray json = proj.value().toJson();
+    if (file.write(json) != json.size())
+    {
+        qDebug() << "Error writing file: " << file.errorString();
+        return false;
+    }
+
+    m_settings.setLastProjectFile(name);
+
+    return true;
+}
+
+bool DmxController::saveProject(const QUrl &url)
+{
+    return saveProject(url.toLocalFile());
 }
 
 void DmxController::setRegisterGroupSlider(int registerGroupId, quint8 value)
