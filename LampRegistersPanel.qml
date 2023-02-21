@@ -2,7 +2,7 @@ import QtQuick
 import QtQuick.Controls.Material
 import QtQuick.Layouts
 
-import lightcontrol
+import scheincommander
 
 Flickable {
     id: lampRegistersPanel

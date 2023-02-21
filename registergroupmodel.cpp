@@ -212,7 +212,7 @@ void RegisterGroupModel::setPattern(int n, int k, DeviceTypeRegisterType registe
 namespace {
 void registrierDenShit()
 {
-    qmlRegisterType<RegisterGroupModel>("lightcontrol", 1, 0, "RegisterGroupModel");
+    qmlRegisterType<RegisterGroupModel>("scheincommander", 1, 0, "RegisterGroupModel");
 }
 }
 Q_COREAPP_STARTUP_FUNCTION(registrierDenShit)

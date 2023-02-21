@@ -2,7 +2,7 @@ import QtQuick
 import QtQuick.Controls.Material
 import QtQuick.Layouts
 
-import lightcontrol 1.0
+import scheincommander 1.0
 
 Pane {
     property alias deviceTypeId: model.deviceTypeId

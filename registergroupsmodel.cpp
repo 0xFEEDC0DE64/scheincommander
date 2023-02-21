@@ -347,7 +347,7 @@ void RegisterGroupsModel::otherRegisterGroupNameChanged(int row, const QString &
 namespace {
 void registrierDenShit()
 {
-    qmlRegisterType<RegisterGroupsModel>("lightcontrol", 1, 0, "RegisterGroupsModel");
+    qmlRegisterType<RegisterGroupsModel>("scheincommander", 1, 0, "RegisterGroupsModel");
 }
 }
 Q_COREAPP_STARTUP_FUNCTION(registrierDenShit)

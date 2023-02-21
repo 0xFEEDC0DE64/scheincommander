@@ -8,5 +8,5 @@ mkdir build
 cd build
 cmake ..
 make -j4096
-./applightcontrol
+./appscheincommander
 ```

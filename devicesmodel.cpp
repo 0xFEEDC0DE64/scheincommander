@@ -464,7 +464,7 @@ void DevicesModel::otherDevicePositionChanged(int row, const QVector3D &position
 namespace {
 void registrierDenShit()
 {
-    qmlRegisterType<DevicesModel>("lightcontrol", 1, 0, "DevicesModel");
+    qmlRegisterType<DevicesModel>("scheincommander", 1, 0, "DevicesModel");
 }
 }
 Q_COREAPP_STARTUP_FUNCTION(registrierDenShit)

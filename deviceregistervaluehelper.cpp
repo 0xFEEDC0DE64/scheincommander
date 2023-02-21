@@ -142,7 +142,7 @@ void DeviceRegisterValueHelper::sliderStatesChanged()
 namespace {
 void registrierDenShit()
 {
-    qmlRegisterType<DeviceRegisterValueHelper>("lightcontrol", 1, 0, "DeviceRegisterValueHelper");
+    qmlRegisterType<DeviceRegisterValueHelper>("scheincommander", 1, 0, "DeviceRegisterValueHelper");
 }
 }
 Q_COREAPP_STARTUP_FUNCTION(registrierDenShit)

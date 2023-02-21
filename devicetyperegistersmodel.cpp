@@ -450,7 +450,7 @@ void DeviceTypeRegistersModel::otherDeviceTypeRegisterTypeChanged(const DeviceTy
 namespace {
 void registrierDenShit()
 {
-    qmlRegisterType<DeviceTypeRegistersModel>("lightcontrol", 1, 0, "DeviceTypeRegistersModel");
+    qmlRegisterType<DeviceTypeRegistersModel>("scheincommander", 1, 0, "DeviceTypeRegistersModel");
 }
 }
 Q_COREAPP_STARTUP_FUNCTION(registrierDenShit)

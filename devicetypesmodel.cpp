@@ -383,7 +383,7 @@ void DeviceTypesModel::otherDeviceTypeIconNameChanged(int row, const QString &na
 namespace {
 void registrierDenShit()
 {
-    qmlRegisterType<DeviceTypesModel>("lightcontrol", 1, 0, "DeviceTypesModel");
+    qmlRegisterType<DeviceTypesModel>("scheincommander", 1, 0, "DeviceTypesModel");
 }
 }
 Q_COREAPP_STARTUP_FUNCTION(registrierDenShit)

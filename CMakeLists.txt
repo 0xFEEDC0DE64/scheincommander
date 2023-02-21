@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.16)
 
-project(lightcontrol VERSION 0.1 LANGUAGES CXX)
+project(scheincommander VERSION 0.9 LANGUAGES CXX)
 
 set(CMAKE_AUTOMOC ON)
 #set(CMAKE_CXX_STANDARD 23)
@@ -10,7 +10,7 @@ add_compile_options(-std=c++2b)
 
 find_package(Qt6 6.2 REQUIRED COMPONENTS SerialPort Quick)
 
-qt_add_executable(applightcontrol
+qt_add_executable(appscheincommander
     main.cpp
     devicetypesmodel.h devicetypesmodel.cpp
     dmxcontroller.h dmxcontroller.cpp
@@ -24,8 +24,8 @@ qt_add_executable(applightcontrol
     projectloader.h projectloader.cpp
 )
 
-qt_add_qml_module(applightcontrol
-    URI lightcontrol
+qt_add_qml_module(appscheincommander
+    URI scheincommander
     VERSION 1.0
     RESOURCES
         icons/movinghead.png
@@ -55,7 +55,9 @@ qt_add_qml_module(applightcontrol
         AnimatedStackView.qml
 )
 
-set_target_properties(applightcontrol PROPERTIES
+add_definitions(-DCMAKE_PROJECT_VERSION=${CMAKE_PROJECT_VERSION})
+
+set_target_properties(appscheincommander PROPERTIES
     MACOSX_BUNDLE_GUI_IDENTIFIER my.example.com
     MACOSX_BUNDLE_BUNDLE_VERSION ${PROJECT_VERSION}
     MACOSX_BUNDLE_SHORT_VERSION_STRING ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
@@ -63,12 +65,12 @@ set_target_properties(applightcontrol PROPERTIES
     WIN32_EXECUTABLE TRUE
 )
 
-target_link_libraries(applightcontrol
+target_link_libraries(appscheincommander
     PRIVATE
         Qt6::SerialPort
         Qt6::Quick
 )
 
-install(TARGETS applightcontrol
+install(TARGETS appscheincommander
     BUNDLE DESTINATION .
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})

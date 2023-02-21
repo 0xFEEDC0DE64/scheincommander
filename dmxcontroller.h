@@ -18,6 +18,7 @@ public:
 
     bool loadProject(QString name);
     bool saveProject(QString name);
+
     bool start();
 
     Q_INVOKABLE void setRegisterGroupSlider(int registerGroupId, quint8 value);

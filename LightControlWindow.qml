@@ -14,7 +14,7 @@ ApplicationWindow {
 
     FontLoader {
         id: materialIcons
-        source: "qrc:/lightcontrol/ui-icons/MaterialIcons-Regular.ttf"
+        source: "qrc:/scheincommander/ui-icons/MaterialIcons-Regular.ttf"
     }
 
     ColumnLayout {

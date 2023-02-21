@@ -130,7 +130,8 @@ DmxController::DmxController(QObject *parent) :
 {
 }
 
-bool DmxController::loadProject(QString name) {
+bool DmxController::loadProject(QString name)
+{
     QFile readJsonFile(name);
     if (!readJsonFile.exists())
     {

@@ -5,6 +5,8 @@
 #include <QDebug>
 #include "dmxcontroller.h"
 
+#define STR(x) #x
+
 int main(int argc, char *argv[])
 {
     qSetMessagePattern(QStringLiteral("%{time dd.MM.yyyy HH:mm:ss.zzz} "
@@ -19,6 +21,11 @@ int main(int argc, char *argv[])
                                       "%{message}"));
 
     qputenv("QT_IM_MODULE", QByteArray("qtvirtualkeyboard"));
+
+    QCoreApplication::setOrganizationDomain("com.büro");
+    QCoreApplication::setOrganizationName("büro");
+    QCoreApplication::setApplicationName("scheincommander");
+    QCoreApplication::setApplicationVersion(STR(CMAKE_PROJECT_VERSION));
 
     QGuiApplication app{argc, argv};
 
@@ -49,7 +56,7 @@ int main(int argc, char *argv[])
     engine.rootContext()->setContextProperty("__controller", &controller);
     engine.rootContext()->setContextProperty("__windowed", windowed);
 
-    const QUrl url{u"qrc:/lightcontrol/main.qml"_qs};
+    const QUrl url{u"qrc:/scheincommander/main.qml"_qs};
     QObject::connect(&engine, &QQmlApplicationEngine::objectCreated,
                      &app, [url](QObject *obj, const QUrl &objUrl) {
         if (!obj && url == objUrl)
