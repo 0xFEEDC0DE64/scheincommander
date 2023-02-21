@@ -13,7 +13,7 @@ class DmxController : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(int performance READ performance NOTIFY performanceChanged)
-    Q_PROPERTY(ScheinCommanderSettings* settings READ settings)
+    Q_PROPERTY(ScheinCommanderSettings* settings READ settings CONSTANT)
 
 public:
     explicit DmxController(ScheinCommanderSettings &settings, QObject *parent = nullptr);

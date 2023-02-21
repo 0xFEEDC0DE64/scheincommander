@@ -54,8 +54,8 @@ int main(int argc, char *argv[])
 
     DmxController controller{settings, &app};
 
-    if (!parser.positionalArguments().isEmpty())
-        controller.loadProject(parser.positionalArguments().first());
+    if (const auto &positionalArguments = parser.positionalArguments(); !positionalArguments.isEmpty())
+        controller.loadProject(positionalArguments.first());
     else if (const auto &lastProjectFile = settings.lastProjectFile(); !lastProjectFile.isEmpty())
         controller.loadProject(lastProjectFile);
 
