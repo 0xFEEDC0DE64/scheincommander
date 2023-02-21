@@ -128,6 +128,9 @@ ColumnLayout {
                     SpinBox {
                         id: kSpinBox
                         Layout.preferredWidth: 120
+
+                        from: 0
+                        to: nSpinBox.value - 1
                     }
 
                     ComboBox {
