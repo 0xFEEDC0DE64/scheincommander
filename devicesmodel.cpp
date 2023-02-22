@@ -7,6 +7,8 @@
 #include <QQmlEngine>
 #include <QMutexLocker>
 
+#include "iconutils.h"
+
 enum {
     IdRole = Qt::UserRole,
     DeviceTypeIdRole,
@@ -14,7 +16,9 @@ enum {
     PositionRole,
     PositionXRole,
     PositionYRole,
-    PositionZRole
+    PositionZRole,
+    IconNameRole,
+    IconUrlRole,
 };
 
 void DevicesModel::setController(DmxController *controller)
@@ -109,14 +113,30 @@ QVariant DevicesModel::data(const QModelIndex &index, int role) const
     switch (role)
     {
     case Qt::DisplayRole:
-    case Qt::EditRole:    return device.name;
-    case IdRole:          return device.id;
+    case Qt::EditRole:     return device.name;
+    case IdRole:           return device.id;
     case DeviceTypeIdRole: return device.deviceTypeId;
-    case AddressRole:     return device.address;
-    case PositionRole:    return device.position;
-    case PositionXRole:   return device.position.x();
-    case PositionYRole:   return device.position.y();
-    case PositionZRole:   return device.position.z();
+    case AddressRole:      return device.address;
+    case PositionRole:     return device.position;
+    case PositionXRole:    return device.position.x();
+    case PositionYRole:    return device.position.y();
+    case PositionZRole:    return device.position.z();
+    case IconNameRole:
+        if (const auto deviceTypePtr = m_controller->lightProject().deviceTypes.findById(device.deviceTypeId))
+            return deviceTypePtr->iconName;
+        else
+        {
+            qWarning() << "hilfe" << __LINE__;
+            return {};
+        }
+    case IconUrlRole:
+        if (const auto deviceTypePtr = m_controller->lightProject().deviceTypes.findById(device.deviceTypeId))
+            return getIconUrl(deviceTypePtr->iconName);
+        else
+        {
+            qWarning() << "hilfe" << __LINE__;
+            return {};
+        }
     }
 
     return {};
@@ -150,29 +170,35 @@ QMap<int, QVariant> DevicesModel::itemData(const QModelIndex &index) const
     }
 
     const auto &device = devices.at(index.row());
+    const auto deviceTypePtr = m_controller->lightProject().deviceTypes.findById(device.deviceTypeId);
+
     return {
-        { Qt::DisplayRole, device.name },
-        { IdRole,          device.id },
+        { Qt::DisplayRole,  device.name },
+        { IdRole,           device.id },
         { DeviceTypeIdRole, device.deviceTypeId },
-        { AddressRole,     device.address },
-        { PositionRole,    device.position },
-        { PositionXRole,   device.position.x() },
-        { PositionYRole,   device.position.y() },
-        { PositionZRole,   device.position.z() }
+        { AddressRole,      device.address },
+        { PositionRole,     device.position },
+        { PositionXRole,    device.position.x() },
+        { PositionYRole,    device.position.y() },
+        { PositionZRole,    device.position.z() },
+        { IconNameRole,     !deviceTypePtr ? QVariant{} : deviceTypePtr->iconName },
+        { IconUrlRole,      !deviceTypePtr ? QVariant{} : getIconUrl(deviceTypePtr->iconName) }
     };
 }
 
 QHash<int, QByteArray> DevicesModel::roleNames() const
 {
     return {
-        { Qt::DisplayRole, "name" },
-        { IdRole,          "id" },
+        { Qt::DisplayRole,  "name" },
+        { IdRole,           "id" },
         { DeviceTypeIdRole, "deviceTypeId" },
-        { AddressRole,     "address" },
-        { PositionRole,    "position" },
-        { PositionXRole,   "positionX" },
-        { PositionYRole,   "positionY" },
-        { PositionZRole,   "positionZ" }
+        { AddressRole,      "address" },
+        { PositionRole,     "position" },
+        { PositionXRole,    "positionX" },
+        { PositionYRole,    "positionY" },
+        { PositionZRole,    "positionZ" },
+        { IconNameRole,     "iconName" },
+        { IconUrlRole,      "iconUrl" }
     };
 }
 
