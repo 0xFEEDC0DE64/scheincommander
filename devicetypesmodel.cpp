@@ -7,9 +7,12 @@
 #include <QQmlEngine>
 #include <QMutexLocker>
 
+#include "iconutils.h"
+
 enum {
     IdRole = Qt::UserRole,
-    IconNameRole
+    IconNameRole,
+    IconUrlRole
 };
 
 void DeviceTypesModel::setController(DmxController *controller)
@@ -100,6 +103,7 @@ QVariant DeviceTypesModel::data(const QModelIndex &index, int role) const
     case Qt::EditRole: return deviceType.name;
     case IdRole:       return deviceType.id;
     case IconNameRole: return deviceType.iconName;
+    case IconUrlRole:  return getIconUrl(deviceType.iconName);
     }
 
     return {};
@@ -138,7 +142,8 @@ QMap<int, QVariant> DeviceTypesModel::itemData(const QModelIndex &index) const
     return {
         { Qt::DisplayRole, deviceType.name },
         { IdRole,          deviceType.id },
-        { IconNameRole,    deviceType.iconName }
+        { IconNameRole,    deviceType.iconName },
+        { IconUrlRole,     getIconUrl(deviceType.iconName) }
     };
 }
 
@@ -147,7 +152,8 @@ QHash<int, QByteArray> DeviceTypesModel::roleNames() const
     return {
         { Qt::DisplayRole, "name" },
         { IdRole,          "id" },
-        { IconNameRole,    "iconName" }
+        { IconNameRole,    "iconName" },
+        { IconUrlRole,     "iconUrl" }
     };
 }
 
@@ -216,7 +222,7 @@ bool DeviceTypesModel::setData(const QModelIndex &index, const QVariant &value, 
             return false;
         }
         deviceType.iconName = value.toString();
-        emit dataChanged(index, index, { IconNameRole });
+        emit dataChanged(index, index, { IconNameRole, IconUrlRole});
 
         disconnect(m_controller, &DmxController::deviceTypeIconNameChanged,
                    this, &DeviceTypesModel::otherDeviceTypeIconNameChanged);
@@ -377,7 +383,7 @@ void DeviceTypesModel::otherDeviceTypeIconNameChanged(int row, const QString &na
     }
 
     const auto index = this->index(row);
-    emit dataChanged(index, index, { IconNameRole });
+    emit dataChanged(index, index, { IconNameRole, IconUrlRole });
 }
 
 namespace {

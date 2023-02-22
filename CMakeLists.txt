@@ -29,6 +29,7 @@ qt_add_executable(appscheincommander
     registergroupmodel.h registergroupmodel.cpp
     projectloader.h projectloader.cpp
     scheincommandersettings.h scheincommandersettings.cpp
+    iconutils.h iconutils.cpp
 )
 
 qt_add_qml_module(appscheincommander
