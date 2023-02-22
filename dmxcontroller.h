@@ -26,6 +26,8 @@ public:
     Q_INVOKABLE bool saveProject(const QUrl &url);
 
     Q_INVOKABLE void setRegisterGroupSlider(int registerGroupId, quint8 value);
+    std::vector<quint8> &registerGroupStates() { return m_registerGroupStates; }
+    const std::vector<quint8> &registerGroupStates() const { return m_registerGroupStates; }
 
     LightProject &lightProject() { return m_lightProject; }
     const LightProject &lightProject() const { return m_lightProject; }

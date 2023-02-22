@@ -241,9 +241,18 @@ bool RegisterGroupsModel::insertRows(int row, int count, const QModelIndex &pare
     beginInsertRows({}, row, row+count-1);
     {
         QMutexLocker locker{&m_controller->mutex()};
-        auto iter = std::begin(registerGroups) + row;
-        for (auto i = 0; i < count; i++)
-            iter = registerGroups.insert(iter, RegisterGroupConfig{ .id=id++, .name="<neu>" }) + 1;
+
+        {
+            auto iter = std::begin(registerGroups) + row;
+            for (auto i = 0; i < count; i++)
+                iter = registerGroups.insert(iter, RegisterGroupConfig{ .id=id++, .name="<neu>" }) + 1;
+        }
+
+        if (auto &registerGroupStates = m_controller->registerGroupStates(); registerGroupStates.size() > row)
+        {
+            registerGroupStates.insert(std::begin(registerGroupStates) + row, count, {});
+//            emit m_controller->registerGroupStatesChanged(registerGroupStates);
+        }
     }
     endInsertRows();
 
@@ -293,9 +302,20 @@ bool RegisterGroupsModel::removeRows(int row, int count, const QModelIndex &pare
     beginRemoveRows({}, row, row+count-1);
     {
         QMutexLocker locker{&m_controller->mutex()};
-        auto begin = std::begin(registerGroups) + row;
-        auto end = begin + count;
-        registerGroups.erase(begin, end);
+
+        {
+            auto begin = std::begin(registerGroups) + row;
+            auto end = begin + count;
+            registerGroups.erase(begin, end);
+        }
+
+        if (auto &registerGroupStates = m_controller->registerGroupStates(); registerGroupStates.size() > row)
+        {
+            auto begin = std::begin(registerGroupStates) + row;
+            auto end = begin + std::min<size_t>(count, registerGroupStates.size() - row + count);
+            registerGroupStates.erase(begin, end);
+            //emit m_controller->registerGroupStatesChanged(registerGroupStates);
+        }
     }
     endRemoveRows();
 
