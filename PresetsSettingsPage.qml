@@ -9,7 +9,7 @@ ColumnLayout {
     property bool needsRegler: true
 
     Label {
-        text: qsTr("Register Groups Settings")
+        text: qsTr("Presets Settings")
     }
     RowLayout {
         //Layout.fillWidth: true
@@ -22,7 +22,7 @@ ColumnLayout {
             Layout.maximumWidth: 300
             Layout.fillHeight: true
 
-            model: RegisterGroupsModel {
+            model: PresetsModel {
                 id: model
                 controller: __controller
             }
@@ -90,19 +90,19 @@ ColumnLayout {
 
                 columns: 3
 
-                RegisterGroupModel {
-                    id: registerGroupModel
+                PresetModel {
+                    id: presetModel
                     controller: __controller
-                    registerGroupId: listView.currentData ? listView.currentData.id : -1
+                    presetId: listView.currentData ? listView.currentData.id : -1
                 }
 
                 Button {
                     text: qsTr('Auf Schieberegler\nunten kopieren');
-                    onPressed: registerGroupModel.copyToFaders()
+                    onPressed: presetModel.copyToFaders()
                 }
                 Button {
                     text: qsTr('Von Schieberegler\nunten kopieren');
-                    onPressed: registerGroupModel.copyFromFaders()
+                    onPressed: presetModel.copyFromFaders()
                 }
                 Item {
                     Layout.rowSpan: 2
@@ -110,11 +110,11 @@ ColumnLayout {
                 }
                 Button {
                     text: qsTr('Alle auf\n0 setzen');
-                    onPressed: registerGroupModel.setAllFadersLow()
+                    onPressed: presetModel.setAllFadersLow()
                 }
                 Button {
                     text: qsTr('Alle auf\nMaximum setzen');
-                    onPressed: registerGroupModel.setAllFadersMax()
+                    onPressed: presetModel.setAllFadersMax()
                 }
                 RowLayout {
                     Layout.columnSpan: 3
@@ -147,7 +147,7 @@ ColumnLayout {
 
                     Button {
                         text: qsTr('Set')
-                        onPressed: registerGroupModel.setPattern(nSpinBox.value, kSpinBox.value, registerTypeComboBox.currentValue, valueSlider.value)
+                        onPressed: presetModel.setPattern(nSpinBox.value, kSpinBox.value, registerTypeComboBox.currentValue, valueSlider.value)
                     }
                 }
             }

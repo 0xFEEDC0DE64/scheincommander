@@ -21,7 +21,7 @@ concept Listific = is_specialization_t<T, std::list>::value ||
                    is_specialization_t<T, std::vector>::value ||
                    std::same_as<T, DeviceTypesContainer> ||
                    std::same_as<T, DevicesContainer> ||
-                   std::same_as<T, RegisterGroupsContainer>;
+                   std::same_as<T, PresetsContainer>;
 
 template<typename T>
 concept OtherLoadableFromArray = std::same_as<T, QVector3D>;
@@ -34,7 +34,7 @@ concept LoadableFromObject = std::same_as<T, LightProject> ||
                              std::same_as<T, DeviceConfig> ||
                              std::same_as<T, DeviceTypeConfig> ||
                              std::same_as<T, DeviceTypeRegisterConfig> ||
-                             std::same_as<T, RegisterGroupConfig>;
+                             std::same_as<T, PresetConfig>;
 
 template<typename T>
 concept JsonNumber = (std::integral<T> && !std::same_as<T, bool> && !std::is_enum_v<T>) ||
@@ -161,10 +161,10 @@ std::expected<T, QString> load(const QJsonObject &json) {
         return std::unexpected(QString("devices: %1").arg(devices.error()));
     }
 
-    if (auto registerGroups = loadIfExists<decltype(lp.registerGroups)>(json, "registerGroups"); registerGroups) {
-        lp.registerGroups = std::move(registerGroups.value());
+    if (auto presets = loadIfExists<decltype(lp.presets)>(json, "presets"); presets) {
+        lp.presets = std::move(presets.value());
     } else {
-        return std::unexpected(QString("registerGroups: %1").arg(registerGroups.error()));
+        return std::unexpected(QString("presets: %1").arg(presets.error()));
     }
 
     return lp;
@@ -245,9 +245,9 @@ std::expected<T, QString> load(const QJsonObject &json) {
     return dc;
 }
 
-template<std::same_as<RegisterGroupConfig> T>
+template<std::same_as<PresetConfig> T>
 std::expected<T, QString> load(const QJsonObject &json) {
-    RegisterGroupConfig rgc;
+    PresetConfig rgc;
     if (auto val = loadIfExists<decltype(rgc.id)>(json, "id"); val) {
         rgc.id = val.value();
     } else {
@@ -392,7 +392,7 @@ std::expected<QJsonObject, QString> save(const T &val) {
     return json;
 }
 
-template<std::same_as<RegisterGroupConfig> T>
+template<std::same_as<PresetConfig> T>
 std::expected<QJsonObject, QString> save(const T &val) {
     QJsonObject json;
     if (auto id = save<decltype(val.id)>(val.id); id) {
@@ -446,10 +446,10 @@ std::expected<QJsonObject, QString> save(const T &val) {
         return std::unexpected(QString("devices: %1").arg(devices.error()));
     }
 
-    if (auto registerGroups = save<decltype(val.registerGroups)>(val.registerGroups); registerGroups) {
-        json["registerGroups"] = registerGroups.value();
+    if (auto presets = save<decltype(val.presets)>(val.presets); presets) {
+        json["presets"] = presets.value();
     } else {
-        return std::unexpected(QString("registerGroups: %1").arg(registerGroups.error()));
+        return std::unexpected(QString("presets: %1").arg(presets.error()));
     }
 
     return json;

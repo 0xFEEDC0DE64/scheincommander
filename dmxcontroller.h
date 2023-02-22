@@ -27,9 +27,9 @@ public:
     Q_INVOKABLE bool saveProject(const QString &name);
     Q_INVOKABLE bool saveProject(const QUrl &url);
 
-    Q_INVOKABLE void setRegisterGroupSlider(int registerGroupId, quint8 value);
-    std::vector<quint8> &registerGroupStates() { return m_registerGroupStates; }
-    const std::vector<quint8> &registerGroupStates() const { return m_registerGroupStates; }
+    Q_INVOKABLE void setPresetSlider(int presetId, quint8 value);
+    std::vector<quint8> &presetStates() { return m_presetStates; }
+    const std::vector<quint8> &presetStates() const { return m_presetStates; }
 
     LightProject &lightProject() { return m_lightProject; }
     const LightProject &lightProject() const { return m_lightProject; }
@@ -68,9 +68,9 @@ signals:
     void deviceAddressChanged(int row, int address);
     void devicePositionChanged(int row, const QVector3D &position);
 
-    void registerGroupInserted(int first, int last);
-    void registerGroupRemoved(int first, int last);
-    void registerGroupNameChanged(int row, const QString &name);
+    void presetInserted(int first, int last);
+    void presetRemoved(int first, int last);
+    void presetNameChanged(int row, const QString &name);
 
     void sliderStatesChanged(const sliders_state_t &sliderStates);
 
@@ -89,7 +89,7 @@ private:
     LightProject m_lightProject;
     QMutex m_mutex;
     sliders_state_t m_sliderStates;
-    std::vector<quint8> m_registerGroupStates;
+    std::vector<quint8> m_presetStates;
 
     QDateTime m_lastInfo;
     int m_counter;

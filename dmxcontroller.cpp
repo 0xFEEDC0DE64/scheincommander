@@ -159,7 +159,7 @@ DmxController::DmxController(ScheinCommanderSettings &settings, QObject *parent)
 //            { .id=18, .name="Moving Head 4", .deviceTypeId=0, .address=163 },
 //            { .id=19, .name="Nebelmaschine", .deviceTypeId=3, .address=179 }
         },
-        .registerGroups {
+        .presets {
             { .id=0,  .name="Alle Dimmer" },
             { .id=1,  .name="Alle Roten"   },
             { .id=2,  .name="Alle Grünen"  },
@@ -300,24 +300,24 @@ bool DmxController::saveProject(const QUrl &url)
     return saveProject(url.toLocalFile());
 }
 
-void DmxController::setRegisterGroupSlider(int registerGroupId, quint8 value)
+void DmxController::setPresetSlider(int presetId, quint8 value)
 {
-    const auto registerGroupPtr = m_lightProject.registerGroups.findById(registerGroupId);
-    if (!registerGroupPtr)
+    const auto presetPtr = m_lightProject.presets.findById(presetId);
+    if (!presetPtr)
     {
         qWarning() << "hilfe" << __LINE__;
         return;
     }
 
-    const auto index = registerGroupPtr - &*std::cbegin(m_lightProject.registerGroups);
+    const auto index = presetPtr - &*std::cbegin(m_lightProject.presets);
 
     {
         QMutexLocker locker{&m_mutex};
 
-        if (index >= m_registerGroupStates.size())
-            m_registerGroupStates.resize(index + 1);
+        if (index >= m_presetStates.size())
+            m_presetStates.resize(index + 1);
 
-        m_registerGroupStates[index] = value;
+        m_presetStates[index] = value;
     }
 }
 
@@ -403,17 +403,17 @@ void DmxController::sendDmxBuffer()
 
         apply(m_sliderStates, 255);
 
-        auto iter = std::cbegin(m_registerGroupStates);
-        for (const auto &registerGroup : m_lightProject.registerGroups)
+        auto iter = std::cbegin(m_presetStates);
+        for (const auto &preset : m_lightProject.presets)
         {
-            if (iter == std::cend(m_registerGroupStates))
+            if (iter == std::cend(m_presetStates))
                 break;
             if (!*iter)
             {
                 iter++;
                 continue;
             }
-            apply(registerGroup.sliders, *iter);
+            apply(preset.sliders, *iter);
             iter++;
         }
     }

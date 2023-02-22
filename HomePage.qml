@@ -32,7 +32,7 @@ Item {
         flow: Flow.TopToBottom
 
         Repeater {
-            model: RegisterGroupsModel {
+            model: PresetsModel {
                 controller: __controller
             }
 
@@ -41,7 +41,7 @@ Item {
                     text: model.name
                 }
                 DmxSlider {
-                    onValueChanged: __controller.setRegisterGroupSlider(model.id, value);
+                    onValueChanged: __controller.setPresetSlider(model.id, value);
                 }
             }
         }

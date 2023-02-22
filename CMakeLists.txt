@@ -24,9 +24,9 @@ qt_add_executable(appscheincommander
     lightproject.h lightproject.cpp
     devicesmodel.h devicesmodel.cpp
     devicetyperegistersmodel.h devicetyperegistersmodel.cpp
-    registergroupsmodel.h registergroupsmodel.cpp
+    presetsmodel.h presetsmodel.cpp
     deviceregistervaluehelper.h deviceregistervaluehelper.cpp
-    registergroupmodel.h registergroupmodel.cpp
+    presetmodel.h presetmodel.cpp
     projectloader.h projectloader.cpp
     scheincommandersettings.h scheincommandersettings.cpp
     iconutils.h iconutils.cpp
@@ -53,7 +53,7 @@ qt_add_qml_module(appscheincommander
         Vector3DField.qml
         DmxSlider.qml
         StatusBar.qml
-        RegisterGroupsSettingsPage.qml
+        PresetsSettingsPage.qml
         RegistersSettingsItem.qml
         IconComboBox.qml
         IconsModel.qml

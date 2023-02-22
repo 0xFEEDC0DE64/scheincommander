@@ -373,9 +373,9 @@ bool DevicesModel::insertRows(int row, int count, const QModelIndex &parent)
             emit m_controller->sliderStatesChanged(sliderStates);
         }
 
-        for (auto &registerGroup : m_controller->lightProject().registerGroups)
+        for (auto &preset : m_controller->lightProject().presets)
         {
-            auto &sliderStates = registerGroup.sliders;
+            auto &sliderStates = preset.sliders;
             if (sliderStates.size() > row)
             {
                 sliderStates.insert(std::begin(sliderStates) + row, count, {});
@@ -446,9 +446,9 @@ bool DevicesModel::removeRows(int row, int count, const QModelIndex &parent)
             emit m_controller->sliderStatesChanged(sliderStates);
         }
 
-        for (auto &registerGroup : m_controller->lightProject().registerGroups)
+        for (auto &preset : m_controller->lightProject().presets)
         {
-            if (auto &sliderStates = registerGroup.sliders; sliderStates.size() > row)
+            if (auto &sliderStates = preset.sliders; sliderStates.size() > row)
             {
                 auto begin = std::begin(sliderStates) + row;
                 auto end = begin + std::min<size_t>(count, sliderStates.size() - row + count);

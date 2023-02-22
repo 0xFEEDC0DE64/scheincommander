@@ -113,31 +113,31 @@ public:
 
 using sliders_state_t = std::vector<std::vector<quint8>>;
 
-struct RegisterGroupConfig
+struct PresetConfig
 {
     int id;
     QString name;
     sliders_state_t sliders;
 };
 
-class RegisterGroupsContainer : public std::vector<RegisterGroupConfig>
+class PresetsContainer : public std::vector<PresetConfig>
 {
-    using base_t = std::vector<RegisterGroupConfig>;
+    using base_t = std::vector<PresetConfig>;
 
 public:
     using base_t::base_t;
 
-    RegisterGroupConfig *findById(int id)
+    PresetConfig *findById(int id)
     {
         auto iter = std::find_if(std::begin(*this), std::end(*this),
-                                 [&id](const RegisterGroupConfig &registerGroup){ return registerGroup.id == id; });
+                                 [&id](const PresetConfig &preset){ return preset.id == id; });
         return iter != std::end(*this) ? &*iter : nullptr;
     }
 
-    const RegisterGroupConfig *findById(int id) const
+    const PresetConfig *findById(int id) const
     {
         auto iter = std::find_if(std::begin(*this), std::end(*this),
-                                 [&id](const RegisterGroupConfig &registerGroup){ return registerGroup.id == id; });
+                                 [&id](const PresetConfig &preset){ return preset.id == id; });
         return iter != std::end(*this) ? &*iter : nullptr;
     }
 };
@@ -146,5 +146,5 @@ struct LightProject
 {
     DeviceTypesContainer deviceTypes;
     DevicesContainer devices;
-    RegisterGroupsContainer registerGroups;
+    PresetsContainer presets;
 };

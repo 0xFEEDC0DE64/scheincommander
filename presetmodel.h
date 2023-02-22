@@ -4,11 +4,11 @@
 
 #include "dmxcontroller.h"
 
-class RegisterGroupModel : public QObject
+class PresetModel : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(DmxController* controller READ controller WRITE setController NOTIFY controllerChanged)
-    Q_PROPERTY(int registerGroupId READ registerGroupId WRITE setRegisterGroupId NOTIFY registerGroupIdChanged)
+    Q_PROPERTY(int presetId READ presetId WRITE setPresetId NOTIFY presetIdChanged)
 
 public:
     using QObject::QObject;
@@ -17,8 +17,8 @@ public:
     const DmxController *controller() const { return m_controller; }
     void setController(DmxController *controller);
 
-    int registerGroupId() const { return m_registerGroupId; }
-    void setRegisterGroupId(int registerGroupId);
+    int presetId() const { return m_presetId; }
+    void setPresetId(int presetId);
 
     Q_INVOKABLE void copyFromFaders();
     Q_INVOKABLE void copyToFaders();
@@ -28,9 +28,9 @@ public:
 
 signals:
     void controllerChanged(DmxController *controller);
-    void registerGroupIdChanged(int registerGroupId);
+    void presetIdChanged(int presetId);
 
 private:
     DmxController *m_controller{};
-    int m_registerGroupId{-1};
+    int m_presetId{-1};
 };

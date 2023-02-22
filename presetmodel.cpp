@@ -1,43 +1,43 @@
-#include "registergroupmodel.h"
+#include "presetmodel.h"
 
 #include <QDebug>
 #include <QCoreApplication>
 #include <QQmlEngine>
 #include <QMutexLocker>
 
-void RegisterGroupModel::setController(DmxController *controller)
+void PresetModel::setController(DmxController *controller)
 {
     if (m_controller == controller)
         return;
 
     if (m_controller)
     {
-//        disconnect(m_controller, &DmxController::registerGroupInserted,
-//                   this, &RegisterGroupsModel::otherRegisterGroupInserted);
+//        disconnect(m_controller, &DmxController::presetInserted,
+//                   this, &PresetsModel::otherPresetInserted);
     }
 
     m_controller = controller;
 
     if (m_controller)
     {
-//        connect(m_controller, &DmxController::registerGroupInserted,
-//                this, &RegisterGroupsModel::otherRegisterGroupInserted);
+//        connect(m_controller, &DmxController::presetInserted,
+//                this, &PresetsModel::otherPresetInserted);
     }
 
     emit controllerChanged(m_controller);
 }
 
-void RegisterGroupModel::setRegisterGroupId(int registerGroupId)
+void PresetModel::setPresetId(int presetId)
 {
-    if (m_registerGroupId == registerGroupId)
+    if (m_presetId == presetId)
         return;
 
-    m_registerGroupId = registerGroupId;
+    m_presetId = presetId;
 
-    emit registerGroupIdChanged(m_registerGroupId);
+    emit presetIdChanged(m_presetId);
 }
 
-void RegisterGroupModel::copyFromFaders()
+void PresetModel::copyFromFaders()
 {
     if (!m_controller)
     {
@@ -45,28 +45,28 @@ void RegisterGroupModel::copyFromFaders()
         return;
     }
 
-    if (m_registerGroupId == -1)
+    if (m_presetId == -1)
     {
         qDebug() << "hilfe" << __LINE__;
         return;
     }
 
-    auto registerGroupPtr = m_controller->lightProject().registerGroups.findById(m_registerGroupId);
-    if (!registerGroupPtr)
+    auto presetPtr = m_controller->lightProject().presets.findById(m_presetId);
+    if (!presetPtr)
     {
         qDebug() << "hilfe" << __LINE__;
         return;
     }
 
-    auto &registerGroup = *registerGroupPtr;
+    auto &preset = *presetPtr;
 
     {
         QMutexLocker locker{&m_controller->mutex()};
-        registerGroup.sliders = m_controller->sliderStates();
+        preset.sliders = m_controller->sliderStates();
     }
 }
 
-void RegisterGroupModel::copyToFaders()
+void PresetModel::copyToFaders()
 {
     if (!m_controller)
     {
@@ -74,25 +74,25 @@ void RegisterGroupModel::copyToFaders()
         return;
     }
 
-    if (m_registerGroupId == -1)
+    if (m_presetId == -1)
     {
         qDebug() << "hilfe" << __LINE__;
         return;
     }
 
-    const auto registerGroupPtr = m_controller->lightProject().registerGroups.findById(m_registerGroupId);
-    if (!registerGroupPtr)
+    const auto presetPtr = m_controller->lightProject().presets.findById(m_presetId);
+    if (!presetPtr)
     {
         qDebug() << "hilfe" << __LINE__;
         return;
     }
 
-    const auto &registerGroup = *registerGroupPtr;
+    const auto &preset = *presetPtr;
 
-    m_controller->setSliderStates(registerGroup.sliders);
+    m_controller->setSliderStates(preset.sliders);
 }
 
-void RegisterGroupModel::setAllFadersLow()
+void PresetModel::setAllFadersLow()
 {
     if (!m_controller)
     {
@@ -130,7 +130,7 @@ void RegisterGroupModel::setAllFadersLow()
     m_controller->setSliderStates(std::move(sliderStates));
 }
 
-void RegisterGroupModel::setAllFadersMax()
+void PresetModel::setAllFadersMax()
 {
     if (!m_controller)
     {
@@ -168,7 +168,7 @@ void RegisterGroupModel::setAllFadersMax()
     m_controller->setSliderStates(std::move(sliderStates));
 }
 
-void RegisterGroupModel::setPattern(int n, int k, DeviceTypeRegisterType registerType, quint8 value)
+void PresetModel::setPattern(int n, int k, DeviceTypeRegisterType registerType, quint8 value)
 {
     if (!m_controller)
     {
@@ -212,7 +212,7 @@ void RegisterGroupModel::setPattern(int n, int k, DeviceTypeRegisterType registe
 namespace {
 void registrierDenShit()
 {
-    qmlRegisterType<RegisterGroupModel>("scheincommander", 1, 0, "RegisterGroupModel");
+    qmlRegisterType<PresetModel>("scheincommander", 1, 0, "PresetModel");
 }
 }
 Q_COREAPP_STARTUP_FUNCTION(registrierDenShit)

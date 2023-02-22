@@ -4,7 +4,7 @@
 
 #include "dmxcontroller.h"
 
-class RegisterGroupsModel : public QAbstractListModel
+class PresetsModel : public QAbstractListModel
 {
     Q_OBJECT
     Q_PROPERTY(DmxController* controller READ controller WRITE setController NOTIFY controllerChanged)
@@ -29,9 +29,9 @@ signals:
     void controllerChanged(DmxController *controller);
 
 private slots:
-    void otherRegisterGroupInserted(int first, int last);
-    void otherRegisterGroupRemoved(int first, int last);
-    void otherRegisterGroupNameChanged(int row, const QString &name);
+    void otherPresetInserted(int first, int last);
+    void otherPresetRemoved(int first, int last);
+    void otherPresetNameChanged(int row, const QString &name);
 
 private:
     DmxController *m_controller{};

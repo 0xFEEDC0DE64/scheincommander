@@ -46,17 +46,17 @@ Item {
 
         Button {
             id: button2
-            text: qsTr("Register\nGroups")
+            text: qsTr("Presets")
 
             Layout.preferredWidth: 100
             Layout.preferredHeight: 100
 
-            onClicked: stackview.push(registerGroupsSettingsPage)
+            onClicked: stackview.push(presetsSettingsPage)
 
             Component {
-                id: registerGroupsSettingsPage
+                id: presetsSettingsPage
 
-                RegisterGroupsSettingsPage {
+                PresetsSettingsPage {
                 }
             }
         }
