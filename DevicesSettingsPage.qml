@@ -117,10 +117,14 @@ ColumnLayout {
         }
 
         Devices3dView {
+            id: devices3dView
+
             Layout.fillWidth: true
             Layout.fillHeight: true
 
             model: model
+            selectedItem: listView.currentIndex
+            onSelectedItemChanged: if (selectedItem != -1) listView.currentIndex = selectedItem;
         }
     }
 }

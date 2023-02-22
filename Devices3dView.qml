@@ -11,20 +11,22 @@ Item {
     property int previousMouseY: -1
     property alias model: itemModelScatterDataProxy.itemModel
 
-    ThemeColor {
-        id: dynamicColor
-        ColorAnimation on color {
-            from: "red"
-            to: "yellow"
-            duration: 2000
-            loops: Animation.Infinite
-        }
-    }
+    property alias selectedItem: scatterSeries.selectedItem
+
+//    ThemeColor {
+//        id: dynamicColor
+//        ColorAnimation on color {
+//            from: "red"
+//            to: "yellow"
+//            duration: 2000
+//            loops: Animation.Infinite
+//        }
+//    }
 
     Theme3D {
         id: dynamicColorTheme
         type: Theme3D.ThemeEbony
-        baseColors: [dynamicColor]
+//        baseColors: [dynamicColor]
         font.pointSize: 50
         labelBorderEnabled: true
         labelBackgroundColor: "gold"
@@ -50,10 +52,9 @@ Item {
         Scatter3D {
             id: scatterGraph
             inputHandler: null
-            //! [0]
             width: dataView.width
             height: dataView.height
-            theme: dynamicColorTheme
+            theme: isabelleTheme
             shadowQuality: AbstractGraph3D.ShadowQualityLow
             scene.activeCamera.yRotation: 45.0
             scene.activeCamera.xRotation: 45.0
@@ -79,11 +80,21 @@ Item {
                 }
             }
             onSelectedElementChanged: {
-                if (selectedElement >= AbstractGraph3D.ElementAxisXLabel
-                        && selectedElement <= AbstractGraph3D.ElementAxisZLabel)
-                    selectedAxisLabel = selectedElement
-                else
-                    selectedAxisLabel = -1
+                switch (selectedElement) {
+                case Scatter3D.ElementSeries:
+//                    console.log('series');
+                    break;
+                case Scatter3D.ElementAxisXLabel:
+                case Scatter3D.ElementAxisYLabel:
+                case Scatter3D.ElementAxisZLabel:
+//                    console.log('axis');
+                    if (selectedElement >= AbstractGraph3D.ElementAxisXLabel
+                            && selectedElement <= AbstractGraph3D.ElementAxisZLabel)
+                        selectedAxisLabel = selectedElement
+                    else
+                        selectedAxisLabel = -1
+                    break;
+                }
             }
         }
 
@@ -179,18 +190,18 @@ Item {
         onClicked: {
             if (autoRange) {
                 text = "Use Automatic Range"
-                scatterGraph.axisX.min = 0.3
-                scatterGraph.axisX.max = 0.7
-                scatterGraph.axisY.min = 0.3
-                scatterGraph.axisY.max = 0.7
-                scatterGraph.axisZ.min = 0.3
-                scatterGraph.axisZ.max = 0.7
+                scatterGraph.axisX.min = -10
+                scatterGraph.axisX.max = 10
+                scatterGraph.axisY.min = -10
+                scatterGraph.axisY.max = 10
+                scatterGraph.axisZ.min = -10
+                scatterGraph.axisZ.max = 10
                 autoRange = false
-                dragSpeedModifier = 200.0
+                dragSpeedModifier = 25.0
             } else {
                 text = "Use Preset Range"
                 autoRange = true
-                dragSpeedModifier = 100.0
+                dragSpeedModifier = 25.0
             }
             scatterGraph.axisX.autoAdjustRange = autoRange
             scatterGraph.axisY.autoAdjustRange = autoRange

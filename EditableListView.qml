@@ -45,6 +45,7 @@ ColumnLayout {
         Layout.fillHeight: true
 
         clip: true
+        highlightRangeMode: ListView.StrictlyEnforceRange
 
         onCountChanged: if (count === 0 && currentIndex >= 0) currentIndex = -1
 
