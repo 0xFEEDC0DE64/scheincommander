@@ -7,15 +7,15 @@ GridLayout {
 
     property vector3d value
     onValueChanged: {
-        xBox.value = value.x
-        yBox.value = value.y
-        zBox.value = value.z
+        xBox.realValue = value.x
+        yBox.realValue = value.y
+        zBox.realValue = value.z
     }
 
     signal valueModified
 
     function updateValue() {
-        const newValue = Qt.vector3d(xBox.value, yBox.value, zBox.value);
+        const newValue = Qt.vector3d(xBox.realValue, yBox.realValue, zBox.realValue);
         console.log(newValue);
         if (newValue === value)
             return;
@@ -27,26 +27,38 @@ GridLayout {
         text: qsTr('x:')
     }
 
-    SpinBox {
+    DoubleSpinBox {
         id: xBox
-        onValueModified: updateValue()
+        editable: true
+        realFrom: -1000
+        realTo: 1000
+        //stepSize: 0.01
+        onRealValueModified: updateValue()
     }
 
     Label {
         text: qsTr('y:')
     }
 
-    SpinBox {
+    DoubleSpinBox {
         id: yBox
-        onValueModified: updateValue()
+        editable: true
+        realFrom: -1000
+        realTo: 1000
+        //stepSize: 0.01
+        onRealValueModified: updateValue()
     }
 
     Label {
         text: qsTr('z:')
     }
 
-    SpinBox {
+    DoubleSpinBox {
         id: zBox
-        onValueModified: updateValue()
+        editable: true
+        realFrom: -1000
+        realTo: 1000
+        //stepSize: 0.01
+        onRealValueModified: updateValue()
     }
 }

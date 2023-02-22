@@ -39,8 +39,6 @@ qt_add_qml_module(appscheincommander
         icons/nebelmaschine.png
         icons/rgbstrahler.png
         ui-icons/MaterialIcons-Regular.ttf
-        models/cube.obj
-        textures/cubetexture.png
     QML_FILES
         main.qml
         HomePage.qml
@@ -63,6 +61,7 @@ qt_add_qml_module(appscheincommander
         AnimatedInputPanel.qml
         AnimatedStackView.qml
         Devices3dView.qml
+        DoubleSpinBox.qml
 )
 
 add_definitions(-DCMAKE_PROJECT_VERSION=${CMAKE_PROJECT_VERSION})

@@ -119,6 +119,8 @@ ColumnLayout {
         Devices3dView {
             Layout.fillWidth: true
             Layout.fillHeight: true
+
+            model: model
         }
     }
 }

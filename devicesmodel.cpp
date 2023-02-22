@@ -11,7 +11,10 @@ enum {
     IdRole = Qt::UserRole,
     DeviceTypeIdRole,
     AddressRole,
-    PositionRole
+    PositionRole,
+    PositionXRole,
+    PositionYRole,
+    PositionZRole
 };
 
 void DevicesModel::setController(DmxController *controller)
@@ -111,6 +114,9 @@ QVariant DevicesModel::data(const QModelIndex &index, int role) const
     case DeviceTypeIdRole: return device.deviceTypeId;
     case AddressRole:     return device.address;
     case PositionRole:    return device.position;
+    case PositionXRole:   return device.position.x();
+    case PositionYRole:   return device.position.y();
+    case PositionZRole:   return device.position.z();
     }
 
     return {};
@@ -149,7 +155,10 @@ QMap<int, QVariant> DevicesModel::itemData(const QModelIndex &index) const
         { IdRole,          device.id },
         { DeviceTypeIdRole, device.deviceTypeId },
         { AddressRole,     device.address },
-        { PositionRole,    device.position }
+        { PositionRole,    device.position },
+        { PositionXRole,   device.position.x() },
+        { PositionYRole,   device.position.y() },
+        { PositionZRole,   device.position.z() }
     };
 }
 
@@ -160,7 +169,10 @@ QHash<int, QByteArray> DevicesModel::roleNames() const
         { IdRole,          "id" },
         { DeviceTypeIdRole, "deviceTypeId" },
         { AddressRole,     "address" },
-        { PositionRole,    "position" }
+        { PositionRole,    "position" },
+        { PositionXRole,   "positionX" },
+        { PositionYRole,   "positionY" },
+        { PositionZRole,   "positionZ" }
     };
 }
 
@@ -273,7 +285,7 @@ bool DevicesModel::setData(const QModelIndex &index, const QVariant &value, int 
             QMutexLocker locker{&m_controller->mutex()};
             device.position = value.value<QVector3D>();
         }
-        emit dataChanged(index, index, { PositionRole });
+        emit dataChanged(index, index, { PositionRole, PositionXRole, PositionYRole, PositionZRole });
 
         disconnect(m_controller, &DmxController::devicePositionChanged,
                    this, &DevicesModel::otherDevicePositionChanged);
@@ -458,7 +470,7 @@ void DevicesModel::otherDevicePositionChanged(int row, const QVector3D &position
     }
 
     const auto index = this->index(row);
-    emit dataChanged(index, index, { PositionRole });
+    emit dataChanged(index, index, { PositionRole, PositionXRole, PositionYRole, PositionZRole });
 }
 
 namespace {

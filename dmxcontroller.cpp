@@ -9,6 +9,18 @@
 
 #include "projectloader.h"
 
+void doFun(auto &y)
+{
+    return;
+    double i{-10};
+    for (auto &x : y.devices)
+    {
+        x.position.setX(i);
+        x.position.setZ(std::sin(i / 2.) * 10.);
+        i += 20./double(y.devices.size());
+    }
+}
+
 DmxController::DmxController(ScheinCommanderSettings &settings, QObject *parent) :
     QObject{parent},
     m_settings{settings},
@@ -168,6 +180,7 @@ DmxController::DmxController(ScheinCommanderSettings &settings, QObject *parent)
         }
     }
 {
+    doFun(m_lightProject);
 }
 
 bool DmxController::start()
@@ -242,6 +255,8 @@ bool DmxController::loadProject(const QString &name)
         qDebug() << proj.error();
         return false;
     }
+
+    doFun(m_lightProject);
 
     return true;
 }
