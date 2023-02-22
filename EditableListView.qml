@@ -45,9 +45,45 @@ ColumnLayout {
         Layout.fillHeight: true
 
         clip: true
-        highlightRangeMode: ListView.StrictlyEnforceRange
+        focus: true
+//        highlightRangeMode: ListView.ApplyRange
 
         onCountChanged: if (count === 0 && currentIndex >= 0) currentIndex = -1
+
+//        displaced: Transition {
+//            NumberAnimation { properties: "x,y"; duration: 1000 }
+//        }
+
+        addDisplaced: Transition {
+            NumberAnimation { properties: "x,y"; duration: 1000 }
+        }
+        add: Transition {
+            ParallelAnimation {
+                NumberAnimation { property: "opacity"; from: 0; to: 1; duration: 1000 }
+                NumberAnimation { properties: "x"; from: 100; duration: 1000 }
+            }
+        }
+
+        move: Transition {
+            NumberAnimation { properties: "x,y"; duration: 1000 }
+        }
+        moveDisplaced: Transition {
+            NumberAnimation { properties: "x,y"; duration: 1000 }
+        }
+
+//        populate: Transition {
+//            NumberAnimation { properties: "x,y"; duration: 100 }
+//        }
+
+        remove: Transition {
+            ParallelAnimation {
+                NumberAnimation { property: "opacity"; to: 0; duration: 1000 }
+                NumberAnimation { properties: "x"; to: 100; duration: 1000 }
+            }
+        }
+        removeDisplaced: Transition {
+            NumberAnimation { properties: "x,y"; duration: 1000 }
+        }
 
         delegate: Item {
             property variant myData: model
@@ -77,6 +113,5 @@ ColumnLayout {
                 visible: index !== (listView.count - 1)
             }
         }
-        focus: true
     }
 }

@@ -412,7 +412,7 @@ bool DevicesModel::removeRows(int row, int count, const QModelIndex &parent)
             devices.erase(begin, end);
         }
 
-        if (sliders_state_t &sliderStates = m_controller->sliderStates(); sliderStates.size() >= row)
+        if (sliders_state_t &sliderStates = m_controller->sliderStates(); sliderStates.size() > row)
         {
             auto begin = std::begin(sliderStates) + row;
             auto end = begin + std::min<size_t>(count, sliderStates.size() - row + count);
@@ -422,8 +422,7 @@ bool DevicesModel::removeRows(int row, int count, const QModelIndex &parent)
 
         for (auto &registerGroup : m_controller->lightProject().registerGroups)
         {
-            auto &sliderStates = registerGroup.sliders;
-            if (sliderStates.size() >= row)
+            if (auto &sliderStates = registerGroup.sliders; sliderStates.size() > row)
             {
                 auto begin = std::begin(sliderStates) + row;
                 auto end = begin + std::min<size_t>(count, sliderStates.size() - row + count);
