@@ -334,9 +334,28 @@ bool DevicesModel::insertRows(int row, int count, const QModelIndex &parent)
     beginInsertRows({}, row, row+count-1);
     {
         QMutexLocker locker{&m_controller->mutex()};
-        auto iter = std::begin(devices) + row;
-        for (auto i = 0; i < count; i++)
-            iter = devices.insert(iter, DeviceConfig{ .id=id++, .name="<neu>", .deviceTypeId=0, .address=0, .position={} }) + 1;
+
+        {
+            auto iter = std::begin(devices) + row;
+            for (auto i = 0; i < count; i++)
+                iter = devices.insert(iter, DeviceConfig{ .id=id++, .name="<neu>", .deviceTypeId=0, .address=0, .position={} }) + 1;
+        }
+
+        if (sliders_state_t &sliderStates = m_controller->sliderStates(); sliderStates.size() > row)
+        {
+            sliderStates.insert(std::begin(sliderStates) + row, count, {});
+            emit m_controller->sliderStatesChanged(sliderStates);
+        }
+
+        for (auto &registerGroup : m_controller->lightProject().registerGroups)
+        {
+            auto &sliderStates = registerGroup.sliders;
+            if (sliderStates.size() > row)
+            {
+                sliderStates.insert(std::begin(sliderStates) + row, count, {});
+                emit m_controller->sliderStatesChanged(sliderStates);
+            }
+        }
     }
     endInsertRows();
 
@@ -386,9 +405,32 @@ bool DevicesModel::removeRows(int row, int count, const QModelIndex &parent)
     beginRemoveRows({}, row, row+count-1);
     {
         QMutexLocker locker{&m_controller->mutex()};
-        auto begin = std::begin(devices) + row;
-        auto end = begin + count;
-        devices.erase(begin, end);
+
+        {
+            auto begin = std::begin(devices) + row;
+            auto end = begin + count;
+            devices.erase(begin, end);
+        }
+
+        if (sliders_state_t &sliderStates = m_controller->sliderStates(); sliderStates.size() >= row)
+        {
+            auto begin = std::begin(sliderStates) + row;
+            auto end = begin + std::min<size_t>(count, sliderStates.size() - row + count);
+            sliderStates.erase(begin, end);
+            emit m_controller->sliderStatesChanged(sliderStates);
+        }
+
+        for (auto &registerGroup : m_controller->lightProject().registerGroups)
+        {
+            auto &sliderStates = registerGroup.sliders;
+            if (sliderStates.size() >= row)
+            {
+                auto begin = std::begin(sliderStates) + row;
+                auto end = begin + std::min<size_t>(count, sliderStates.size() - row + count);
+                sliderStates.erase(begin, end);
+                emit m_controller->sliderStatesChanged(sliderStates);
+            }
+        }
     }
     endRemoveRows();
 
