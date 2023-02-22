@@ -1,11 +1,12 @@
 #include "dmxcontroller.h"
 
-#include <unistd.h>
-#include <sys/ioctl.h>
+//#include <unistd.h>
+//#include <sys/ioctl.h>
 
 #include <QDebug>
 #include <QFile>
 #include <QMutexLocker>
+#include <QElapsedTimer>
 
 #include "projectloader.h"
 
@@ -344,6 +345,9 @@ void DmxController::sendDmxBuffer()
 
     char buf[513] {0};
 
+    QElapsedTimer timer;
+    timer.start();
+
     {
         QMutexLocker locker{&m_mutex};
 
@@ -414,6 +418,11 @@ void DmxController::sendDmxBuffer()
         }
     }
 
+    if (const auto elapsed = timer.elapsed(); elapsed > m_computeMaxElapsed)
+        m_computeMaxElapsed = elapsed;
+
+    timer.restart();
+
     m_serialPort.setBreakEnabled(true);
     QThread::usleep(88);
     m_serialPort.setBreakEnabled(false);
@@ -423,14 +432,27 @@ void DmxController::sendDmxBuffer()
     m_serialPort.flush();
 //    qDebug("%lli written", written);
 
+    if (const auto elapsed = timer.elapsed(); elapsed > m_dmxMaxElapsed)
+        m_dmxMaxElapsed = elapsed;
+
     m_counter++;
 
     if (m_lastInfo.msecsTo(now) >= 1000)
     {
         qInfo("%i per second", m_counter);
-        m_lastCounter = m_counter;
-        emit performanceChanged(m_counter);
-        m_counter = 0;
+
         m_lastInfo = now;
+
+        m_lastCounter = m_counter;
+        emit dmxFpsChanged(m_counter);
+        m_counter = 0;
+
+        m_lastDmxMaxElapsed = m_dmxMaxElapsed;
+        emit dmxMaxElapsedChanged(m_lastDmxMaxElapsed);
+        m_dmxMaxElapsed = 0;
+
+        m_lastComputeMaxElapsed = m_computeMaxElapsed;
+        emit computeMaxElapsedChanged(m_lastComputeMaxElapsed);
+        m_computeMaxElapsed = 0;
     }
 }

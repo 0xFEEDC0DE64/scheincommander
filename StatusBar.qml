@@ -67,11 +67,17 @@ Pane {
             }
         }
 
-        Label {
+        ColumnLayout {
             Layout.fillWidth: true
             Layout.fillHeight: true
 
-            text: __controller.performance + ' FPS'
+            Label {
+                text: __controller.dmxFps + ' FPS'
+            }
+
+            Label {
+                text: __controller.computeMaxElapsed + "ms / " + __controller.dmxMaxElapsed + "ms"
+            }
         }
 
         Button {

@@ -12,8 +12,10 @@
 class DmxController : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(int performance READ performance NOTIFY performanceChanged)
     Q_PROPERTY(ScheinCommanderSettings* settings READ settings CONSTANT)
+    Q_PROPERTY(int dmxFps READ dmxFps NOTIFY dmxFpsChanged)
+    Q_PROPERTY(int dmxMaxElapsed READ dmxMaxElapsed NOTIFY dmxMaxElapsedChanged)
+    Q_PROPERTY(int computeMaxElapsed READ computeMaxElapsed NOTIFY computeMaxElapsedChanged)
 
 public:
     explicit DmxController(ScheinCommanderSettings &settings, QObject *parent = nullptr);
@@ -41,11 +43,14 @@ public:
 
     ScheinCommanderSettings *settings() { return &m_settings; }
     const ScheinCommanderSettings *settings() const { return &m_settings; }
-    int performance() const { return m_lastCounter; }
+    int dmxFps() const { return m_lastCounter; }
+    int dmxMaxElapsed() const { return m_lastDmxMaxElapsed; }
+    int computeMaxElapsed() const { return m_lastComputeMaxElapsed; }
 
 signals:
-    void needToAskWhereToSaveChanged(bool needToAskWhereToSave);
-    void performanceChanged(int performance);
+    void dmxFpsChanged(int dmxFps);
+    void dmxMaxElapsedChanged(int dmxMaxElapsed);
+    void computeMaxElapsedChanged(int computeMaxElapsed);
 
     void deviceTypeInserted(int first, int last);
     void deviceTypeRemoved(int first, int last);
@@ -89,4 +94,8 @@ private:
     QDateTime m_lastInfo;
     int m_counter;
     std::atomic<int> m_lastCounter;
+    int m_dmxMaxElapsed{};
+    std::atomic<int> m_lastDmxMaxElapsed;
+    int m_computeMaxElapsed{};
+    std::atomic<int> m_lastComputeMaxElapsed;
 };
