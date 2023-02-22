@@ -5,12 +5,13 @@ import QtQuick.Layouts
 RowLayout {
     property string text
     property string iconSource
+    property bool isInsideMaterialComboBox: false
 
     id: layout
 
     Image {
-        Layout.topMargin: 15
-        Layout.bottomMargin: 15
+        Layout.topMargin: isInsideMaterialComboBox ? 15 : 9
+        Layout.bottomMargin: isInsideMaterialComboBox ? 15 : 9
         Layout.fillHeight: true
         source: layout.iconSource
         fillMode: Image.PreserveAspectFit

@@ -4,6 +4,7 @@ import QtQuick.Layouts
 
 ColumnLayout {
     property string textRole: "name"
+    property string iconSourceRole
 
     property alias model: listView.model
     property alias currentIndex: listView.currentIndex
@@ -12,6 +13,8 @@ ColumnLayout {
 
     signal addClicked(index: int)
     signal removeClicked(index: int)
+
+    id: editableListViewLayout
 
     RowLayout {
         Layout.fillWidth: true
@@ -97,8 +100,7 @@ ColumnLayout {
                 contentItem: IconChooserDelegateLayout {
                     anchors.fill: parent
                     text: model[textRole]
-                    // TODO
-                    //iconSource: comboBox.getIconUrl(index)
+                    iconSource: (model && model[iconSourceRole]) ? model[iconSourceRole] : null
                 }
                 onClicked: listView.currentIndex = index
                 down: listView.currentIndex === index

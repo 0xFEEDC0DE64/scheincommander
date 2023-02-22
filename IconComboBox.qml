@@ -33,5 +33,6 @@ ComboBox {
     contentItem: IconChooserDelegateLayout {
         text: comboBox.displayText
         iconSource: comboBox.currentIndex >= 0 ? comboBox.getIconUrl(comboBox.currentIndex) : ""
+        isInsideMaterialComboBox: true
     }
 }

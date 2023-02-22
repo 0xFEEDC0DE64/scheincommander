@@ -16,6 +16,8 @@ ColumnLayout {
         EditableListView {
             id: listView
 
+            iconSourceRole: "iconUrl"
+
             Layout.preferredWidth: 300
             Layout.maximumWidth: 300
             Layout.fillHeight: true
