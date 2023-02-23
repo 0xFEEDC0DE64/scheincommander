@@ -271,7 +271,7 @@ bool DevicesModel::setData(const QModelIndex &index, const QVariant &value, int 
             QMutexLocker locker{&m_controller->mutex()};
             device.deviceTypeId = value.toInt();
         }
-        emit dataChanged(index, index, { DeviceTypeIdRole });
+        emit dataChanged(index, index, { DeviceTypeIdRole, IconNameRole, IconUrlRole });
 
         disconnect(m_controller, &DmxController::deviceDeviceTypeIdChanged,
                    this, &DevicesModel::otherDeviceDeviceTypeIdChanged);
@@ -513,7 +513,7 @@ void DevicesModel::otherDeviceDeviceTypeIdChanged(int row, int deviceTypeId)
     }
 
     const auto index = this->index(row);
-    emit dataChanged(index, index, { DeviceTypeIdRole });
+    emit dataChanged(index, index, { DeviceTypeIdRole, IconNameRole, IconUrlRole });
 }
 
 void DevicesModel::otherDeviceAddressChanged(int row, int address)
