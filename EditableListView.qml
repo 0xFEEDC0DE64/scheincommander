@@ -14,8 +14,6 @@ ColumnLayout {
     signal addClicked(index: int)
     signal removeClicked(index: int)
 
-    id: editableListViewLayout
-
     RowLayout {
         Layout.fillWidth: true
 

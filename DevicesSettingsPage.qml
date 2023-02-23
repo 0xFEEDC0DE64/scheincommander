@@ -17,6 +17,8 @@ ColumnLayout {
         EditableListView {
             id: listView
 
+            iconSourceRole: "iconUrl"
+
             Layout.preferredWidth: 300
             Layout.maximumWidth: 300
             Layout.fillHeight: true
@@ -65,9 +67,13 @@ ColumnLayout {
         ColumnLayout {
             enabled: listView.currentIndex !== -1
 
+            Layout.preferredWidth: 400
+            Layout.maximumWidth: 400
+
             GridLayout {
-                Layout.preferredWidth: 300
-                Layout.maximumWidth: 300
+                Layout.fillWidth: true
+//                Layout.preferredWidth: 300
+//                Layout.maximumWidth: 300
 
                 columns: 2
 
@@ -85,7 +91,7 @@ ColumnLayout {
                     onTextEdited: listView.currentData.name = text
                 }
                 Label { text: qsTr("DeviceType:") }
-                ComboBox {
+                IconComboBox {
                     id: deviceTypeCombobox
                     Layout.fillWidth: true
                     model: DeviceTypesModel {
@@ -93,6 +99,7 @@ ColumnLayout {
                     }
                     textRole: "name"
                     valueRole: "id"
+                    iconSourceRole: "iconUrl"
                     currentIndex: listView.currentData ? deviceTypeCombobox.indexOfValue(listView.currentData.deviceTypeId) : -1
                     onActivated: if (listView.currentData) listView.currentData.deviceTypeId = currentValue; else console.warn('discarded');
                 }
@@ -121,6 +128,8 @@ ColumnLayout {
 
             Layout.fillWidth: true
             Layout.fillHeight: true
+//            Layout.preferredWidth: 300
+            Layout.minimumWidth: 300
 
             model: model
             selectedItem: listView.currentIndex

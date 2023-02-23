@@ -18,8 +18,8 @@ public:
 
     int rowCount(const QModelIndex &parent) const override;
     QVariant data(const QModelIndex &index, int role) const override;
-    QMap<int, QVariant> itemData(const QModelIndex &index) const override;
-    QHash<int, QByteArray> roleNames() const override;
+    Q_INVOKABLE QMap<int, QVariant> itemData(const QModelIndex &index) const override;
+    Q_INVOKABLE QHash<int, QByteArray> roleNames() const override;
 
     bool setData(const QModelIndex &index, const QVariant &value, int role) override;
     bool insertRows(int row, int count, const QModelIndex &parent) override;
