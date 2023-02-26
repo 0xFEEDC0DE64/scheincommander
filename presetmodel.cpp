@@ -62,7 +62,7 @@ void PresetModel::copyFromFaders()
 
     {
         QMutexLocker locker{&m_controller->mutex()};
-        preset.sliders = m_controller->sliderStates();
+        preset.steps = { { .sliders=m_controller->sliderStates() } };
     }
 }
 
@@ -89,7 +89,13 @@ void PresetModel::copyToFaders()
 
     const auto &preset = *presetPtr;
 
-    m_controller->setSliderStates(preset.sliders);
+    if (preset.steps.empty())
+    {
+        qDebug() << "hilfe" << __LINE__;
+        return;
+    }
+
+    m_controller->setSliderStates(preset.steps.front().sliders);
 }
 
 void PresetModel::setAllFadersLow()

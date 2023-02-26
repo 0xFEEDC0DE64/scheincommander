@@ -113,11 +113,16 @@ public:
 
 using sliders_state_t = std::vector<std::vector<quint8>>;
 
+struct PresetStepConfig
+{
+    sliders_state_t sliders;
+};
+
 struct PresetConfig
 {
     int id;
     QString name;
-    sliders_state_t sliders;
+    std::vector<PresetStepConfig> steps;
 };
 
 class PresetsContainer : public std::vector<PresetConfig>

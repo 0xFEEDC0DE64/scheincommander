@@ -34,7 +34,8 @@ concept LoadableFromObject = std::same_as<T, LightProject> ||
                              std::same_as<T, DeviceConfig> ||
                              std::same_as<T, DeviceTypeConfig> ||
                              std::same_as<T, DeviceTypeRegisterConfig> ||
-                             std::same_as<T, PresetConfig>;
+                             std::same_as<T, PresetConfig> ||
+                             std::same_as<T, PresetStepConfig>;
 
 template<typename T>
 concept JsonNumber = (std::integral<T> && !std::same_as<T, bool> && !std::is_enum_v<T>) ||
@@ -245,6 +246,17 @@ std::expected<T, QString> load(const QJsonObject &json) {
     return dc;
 }
 
+template<std::same_as<PresetStepConfig> T>
+std::expected<T, QString> load(const QJsonObject &json) {
+    PresetStepConfig rgc;
+    if (auto val = loadIfExists<decltype(rgc.sliders)>(json, "sliders"); val) {
+        rgc.sliders = val.value();
+    } else {
+        return std::unexpected(QString("sliders: %1").arg(val.error()));
+    }
+    return rgc;
+}
+
 template<std::same_as<PresetConfig> T>
 std::expected<T, QString> load(const QJsonObject &json) {
     PresetConfig rgc;
@@ -258,10 +270,10 @@ std::expected<T, QString> load(const QJsonObject &json) {
     } else {
         return std::unexpected(QString("name: %1").arg(val.error()));
     }
-    if (auto val = loadIfExists<decltype(rgc.sliders)>(json, "sliders"); val) {
-        rgc.sliders = val.value();
+    if (auto val = loadIfExists<decltype(rgc.steps)>(json, "steps"); val) {
+        rgc.steps = val.value();
     } else {
-        return std::unexpected(QString("sliders: %1").arg(val.error()));
+        return std::unexpected(QString("steps: %1").arg(val.error()));
     }
 
     return rgc;
@@ -392,6 +404,17 @@ std::expected<QJsonObject, QString> save(const T &val) {
     return json;
 }
 
+template<std::same_as<PresetStepConfig> T>
+std::expected<QJsonObject, QString> save(const T &val) {
+    QJsonObject json;
+    if (auto sliders = save<decltype(val.sliders)>(val.sliders); sliders) {
+        json["sliders"] = sliders.value();
+    } else {
+        return std::unexpected(QString("sliders: %1").arg(sliders.error()));
+    }
+    return json;
+}
+
 template<std::same_as<PresetConfig> T>
 std::expected<QJsonObject, QString> save(const T &val) {
     QJsonObject json;
@@ -405,10 +428,10 @@ std::expected<QJsonObject, QString> save(const T &val) {
     } else {
         return std::unexpected(QString("name: %1").arg(name.error()));
     }
-    if (auto sliders = save<decltype(val.sliders)>(val.sliders); sliders) {
-        json["sliders"] = sliders.value();
+    if (auto steps = save<decltype(val.steps)>(val.steps); steps) {
+        json["steps"] = steps.value();
     } else {
-        return std::unexpected(QString("sliders: %1").arg(sliders.error()));
+        return std::unexpected(QString("steps: %1").arg(steps.error()));
     }
 
     return json;

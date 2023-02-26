@@ -375,11 +375,14 @@ bool DevicesModel::insertRows(int row, int count, const QModelIndex &parent)
 
         for (auto &preset : m_controller->lightProject().presets)
         {
-            auto &sliderStates = preset.sliders;
-            if (sliderStates.size() > row)
+            for (auto &step : preset.steps)
             {
-                sliderStates.insert(std::begin(sliderStates) + row, count, {});
-                emit m_controller->sliderStatesChanged(sliderStates);
+                auto &sliderStates = step.sliders;
+                if (sliderStates.size() > row)
+                {
+                    sliderStates.insert(std::begin(sliderStates) + row, count, {});
+                    emit m_controller->sliderStatesChanged(sliderStates);
+                }
             }
         }
     }
@@ -448,13 +451,14 @@ bool DevicesModel::removeRows(int row, int count, const QModelIndex &parent)
 
         for (auto &preset : m_controller->lightProject().presets)
         {
-            if (auto &sliderStates = preset.sliders; sliderStates.size() > row)
-            {
-                auto begin = std::begin(sliderStates) + row;
-                auto end = begin + std::min<size_t>(count, sliderStates.size() - row + count);
-                sliderStates.erase(begin, end);
-                emit m_controller->sliderStatesChanged(sliderStates);
-            }
+            for (auto &step : preset.steps)
+                if (auto &sliderStates = step.sliders; sliderStates.size() > row)
+                {
+                    auto begin = std::begin(sliderStates) + row;
+                    auto end = begin + std::min<size_t>(count, sliderStates.size() - row + count);
+                    sliderStates.erase(begin, end);
+                    emit m_controller->sliderStatesChanged(sliderStates);
+                }
         }
     }
     endRemoveRows();

@@ -10,18 +10,6 @@
 
 #include "projectloader.h"
 
-void doFun(auto &y)
-{
-    return;
-    double i{-10};
-    for (auto &x : y.devices)
-    {
-        x.position.setX(i);
-        x.position.setZ(std::sin(i / 2.) * 10.);
-        i += 20./double(y.devices.size());
-    }
-}
-
 DmxController::DmxController(ScheinCommanderSettings &settings, QObject *parent) :
     QObject{parent},
     m_settings{settings},
@@ -181,7 +169,6 @@ DmxController::DmxController(ScheinCommanderSettings &settings, QObject *parent)
         }
     }
 {
-    doFun(m_lightProject);
 }
 
 bool DmxController::start()
@@ -253,11 +240,9 @@ bool DmxController::loadProject(const QString &name)
     }
     else
     {
-        qDebug() << proj.error();
+        qFatal("loading project failed: %s", qPrintable(proj.error()));
         return false;
     }
-
-    doFun(m_lightProject);
 
     return true;
 }
@@ -342,6 +327,7 @@ void DmxController::setSliderStates(const sliders_state_t &sliderStates)
 void DmxController::sendDmxBuffer()
 {
     const auto now = QDateTime::currentDateTime();
+    const auto secsSinceEpoch = now.toSecsSinceEpoch();
 
     char buf[513] {0};
 
@@ -413,7 +399,14 @@ void DmxController::sendDmxBuffer()
                 iter++;
                 continue;
             }
-            apply(preset.sliders, *iter);
+            if (preset.steps.empty())
+            {
+                iter++;
+                continue;
+            }
+
+            const auto &sliders = preset.steps[secsSinceEpoch % preset.steps.size()].sliders;
+            apply(sliders, *iter);
             iter++;
         }
     }
