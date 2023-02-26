@@ -1,3 +1,5 @@
+#include <type_traits>
+
 #include "projectloader.h"
 
 namespace ProjectLoader {
@@ -45,7 +47,11 @@ concept JsonNumber = (std::integral<T> && !std::same_as<T, bool> && !std::is_enu
 template<typename T>
 concept LoadableQEnum = std::is_enum_v<T>;
 
+template<typename T, typename U>
+concept SameAsQualified = std::same_as<std::remove_cv_t<T>, U>;
+
 } // namespace detail
+
 
 // forward declarations for loading stuff from QJsonValue
 template <detail::LoadableFromObject T>
@@ -54,6 +60,55 @@ template <detail::LoadableFromArray T>
 std::expected<T, QString> load(const QJsonValue &json);
 template<detail::JsonNumber T>
 std::expected<T, QString> load(const QJsonValue &json);
+
+
+// iterateMembers stuff
+template<detail::SameAsQualified<LightProject> T, typename CB>
+void iterateMembers(T &ref, CB &&cb)
+{
+    cb("deviceTypes", ref.deviceTypes);
+    cb("devices", ref.devices);
+    cb("presets", ref.presets);
+}
+
+template<detail::SameAsQualified<DeviceTypeConfig> T, typename CB>
+void iterateMembers(T &ref, CB &&cb)
+{
+    cb("id", ref.id);
+    cb("name", ref.name);
+    cb("iconName", ref.iconName);
+    cb("registers", ref.registers);
+}
+
+template<detail::SameAsQualified<DeviceConfig> T, typename CB>
+void iterateMembers(T &ref, CB &&cb)
+{
+    cb("id", ref.id);
+    cb("name", ref.name);
+    cb("deviceTypeId", ref.deviceTypeId);
+    cb("address", ref.address);
+    cb("position", ref.position);
+}
+
+template<detail::SameAsQualified<PresetConfig> T, typename CB>
+void iterateMembers(T &ref, CB &&cb)
+{
+    cb("id", ref.id);
+    cb("name", ref.name);
+    cb("steps", ref.steps);
+}
+
+template<detail::SameAsQualified<DeviceTypeRegisterConfig> T, typename CB>
+void iterateMembers(T &ref, CB &&cb)
+{
+    cb("type", ref.type);
+}
+
+template<detail::SameAsQualified<PresetStepConfig> T, typename CB>
+void iterateMembers(T &ref, CB &&cb)
+{
+    cb("sliders", ref.sliders);
+}
 
 template<detail::Listific T>
 std::expected<T, QString> load(const QJsonArray &json) {
@@ -146,137 +201,26 @@ std::expected<T, QString> loadIfExists(const QJsonObject &json, const QString &k
     }
 }
 
-template<std::same_as<LightProject> T>
+template<detail::LoadableFromObject T>
 std::expected<T, QString> load(const QJsonObject &json) {
-    LightProject lp;
+    T t;
+    std::optional<std::unexpected<QString>> error;
 
-    if (auto deviceTypes = loadIfExists<decltype(lp.deviceTypes)>(json, "deviceTypes"); deviceTypes) {
-        lp.deviceTypes = std::move(deviceTypes.value());
-    } else {
-        return std::unexpected(QString("deviceTypes: %1").arg(deviceTypes.error()));
-    }
+    iterateMembers(t, [&json, &error] (const char *name, auto &field) {
+        if (error)
+            return;
 
-    if (auto devices = loadIfExists<decltype(lp.devices)>(json, "devices"); devices) {
-        lp.devices = std::move(devices.value());
-    } else {
-        return std::unexpected(QString("devices: %1").arg(devices.error()));
-    }
+        if (auto result = loadIfExists<typename std::remove_cvref_t<decltype(field)>>(json, name)) {
+            field = std::move(result.value());
+        } else {
+            error = std::unexpected(QString("%1: %2").arg(name).arg(result.error()));
+        }
+    });
 
-    if (auto presets = loadIfExists<decltype(lp.presets)>(json, "presets"); presets) {
-        lp.presets = std::move(presets.value());
-    } else {
-        return std::unexpected(QString("presets: %1").arg(presets.error()));
-    }
+    if (error)
+        return *error;
 
-    return lp;
-}
-
-template<std::same_as<DeviceTypeConfig> T>
-std::expected<T, QString> load(const QJsonObject &json) {
-    DeviceTypeConfig dtc;
-
-    if (auto val = loadIfExists<decltype(dtc.id)>(json, "id"); val) {
-        dtc.id = val.value();
-    } else {
-        return std::unexpected(QString("id: %1").arg(val.error()));
-    }
-
-    if (auto val = loadIfExists<decltype(dtc.name)>(json, "name"); val) {
-        dtc.name = val.value();
-    } else {
-        return std::unexpected(QString("name: %1").arg(val.error()));
-    }
-
-    if (auto val = loadIfExists<decltype(dtc.iconName)>(json, "iconName"); val) {
-        dtc.iconName = val.value();
-    } else {
-        return std::unexpected(QString("iconName: %1").arg(val.error()));
-    }
-
-    if (auto val = loadIfExists<decltype(dtc.registers)>(json, "registers"); val) {
-        dtc.registers = std::move(val.value());
-    } else {
-        return std::unexpected(QString("registers: %1").arg(val.error()));
-    }
-
-    return dtc;
-}
-
-template<std::same_as<DeviceTypeRegisterConfig> T>
-std::expected<T, QString> load(const QJsonObject &json) {
-    DeviceTypeRegisterConfig dtrc;
-    if (auto val = loadIfExists<decltype(dtrc.type)>(json, "type"); val) {
-        dtrc.type = val.value();
-    } else {
-        return std::unexpected(QString("type: %1").arg(val.error()));
-    }
-
-    return dtrc;
-}
-
-template<std::same_as<DeviceConfig> T>
-std::expected<T, QString> load(const QJsonObject &json) {
-    DeviceConfig dc;
-    if (auto val = loadIfExists<decltype(dc.id)>(json, "id"); val) {
-        dc.id = val.value();
-    } else {
-        return std::unexpected(QString("id: %1").arg(val.error()));
-    }
-    if (auto val = loadIfExists<decltype(dc.name)>(json, "name"); val) {
-        dc.name = val.value();
-    } else {
-        return std::unexpected(QString("name: %1").arg(val.error()));
-    }
-    if (auto val = loadIfExists<decltype(dc.deviceTypeId)>(json, "deviceTypeId"); val) {
-        dc.deviceTypeId = val.value();
-    } else {
-        return std::unexpected(QString("deviceTypeId: %1").arg(val.error()));
-    }
-    if (auto val = loadIfExists<decltype(dc.address)>(json, "address"); val) {
-        dc.address = val.value();
-    } else {
-        return std::unexpected(QString("address: %1").arg(val.error()));
-    }
-    if (auto val = loadIfExists<decltype(dc.position)>(json, "position"); val) {
-        dc.position = val.value();
-    } else {
-        return std::unexpected(QString("position: %1").arg(val.error()));
-    }
-
-    return dc;
-}
-
-template<std::same_as<PresetStepConfig> T>
-std::expected<T, QString> load(const QJsonObject &json) {
-    PresetStepConfig rgc;
-    if (auto val = loadIfExists<decltype(rgc.sliders)>(json, "sliders"); val) {
-        rgc.sliders = val.value();
-    } else {
-        return std::unexpected(QString("sliders: %1").arg(val.error()));
-    }
-    return rgc;
-}
-
-template<std::same_as<PresetConfig> T>
-std::expected<T, QString> load(const QJsonObject &json) {
-    PresetConfig rgc;
-    if (auto val = loadIfExists<decltype(rgc.id)>(json, "id"); val) {
-        rgc.id = val.value();
-    } else {
-        return std::unexpected(QString("id: %1").arg(val.error()));
-    }
-    if (auto val = loadIfExists<decltype(rgc.name)>(json, "name"); val) {
-        rgc.name = val.value();
-    } else {
-        return std::unexpected(QString("name: %1").arg(val.error()));
-    }
-    if (auto val = loadIfExists<decltype(rgc.steps)>(json, "steps"); val) {
-        rgc.steps = val.value();
-    } else {
-        return std::unexpected(QString("steps: %1").arg(val.error()));
-    }
-
-    return rgc;
+    return t;
 }
 
 template <detail::LoadableFromObject T>
@@ -329,110 +273,24 @@ std::expected<QJsonValue, QString> save(const T &val) {
     }
 }
 
-template<std::same_as<DeviceTypeConfig> T>
+template<detail::LoadableFromObject T>
 std::expected<QJsonObject, QString> save(const T &val) {
     QJsonObject json;
+    std::optional<std::unexpected<QString>> error;
 
-    if (auto id = save<decltype(val.id)>(val.id); id) {
-        json["id"] = id.value();
-    } else {
-        return std::unexpected(QString("id: %1").arg(id.error()));
-    }
+    iterateMembers(val, [&json, &error] (const char *name, auto &field) {
+        if (error)
+            return;
 
-    if (auto name = save<decltype(val.name)>(val.name); name) {
-        json["name"] = name.value();
-    } else {
-        return std::unexpected(QString("name: %1").arg(name.error()));
-    }
+        if (auto result = save<typename std::remove_cvref_t<decltype(field)>>(field)) {
+            json[name] = result.value();
+        } else {
+            error = std::unexpected(QString("%1: %2").arg(name).arg(result.error()));
+        }
+    });
 
-    if (auto iconName = save<decltype(val.iconName)>(val.iconName); iconName) {
-        json["iconName"] = iconName.value();
-    } else {
-        return std::unexpected(QString("iconName: %1").arg(iconName.error()));
-    }
-
-    if (auto registers = save<decltype(val.registers)>(val.registers); registers) {
-        json["registers"] = registers.value();
-    } else {
-        return std::unexpected(QString("registers: %1").arg(registers.error()));
-    }
-
-    return json;
-}
-
-template<std::same_as<DeviceTypeRegisterConfig> T>
-std::expected<QJsonObject, QString> save(const T &val) {
-    QJsonObject json;
-    if (auto type = save<decltype(val.type)>(val.type); type) {
-        json["type"] = type.value();
-    } else {
-        return std::unexpected(QString("type: %1").arg(type.error()));
-    }
-
-    return json;
-}
-
-template<std::same_as<DeviceConfig> T>
-std::expected<QJsonObject, QString> save(const T &val) {
-    QJsonObject json;
-    if (auto id = save<decltype(val.id)>(val.id); id) {
-        json["id"] = id.value();
-    } else {
-        return std::unexpected(QString("id: %1").arg(id.error()));
-    }
-    if (auto name = save<decltype(val.name)>(val.name); name) {
-        json["name"] = name.value();
-    } else {
-        return std::unexpected(QString("name: %1").arg(name.error()));
-    }
-    if (auto deviceTypeId = save<decltype(val.deviceTypeId)>(val.deviceTypeId); deviceTypeId) {
-        json["deviceTypeId"] = deviceTypeId.value();
-    } else {
-        return std::unexpected(QString("deviceTypeId: %1").arg(deviceTypeId.error()));
-    }
-    if (auto address = save<decltype(val.address)>(val.address); address) {
-        json["address"] = address.value();
-    } else {
-        return std::unexpected(QString("address: %1").arg(address.error()));
-    }
-    if (auto position = save<decltype(val.position)>(val.position); position) {
-        json["position"] = position.value();
-    } else {
-        return std::unexpected(QString("position: %1").arg(position.error()));
-    }
-
-    return json;
-}
-
-template<std::same_as<PresetStepConfig> T>
-std::expected<QJsonObject, QString> save(const T &val) {
-    QJsonObject json;
-    if (auto sliders = save<decltype(val.sliders)>(val.sliders); sliders) {
-        json["sliders"] = sliders.value();
-    } else {
-        return std::unexpected(QString("sliders: %1").arg(sliders.error()));
-    }
-    return json;
-}
-
-template<std::same_as<PresetConfig> T>
-std::expected<QJsonObject, QString> save(const T &val) {
-    QJsonObject json;
-    if (auto id = save<decltype(val.id)>(val.id); id) {
-        json["id"] = id.value();
-    } else {
-        return std::unexpected(QString("id: %1").arg(id.error()));
-    }
-    if (auto name = save<decltype(val.name)>(val.name); name) {
-        json["name"] = name.value();
-    } else {
-        return std::unexpected(QString("name: %1").arg(name.error()));
-    }
-    if (auto steps = save<decltype(val.steps)>(val.steps); steps) {
-        json["steps"] = steps.value();
-    } else {
-        return std::unexpected(QString("steps: %1").arg(steps.error()));
-    }
+    if (error)
+        return *error;
 
     return json;
 }
@@ -452,30 +310,6 @@ std::expected<QJsonArray, QString> save(const T &val) {
     }
 
     return arr;
-}
-
-template<std::same_as<LightProject> T>
-std::expected<QJsonObject, QString> save(const T &val) {
-    QJsonObject json;
-    if (auto deviceTypes = save<decltype(val.deviceTypes)>(val.deviceTypes); deviceTypes) {
-        json["deviceTypes"] = deviceTypes.value();
-    } else {
-        return std::unexpected(QString("deviceTypes: %1").arg(deviceTypes.error()));
-    }
-
-    if (auto devices = save<decltype(val.devices)>(val.devices); devices) {
-        json["devices"] = devices.value();
-    } else {
-        return std::unexpected(QString("devices: %1").arg(devices.error()));
-    }
-
-    if (auto presets = save<decltype(val.presets)>(val.presets); presets) {
-        json["presets"] = presets.value();
-    } else {
-        return std::unexpected(QString("presets: %1").arg(presets.error()));
-    }
-
-    return json;
 }
 
 } // namespace
