@@ -1,4 +1,10 @@
+#include <concepts>
+#include <list>
 #include <type_traits>
+#include <vector>
+
+#include <QJsonArray>
+#include <QJsonObject>
 
 #include "projectloader.h"
 
@@ -299,9 +305,9 @@ template <detail::Listific T>
 std::expected<QJsonArray, QString> save(const T &val) {
     QJsonArray arr;
 
-    for (size_t i = 0; i < val.size(); i++) {
-        const auto &el = val[i];
-        auto json = save<typename T::value_type>(el);
+    size_t i = 0;
+    for (auto it = std::cbegin(val); it != std::cend(val); it++, i++) {
+        auto json = save<typename T::value_type>(*it);
         if (json) {
             arr.push_back(json.value());
         } else {

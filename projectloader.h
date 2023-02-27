@@ -2,15 +2,11 @@
 #define PROJECTLOADER_H
 
 #include <expected>
-#include <vector>
 
-#include <QJsonArray>
 #include <QJsonDocument>
-#include <QJsonObject>
+#include <QString>
 
 #include "lightproject.h"
-
-#include "projectloader.h"
 
 namespace ProjectLoader {
 
