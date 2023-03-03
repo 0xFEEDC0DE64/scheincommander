@@ -9,12 +9,6 @@
 
 #include "iconutils.h"
 
-enum {
-    IdRole = Qt::UserRole,
-    IconNameRole,
-    IconUrlRole
-};
-
 void DeviceTypesModel::setController(DmxController *controller)
 {
     if (m_controller == controller)

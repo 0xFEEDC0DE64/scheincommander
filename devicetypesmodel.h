@@ -12,6 +12,13 @@ class DeviceTypesModel : public QAbstractListModel
 public:
     using QAbstractListModel::QAbstractListModel;
 
+    enum Roles {
+        IdRole = Qt::UserRole,
+        IconNameRole,
+        IconUrlRole
+    };
+    Q_ENUM(Roles)
+
     DmxController *controller() { return m_controller; }
     const DmxController *controller() const { return m_controller; }
     void setController(DmxController *controller);

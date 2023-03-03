@@ -93,13 +93,17 @@ ColumnLayout {
                 Label { text: qsTr("DeviceType:") }
                 IconComboBox {
                     id: deviceTypeCombobox
+
                     Layout.fillWidth: true
+                    Layout.preferredHeight: 64
+
                     model: DeviceTypesModel {
                         controller: __controller
                     }
                     textRole: "name"
                     valueRole: "id"
                     iconSourceRole: "iconUrl"
+                    iconSourceRoleInt: DeviceTypesModel.IconUrlRole
                     currentIndex: listView.currentData ? deviceTypeCombobox.indexOfValue(listView.currentData.deviceTypeId) : -1
                     onActivated: if (listView.currentData) listView.currentData.deviceTypeId = currentValue; else console.warn('discarded');
                 }
