@@ -108,6 +108,17 @@ ColumnLayout {
                     Layout.rowSpan: 2
                     Layout.fillWidth: true
                 }
+            }
+
+            Item {
+                Layout.fillHeight: true
+            }
+        }
+
+        ColumnLayout {
+            Layout.fillWidth: true
+
+            RowLayout {
                 Button {
                     text: qsTr('Alle auf\n0 setzen');
                     onPressed: presetModel.setAllFadersLow()
@@ -116,44 +127,38 @@ ColumnLayout {
                     text: qsTr('Alle auf\nMaximum setzen');
                     onPressed: presetModel.setAllFadersMax()
                 }
-                RowLayout {
-                    Layout.columnSpan: 3
-
-                    SpinBox {
-                        id: nSpinBox
-                        Layout.preferredWidth: 120
-                        from: 1
-                    }
-
-                    SpinBox {
-                        id: kSpinBox
-                        Layout.preferredWidth: 120
-
-                        from: 0
-                        to: nSpinBox.value - 1
-                    }
-
-                    ComboBox {
-                        id: registerTypeComboBox
-                        model: DeviceTypeRegisterTypesModel {
-                        }
-                        textRole: "text"
-                        valueRole: "value"
-                    }
-
-                    DmxSlider {
-                        id: valueSlider
-                    }
-
-                    Button {
-                        text: qsTr('Set')
-                        onPressed: presetModel.setPattern(nSpinBox.value, kSpinBox.value, registerTypeComboBox.currentValue, valueSlider.value)
-                    }
-                }
             }
+            RowLayout {
+                SpinBox {
+                    id: nSpinBox
+                    Layout.preferredWidth: 120
+                    from: 1
+                }
 
-            Item {
-                Layout.fillHeight: true
+                SpinBox {
+                    id: kSpinBox
+                    Layout.preferredWidth: 120
+
+                    from: 0
+                    to: nSpinBox.value - 1
+                }
+
+                ComboBox {
+                    id: registerTypeComboBox
+                    model: DeviceTypeRegisterTypesModel {
+                    }
+                    textRole: "text"
+                    valueRole: "value"
+                }
+
+                DmxSlider {
+                    id: valueSlider
+                }
+
+                Button {
+                    text: qsTr('Set')
+                    onPressed: presetModel.setPattern(nSpinBox.value, kSpinBox.value, registerTypeComboBox.currentValue, valueSlider.value)
+                }
             }
         }
     }
