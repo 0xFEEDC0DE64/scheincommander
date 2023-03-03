@@ -3,6 +3,7 @@
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
 #include <QDebug>
+#include <QIcon>
 
 #include "dmxcontroller.h"
 #include "scheincommandersettings.h"
@@ -31,6 +32,9 @@ int main(int argc, char *argv[])
     QCoreApplication::setApplicationVersion(STR(CMAKE_PROJECT_VERSION));
 
     QGuiApplication app{argc, argv};
+    QIcon icon{":/scheincommander/scheincommander.png"};
+    qDebug() << icon.availableSizes();
+    app.setWindowIcon(icon);
 
     QCommandLineParser parser;
     parser.addHelpOption();

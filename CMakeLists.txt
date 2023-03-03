@@ -36,6 +36,8 @@ qt_add_qml_module(appscheincommander
     URI scheincommander
     VERSION 1.0
     RESOURCES
+        scheincommander.png
+        scheincommander.ico
         icons/movinghead.png
         icons/nebelmaschine.png
         icons/rgbstrahler.png
