@@ -223,6 +223,13 @@ ColumnLayout {
                 }
 
                 SpinBox {
+                    id: advanceEveryNLamp
+                    Layout.preferredWidth: 120
+                    from: 1
+                    value: 2
+                }
+
+                SpinBox {
                     id: generateSteps
                     Layout.preferredWidth: 120
                     from: 1
@@ -233,7 +240,7 @@ ColumnLayout {
 
                 Button {
                     text: qsTr('Rainbow')
-                    onPressed: patternMaker.setRainbow(0, phaseAdvanceSlider.realValue / 360.)
+                    onPressed: patternMaker.setRainbow(0, phaseAdvanceSlider.realValue / 360., advanceEveryNLamp.value)
                 }
             }
         }

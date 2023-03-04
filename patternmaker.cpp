@@ -141,7 +141,7 @@ void PatternMaker::setPattern(int n, int k, DeviceTypeRegisterType registerType,
     m_controller->setSliderStates(std::move(sliderStates));
 }
 
-void PatternMaker::setRainbow(float phase, float advancePerLamp)
+void PatternMaker::setRainbow(float phase, float advancePerLamp, int advanceEveryNLamp)
 {
     if (!m_controller)
     {
@@ -157,8 +157,6 @@ void PatternMaker::setRainbow(float phase, float advancePerLamp)
     int i{};
     for (const auto &device : devices)
     {
-        const auto current_i = i++;
-
         const auto color = QColor::fromHsvF(fmod(phase,1.),1.,1.);
 
         std::vector<quint8> sliderState;
@@ -192,7 +190,13 @@ void PatternMaker::setRainbow(float phase, float advancePerLamp)
         }
 
         sliderStates.push_back(std::move(sliderState));
-        phase += advancePerLamp;
+
+        //qWarning() << "i=" << i << " advanceEveryNLamp=" << advanceEveryNLamp << " phase=" << phase;
+
+        if(++i >= advanceEveryNLamp){
+            i = 0;
+            phase += advancePerLamp;
+        }
     }
 
     m_controller->setSliderStates(std::move(sliderStates));
