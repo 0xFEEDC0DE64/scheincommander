@@ -212,6 +212,30 @@ ColumnLayout {
                     onPressed: patternMaker.setPattern(nSpinBox.value, kSpinBox.value, registerTypeComboBox.currentValue, valueSlider.value)
                 }
             }
+
+            RowLayout {
+                DoubleSpinBox {
+                    id: phaseAdvanceSlider
+                    Layout.preferredWidth: 120
+                    realFrom: 1
+                    realTo: 360
+                    realValue: 60
+                }
+
+                SpinBox {
+                    id: generateSteps
+                    Layout.preferredWidth: 120
+                    from: 1
+                    to: 1000
+                    value: 360
+                }
+
+
+                Button {
+                    text: qsTr('Rainbow')
+                    onPressed: patternMaker.setRainbow(0, phaseAdvanceSlider.realValue / 360.)
+                }
+            }
         }
     }
 }

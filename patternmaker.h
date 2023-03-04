@@ -21,6 +21,7 @@ public:
     Q_INVOKABLE void setAllFadersLow();
     Q_INVOKABLE void setAllFadersMax();
     Q_INVOKABLE void setPattern(int n, int k, DeviceTypeRegisterType registerType, quint8 value);
+    Q_INVOKABLE void setRainbow(float phase, float advancePerLamp);
 
 signals:
     void controllerChanged(DmxController *controller);
