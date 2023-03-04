@@ -1,11 +1,11 @@
 #pragma once
 
-#include <QObject>
+#include <QAbstractListModel>
 #include <qqml.h>
 
 #include "dmxcontroller.h"
 
-class PresetModel : public QObject
+class PresetStepsModel : public QAbstractListModel
 {
     Q_OBJECT
     QML_ELEMENT
@@ -13,7 +13,7 @@ class PresetModel : public QObject
     Q_PROPERTY(int presetId READ presetId WRITE setPresetId NOTIFY presetIdChanged)
 
 public:
-    using QObject::QObject;
+    using QAbstractListModel::QAbstractListModel;
 
     DmxController *controller() { return m_controller; }
     const DmxController *controller() const { return m_controller; }
@@ -22,11 +22,10 @@ public:
     int presetId() const { return m_presetId; }
     void setPresetId(int presetId);
 
-    Q_INVOKABLE void copyFromFaders();
-    Q_INVOKABLE void copyToFaders();
-    Q_INVOKABLE void setAllFadersLow();
-    Q_INVOKABLE void setAllFadersMax();
-    Q_INVOKABLE void setPattern(int n, int k, DeviceTypeRegisterType registerType, quint8 value);
+    int rowCount(const QModelIndex &parent) const override;
+    QVariant data(const QModelIndex &index, int role) const override;
+    QMap<int, QVariant> itemData(const QModelIndex &index) const override;
+    QHash<int, QByteArray> roleNames() const override;
 
 signals:
     void controllerChanged(DmxController *controller);

@@ -3,8 +3,6 @@
 #include <algorithm>
 
 #include <QDebug>
-#include <QCoreApplication>
-#include <QQmlEngine>
 #include <QMutexLocker>
 
 enum {
@@ -363,11 +361,3 @@ void PresetsModel::otherPresetNameChanged(int row, const QString &name)
     const auto index = this->index(row);
     emit dataChanged(index, index, { Qt::DisplayRole, Qt::EditRole });
 }
-
-namespace {
-void registrierDenShit()
-{
-    qmlRegisterType<PresetsModel>("scheincommander", 1, 0, "PresetsModel");
-}
-}
-Q_COREAPP_STARTUP_FUNCTION(registrierDenShit)

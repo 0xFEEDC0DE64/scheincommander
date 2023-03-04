@@ -14,7 +14,7 @@ ColumnLayout {
         Layout.fillHeight: true
 
         EditableListView {
-            id: listView
+            id: deviceTypesListView
 
             iconSourceRole: "iconUrl"
 
@@ -62,32 +62,28 @@ ColumnLayout {
         }
 
         ColumnLayout {
-            enabled: listView.currentIndex !== -1
+            Layout.fillHeight: true
+
+            enabled: deviceTypesListView.currentIndex !== -1
 
             GridLayout {
-                Layout.preferredWidth: 600
-                Layout.maximumWidth: 600
-
                 columns: 2
 
                 Label { text: qsTr("Id:") }
                 SpinBox {
                     enabled: false
-                    Layout.fillWidth: true
-                    value: listView.currentData ? listView.currentData.id : -1
-                    onValueModified: if (listView.currentData) listView.currentData.id = value; else console.warn('discarded');
+                    value: deviceTypesListView.currentData ? deviceTypesListView.currentData.id : -1
+                    onValueModified: if (deviceTypesListView.currentData) deviceTypesListView.currentData.id = value; else console.warn('discarded');
                 }
                 Label { text: qsTr("Name:") }
                 TextField {
-                    Layout.fillWidth: true
-                    text: listView.currentData ? listView.currentData.name : ''
-                    onTextEdited: if (listView.currentData) listView.currentData.name = text; else console.warn('discarded');
+                    text: deviceTypesListView.currentData ? deviceTypesListView.currentData.name : ''
+                    onTextEdited: if (deviceTypesListView.currentData) deviceTypesListView.currentData.name = text; else console.warn('discarded');
                 }
                 Label { text: qsTr("Icon:") }
                 IconComboBox {
                     id: iconComboBox
 
-                    Layout.fillWidth: true
                     Layout.preferredHeight: 64
 
                     textRole: "fileBaseName"
@@ -98,23 +94,71 @@ ColumnLayout {
                         id: iconsModel
                     }
 
-                    currentIndex: listView.currentData ? iconComboBox.indexOfValue(listView.currentData.iconName) : -1
+                    currentIndex: deviceTypesListView.currentData ? iconComboBox.indexOfValue(deviceTypesListView.currentData.iconName) : -1
                     Component.onCompleted: {
                         iconsModel.onRowCountChanged.connect(function(){
-                            currentIndex = Qt.binding(function() { return listView.currentData ? iconComboBox.indexOfValue(listView.currentData.iconName) : -1});
+                            currentIndex = Qt.binding(function() { return deviceTypesListView.currentData ? iconComboBox.indexOfValue(deviceTypesListView.currentData.iconName) : -1});
                         });
                     }
 
-                    onActivated: if (listView.currentData) listView.currentData.iconName = currentValue; else console.warn('discarded');
-                }
-                Label { text: qsTr("Registers:") }
-                RegistersSettingsItem {
-                    Layout.fillWidth: true
-                    Layout.fillHeight: true
-
-                    deviceTypeId: listView.currentData ? listView.currentData.id : -1
+                    onActivated: if (deviceTypesListView.currentData) deviceTypesListView.currentData.iconName = currentValue; else console.warn('discarded');
                 }
             }
+            Item {
+                Layout.fillHeight: true
+            }
+        }
+
+        Pane {
+            Layout.preferredWidth: 300
+            Layout.fillHeight: true
+
+            enabled: deviceTypesListView.currentIndex !== -1
+
+            Material.elevation: 6
+
+            EditableListView {
+                id: registersListView
+                anchors.fill: parent
+
+                textRole: 'registerTypeName'
+
+                model: DeviceTypeRegistersModel {
+                    id: registersModel
+                    controller: __controller
+
+                    deviceTypeId: deviceTypesListView.currentData ? deviceTypesListView.currentData.id : -1
+                }
+
+                onAddClicked: (index) => { const newIndex = index < 0 ? 0 : index + 1; if (registersModel.insertRow(newIndex)) currentIndex = newIndex; else console.warn('failed'); }
+                onRemoveClicked: (index) => registersModel.removeRow(index)
+            }
+        }
+
+        ColumnLayout {
+            //Layout.fillWidth: true
+            Layout.fillHeight: true
+
+            enabled: registersListView.currentIndex >= 0
+
+            GridLayout {
+                columns: 2
+
+                Label {
+                    text: qsTr('Type:')
+                }
+                ComboBox {
+                    id: comboBox
+                    model: DeviceTypeRegisterTypesModel {
+                    }
+                    textRole: "text"
+                    valueRole: "value"
+
+                    currentIndex: registersListView.currentData ? comboBox.indexOfValue(registersListView.currentData.registerType) : -1
+                    onActivated: if (registersListView.currentData) registersListView.currentData.registerType = currentValue; else console.warn('discarded');
+                }
+            }
+
             Item {
                 Layout.fillHeight: true
             }

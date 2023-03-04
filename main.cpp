@@ -10,6 +10,8 @@
 
 #define STR(x) #x
 
+void qml_register_types_scheincommander();
+
 int main(int argc, char *argv[])
 {
     qSetMessagePattern(QStringLiteral("%{time dd.MM.yyyy HH:mm:ss.zzz} "
@@ -32,9 +34,7 @@ int main(int argc, char *argv[])
     QCoreApplication::setApplicationVersion(STR(CMAKE_PROJECT_VERSION));
 
     QGuiApplication app{argc, argv};
-    QIcon icon{":/scheincommander/scheincommander.png"};
-    qDebug() << icon.availableSizes();
-    app.setWindowIcon(icon);
+    app.setWindowIcon(QIcon{":/scheincommander/scheincommander.png"});
 
     QCommandLineParser parser;
     parser.addHelpOption();
@@ -67,17 +67,22 @@ int main(int argc, char *argv[])
     if (!controller.start() && !windowed)
         return -1;
 
+    qml_register_types_scheincommander();
+
     QQmlApplicationEngine engine;
 
     engine.rootContext()->setContextProperty("__controller", &controller);
     engine.rootContext()->setContextProperty("__windowed", windowed);
 
     const QUrl url{u"qrc:/scheincommander/main.qml"_qs};
-    QObject::connect(&engine, &QQmlApplicationEngine::objectCreated,
-                     &app, [url](QObject *obj, const QUrl &objUrl) {
-        if (!obj && url == objUrl)
-            QCoreApplication::exit(-1);
-    }, Qt::QueuedConnection);
+//    QObject::connect(&engine, &QQmlApplicationEngine::objectCreated,
+//                     &app, [url](QObject *obj, const QUrl &objUrl) {
+//        if (!obj && url == objUrl)
+//            QCoreApplication::exit(-1);
+//    }, Qt::QueuedConnection);
+    QObject::connect(&engine, &QQmlApplicationEngine::objectCreationFailed,
+                     &app, []() { qFatal("object creation failed!"); QCoreApplication::exit(-1); },
+    Qt::QueuedConnection);
     engine.load(url);
 
     return app.exec();

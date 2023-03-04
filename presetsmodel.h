@@ -1,12 +1,14 @@
 #pragma once
 
 #include <QAbstractListModel>
+#include <qqml.h>
 
 #include "dmxcontroller.h"
 
 class PresetsModel : public QAbstractListModel
 {
     Q_OBJECT
+    QML_ELEMENT
     Q_PROPERTY(DmxController* controller READ controller WRITE setController NOTIFY controllerChanged)
 
 public:

@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.16)
 
-project(scheincommander VERSION 0.9 LANGUAGES CXX)
+project(scheincommander VERSION 0.1 LANGUAGES CXX)
 
 set(CMAKE_AUTOMOC ON)
 #set(CMAKE_CXX_STANDARD 23)
@@ -14,7 +14,9 @@ if(CCACHE_FOUND)
     set_property(GLOBAL PROPERTY RULE_LAUNCH_LINK ccache)
 endif(CCACHE_FOUND)
 
-find_package(Qt6 6.2 REQUIRED COMPONENTS SerialPort Quick)
+find_package(Qt6 6.4 REQUIRED COMPONENTS Quick SerialPort)
+
+qt_standard_project_setup()
 
 qt_add_executable(appscheincommander
     main.cpp
@@ -30,6 +32,7 @@ qt_add_executable(appscheincommander
     projectloader.h projectloader.cpp
     scheincommandersettings.h scheincommandersettings.cpp
     iconutils.h iconutils.cpp
+    presetstepsmodel.h presetstepsmodel.cpp
 )
 
 qt_add_qml_module(appscheincommander
@@ -56,7 +59,6 @@ qt_add_qml_module(appscheincommander
         DmxSlider.qml
         StatusBar.qml
         PresetsSettingsPage.qml
-        RegistersSettingsItem.qml
         IconComboBox.qml
         IconsModel.qml
         DeviceTypeRegisterTypesModel.qml
@@ -79,8 +81,8 @@ set_target_properties(appscheincommander PROPERTIES
 
 target_link_libraries(appscheincommander
     PRIVATE
-        Qt6::SerialPort
         Qt6::Quick
+        Qt6::SerialPort
 )
 
 install(TARGETS appscheincommander

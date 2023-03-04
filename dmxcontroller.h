@@ -1,6 +1,7 @@
 #pragma once
 
 #include <QObject>
+#include <qqml.h>
 #include <QSerialPort>
 #include <QDateTime>
 #include <QMutex>
@@ -12,6 +13,7 @@
 class DmxController : public QObject
 {
     Q_OBJECT
+    QML_ELEMENT
     Q_PROPERTY(ScheinCommanderSettings* settings READ settings CONSTANT)
     Q_PROPERTY(int dmxFps READ dmxFps NOTIFY dmxFpsChanged)
     Q_PROPERTY(int dmxMaxElapsed READ dmxMaxElapsed NOTIFY dmxMaxElapsedChanged)
@@ -92,7 +94,7 @@ private:
     std::vector<quint8> m_presetStates;
 
     QDateTime m_lastInfo;
-    int m_counter;
+    int m_counter{};
     std::atomic<int> m_lastCounter;
     int m_dmxMaxElapsed{};
     std::atomic<int> m_lastDmxMaxElapsed;

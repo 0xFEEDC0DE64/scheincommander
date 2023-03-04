@@ -1,8 +1,6 @@
 #include "presetmodel.h"
 
 #include <QDebug>
-#include <QCoreApplication>
-#include <QQmlEngine>
 #include <QMutexLocker>
 
 void PresetModel::setController(DmxController *controller)
@@ -214,12 +212,3 @@ void PresetModel::setPattern(int n, int k, DeviceTypeRegisterType registerType, 
 
     m_controller->setSliderStates(std::move(sliderStates));
 }
-
-namespace {
-void registrierDenShit()
-{
-    qmlRegisterType<PresetModel>("scheincommander", 1, 0, "PresetModel");
-}
-}
-Q_COREAPP_STARTUP_FUNCTION(registrierDenShit)
-

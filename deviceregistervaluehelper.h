@@ -1,12 +1,14 @@
 #pragma once
 
 #include <QObject>
+#include <qqml.h>
 
 #include "dmxcontroller.h"
 
 class DeviceRegisterValueHelper : public QObject
 {
     Q_OBJECT
+    QML_ELEMENT
     Q_PROPERTY(DmxController* controller READ controller WRITE setController NOTIFY controllerChanged)
     Q_PROPERTY(int deviceId READ deviceId WRITE setDeviceId NOTIFY deviceIdChanged)
     Q_PROPERTY(int registerIndex READ registerIndex WRITE setRegisterIndex NOTIFY registerIndexChanged)

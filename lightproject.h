@@ -8,7 +8,7 @@
 #include <QMetaEnum>
 #include <QMetaType>
 
-namespace hilfe {
+namespace scheincommander {
 Q_NAMESPACE
 enum class DeviceTypeRegisterType
 {
@@ -39,11 +39,11 @@ enum class DeviceTypeRegisterType
     Extra2
 };
 Q_ENUM_NS(DeviceTypeRegisterType)
-} // namespace hilfe
+} // namespace scheincommander
 
-Q_DECLARE_METATYPE(hilfe::DeviceTypeRegisterType)
+Q_DECLARE_METATYPE(scheincommander::DeviceTypeRegisterType)
 
-using DeviceTypeRegisterType = hilfe::DeviceTypeRegisterType;
+using DeviceTypeRegisterType = scheincommander::DeviceTypeRegisterType;
 
 struct DeviceTypeRegisterConfig
 {

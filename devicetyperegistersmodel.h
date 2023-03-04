@@ -1,12 +1,14 @@
 #pragma once
 
 #include <QAbstractListModel>
+#include <qqml.h>
 
 #include "dmxcontroller.h"
 
 class DeviceTypeRegistersModel : public QAbstractListModel
 {
     Q_OBJECT
+    QML_ELEMENT
     Q_PROPERTY(DmxController* controller READ controller WRITE setController NOTIFY controllerChanged)
     Q_PROPERTY(int deviceTypeId READ deviceTypeId WRITE setDeviceTypeId NOTIFY deviceTypeIdChanged)
 

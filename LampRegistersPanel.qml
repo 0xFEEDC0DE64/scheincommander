@@ -22,24 +22,20 @@ Flickable {
             from: "invisible"
             to: ""
             reversible: false
-            ParallelAnimation {
-                NumberAnimation {
-                    properties: "y"
-                    duration: 1000
-                    easing.type: Easing.OutBounce
-                }
+            NumberAnimation {
+                properties: "y"
+                duration: 1000
+                easing.type: Easing.OutBounce
             }
         },
         Transition {
             from: ""
             to: "invisible"
             reversible: false
-            ParallelAnimation {
-                NumberAnimation {
-                    properties: "y"
-                    duration: 1000
-                    easing.type: Easing.OutBounce
-                }
+            NumberAnimation {
+                properties: "y"
+                duration: 1000
+                easing.type: Easing.OutBounce
             }
         }
     ]

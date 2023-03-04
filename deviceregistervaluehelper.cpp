@@ -1,8 +1,6 @@
 #include "deviceregistervaluehelper.h"
 
 #include <QDebug>
-#include <QCoreApplication>
-#include <QQmlEngine>
 #include <QMutexLocker>
 
 void DeviceRegisterValueHelper::setController(DmxController *controller)
@@ -138,12 +136,3 @@ void DeviceRegisterValueHelper::sliderStatesChanged()
 {
     emit valueChanged(value());
 }
-
-namespace {
-void registrierDenShit()
-{
-    qmlRegisterType<DeviceRegisterValueHelper>("scheincommander", 1, 0, "DeviceRegisterValueHelper");
-}
-}
-Q_COREAPP_STARTUP_FUNCTION(registrierDenShit)
-

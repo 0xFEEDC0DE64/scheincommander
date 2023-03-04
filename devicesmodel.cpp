@@ -3,8 +3,6 @@
 #include <algorithm>
 
 #include <QDebug>
-#include <QCoreApplication>
-#include <QQmlEngine>
 #include <QMutexLocker>
 
 #include "iconutils.h"
@@ -543,11 +541,3 @@ void DevicesModel::otherDevicePositionChanged(int row, const QVector3D &position
     const auto index = this->index(row);
     emit dataChanged(index, index, { PositionRole, PositionXRole, PositionYRole, PositionZRole });
 }
-
-namespace {
-void registrierDenShit()
-{
-    qmlRegisterType<DevicesModel>("scheincommander", 1, 0, "DevicesModel");
-}
-}
-Q_COREAPP_STARTUP_FUNCTION(registrierDenShit)

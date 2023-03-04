@@ -3,8 +3,6 @@
 #include <algorithm>
 
 #include <QDebug>
-#include <QCoreApplication>
-#include <QQmlEngine>
 #include <QMutexLocker>
 
 #include "iconutils.h"
@@ -379,11 +377,3 @@ void DeviceTypesModel::otherDeviceTypeIconNameChanged(int row, const QString &na
     const auto index = this->index(row);
     emit dataChanged(index, index, { IconNameRole, IconUrlRole });
 }
-
-namespace {
-void registrierDenShit()
-{
-    qmlRegisterType<DeviceTypesModel>("scheincommander", 1, 0, "DeviceTypesModel");
-}
-}
-Q_COREAPP_STARTUP_FUNCTION(registrierDenShit)

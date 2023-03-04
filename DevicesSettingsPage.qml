@@ -114,7 +114,10 @@ ColumnLayout {
                     value: listView.currentData ? listView.currentData.address : -1
                     onValueModified: listView.currentData.address = value
                 }
-                Label { text: qsTr("Position:") }
+                Label {
+                    Layout.alignment: Qt.AlignTop | Qt.AlignLeft
+                    text: qsTr("Position:")
+                }
                 Vector3DField {
                     id: positionField
                     Layout.fillWidth: true

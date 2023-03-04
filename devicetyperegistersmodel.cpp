@@ -3,8 +3,6 @@
 #include <utility>
 
 #include <QDebug>
-#include <QCoreApplication>
-#include <QQmlEngine>
 #include <QMutexLocker>
 
 void DeviceTypeRegistersModel::setController(DmxController *controller)
@@ -109,7 +107,8 @@ QVariant DeviceTypeRegistersModel::data(const QModelIndex &index, int role) cons
 
     const auto &deviceType = *deviceTypePtr;
 
-    if (index.row() < 0 || index.row() >= deviceType.registers.size())
+    const auto &registers = deviceType.registers;
+    if (index.row() < 0 || index.row() >= registers.size())
     {
         qWarning() << "hilfe" << __LINE__;
         return {};
@@ -121,14 +120,12 @@ QVariant DeviceTypeRegistersModel::data(const QModelIndex &index, int role) cons
         return {};
     }
 
-    const auto &deviceTypeRegister = deviceType.registers.at(index.row());
+    const auto &deviceTypeRegister = registers.at(index.row());
 
     switch (role)
     {
     case Qt::DisplayRole:
-    {
         return QMetaEnum::fromType<DeviceTypeRegisterType>().valueToKey(std::to_underlying(deviceTypeRegister.type));
-    }
     case Qt::EditRole:
         return QVariant::fromValue(deviceTypeRegister.type);
     }
@@ -446,11 +443,3 @@ void DeviceTypeRegistersModel::otherDeviceTypeRegisterTypeChanged(const DeviceTy
     const auto index = this->index(row);
     emit dataChanged(index, index, { Qt::DisplayRole, Qt::EditRole });
 }
-
-namespace {
-void registrierDenShit()
-{
-    qmlRegisterType<DeviceTypeRegistersModel>("scheincommander", 1, 0, "DeviceTypeRegistersModel");
-}
-}
-Q_COREAPP_STARTUP_FUNCTION(registrierDenShit)
