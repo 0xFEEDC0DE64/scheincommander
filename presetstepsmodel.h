@@ -22,6 +22,9 @@ public:
     int presetId() const { return m_presetId; }
     void setPresetId(int presetId);
 
+    Q_INVOKABLE void copyFromFaders(int stepIndex);
+    Q_INVOKABLE void copyToFaders(int stepIndex);
+
     int rowCount(const QModelIndex &parent) const override;
     QVariant data(const QModelIndex &index, int role) const override;
     QMap<int, QVariant> itemData(const QModelIndex &index) const override;

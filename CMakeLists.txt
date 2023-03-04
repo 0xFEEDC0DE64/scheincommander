@@ -28,11 +28,11 @@ qt_add_executable(appscheincommander
     devicetyperegistersmodel.h devicetyperegistersmodel.cpp
     presetsmodel.h presetsmodel.cpp
     deviceregistervaluehelper.h deviceregistervaluehelper.cpp
-    presetmodel.h presetmodel.cpp
     projectloader.h projectloader.cpp
     scheincommandersettings.h scheincommandersettings.cpp
     iconutils.h iconutils.cpp
     presetstepsmodel.h presetstepsmodel.cpp
+    patternmaker.h patternmaker.cpp
 )
 
 qt_add_qml_module(appscheincommander

@@ -90,6 +90,8 @@ ColumnLayout {
         }
 
         EditableListView {
+            id: presetStepsListView
+
             Layout.fillWidth: true
 
             enabled: presetsListView.currentIndex !== -1
@@ -138,31 +140,36 @@ ColumnLayout {
         ColumnLayout {
             Layout.fillWidth: true
 
-            PresetModel {
-                id: presetModel
-                controller: __controller
-                presetId: presetsListView.currentData ? presetsListView.currentData.id : -1
-            }
-
             RowLayout {
+                enabled: presetStepsListView.currentIndex >= 0
+
                 Button {
                     text: qsTr('Auf Schieberegler\nunten kopieren');
-                    onPressed: presetModel.copyToFaders()
+                    onPressed: presetStepsModel.copyToFaders(presetStepsListView.currentIndex)
                 }
                 Button {
                     text: qsTr('Von Schieberegler\nunten kopieren');
-                    onPressed: presetModel.copyFromFaders()
+                    onPressed: presetStepsModel.copyFromFaders(presetStepsListView.currentIndex)
                 }
+            }
+
+            Item {
+                Layout.fillHeight: true
+            }
+
+            PatternMaker {
+                id: patternMaker
+                controller: __controller
             }
 
             RowLayout {
                 Button {
                     text: qsTr('Alle auf\n0 setzen');
-                    onPressed: presetModel.setAllFadersLow()
+                    onPressed: patternMaker.setAllFadersLow()
                 }
                 Button {
                     text: qsTr('Alle auf\nMaximum setzen');
-                    onPressed: presetModel.setAllFadersMax()
+                    onPressed: patternMaker.setAllFadersMax()
                 }
             }
 
@@ -195,12 +202,8 @@ ColumnLayout {
 
                 Button {
                     text: qsTr('Set')
-                    onPressed: presetModel.setPattern(nSpinBox.value, kSpinBox.value, registerTypeComboBox.currentValue, valueSlider.value)
+                    onPressed: patternMaker.setPattern(nSpinBox.value, kSpinBox.value, registerTypeComboBox.currentValue, valueSlider.value)
                 }
-            }
-
-            Item {
-                Layout.fillHeight: true
             }
         }
     }

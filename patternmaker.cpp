@@ -1,9 +1,6 @@
-#include "presetmodel.h"
+#include "patternmaker.h"
 
-#include <QDebug>
-#include <QMutexLocker>
-
-void PresetModel::setController(DmxController *controller)
+void PatternMaker::setController(DmxController *controller)
 {
     if (m_controller == controller)
         return;
@@ -25,78 +22,7 @@ void PresetModel::setController(DmxController *controller)
     emit controllerChanged(m_controller);
 }
 
-void PresetModel::setPresetId(int presetId)
-{
-    if (m_presetId == presetId)
-        return;
-
-    m_presetId = presetId;
-
-    emit presetIdChanged(m_presetId);
-}
-
-void PresetModel::copyFromFaders()
-{
-    if (!m_controller)
-    {
-        qDebug() << "hilfe" << __LINE__;
-        return;
-    }
-
-    if (m_presetId == -1)
-    {
-        qDebug() << "hilfe" << __LINE__;
-        return;
-    }
-
-    auto presetPtr = m_controller->lightProject().presets.findById(m_presetId);
-    if (!presetPtr)
-    {
-        qDebug() << "hilfe" << __LINE__;
-        return;
-    }
-
-    auto &preset = *presetPtr;
-
-    {
-        QMutexLocker locker{&m_controller->mutex()};
-        preset.steps = { { .sliders=m_controller->sliderStates() } };
-    }
-}
-
-void PresetModel::copyToFaders()
-{
-    if (!m_controller)
-    {
-        qDebug() << "hilfe" << __LINE__;
-        return;
-    }
-
-    if (m_presetId == -1)
-    {
-        qDebug() << "hilfe" << __LINE__;
-        return;
-    }
-
-    const auto presetPtr = m_controller->lightProject().presets.findById(m_presetId);
-    if (!presetPtr)
-    {
-        qDebug() << "hilfe" << __LINE__;
-        return;
-    }
-
-    const auto &preset = *presetPtr;
-
-    if (preset.steps.empty())
-    {
-        qDebug() << "hilfe" << __LINE__;
-        return;
-    }
-
-    m_controller->setSliderStates(preset.steps.front().sliders);
-}
-
-void PresetModel::setAllFadersLow()
+void PatternMaker::setAllFadersLow()
 {
     if (!m_controller)
     {
@@ -134,7 +60,7 @@ void PresetModel::setAllFadersLow()
     m_controller->setSliderStates(std::move(sliderStates));
 }
 
-void PresetModel::setAllFadersMax()
+void PatternMaker::setAllFadersMax()
 {
     if (!m_controller)
     {
@@ -172,7 +98,7 @@ void PresetModel::setAllFadersMax()
     m_controller->setSliderStates(std::move(sliderStates));
 }
 
-void PresetModel::setPattern(int n, int k, DeviceTypeRegisterType registerType, quint8 value)
+void PatternMaker::setPattern(int n, int k, DeviceTypeRegisterType registerType, quint8 value)
 {
     if (!m_controller)
     {

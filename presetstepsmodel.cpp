@@ -47,6 +47,69 @@ void PresetStepsModel::setPresetId(int presetId)
     emit presetIdChanged(m_presetId);
 }
 
+void PresetStepsModel::copyFromFaders(int stepIndex)
+{
+    if (!m_controller)
+    {
+        qDebug() << "hilfe" << __LINE__;
+        return;
+    }
+
+    if (m_presetId == -1)
+    {
+        qDebug() << "hilfe" << __LINE__;
+        return;
+    }
+
+    auto presetPtr = m_controller->lightProject().presets.findById(m_presetId);
+    if (!presetPtr)
+    {
+        qDebug() << "hilfe" << __LINE__;
+        return;
+    }
+
+    auto &preset = *presetPtr;
+
+    {
+        QMutexLocker locker{&m_controller->mutex()};
+        // TODO respect stepIndex
+        preset.steps = { { .sliders=m_controller->sliderStates() } };
+    }
+}
+
+void PresetStepsModel::copyToFaders(int stepIndex)
+{
+    if (!m_controller)
+    {
+        qDebug() << "hilfe" << __LINE__;
+        return;
+    }
+
+    if (m_presetId == -1)
+    {
+        qDebug() << "hilfe" << __LINE__;
+        return;
+    }
+
+    const auto presetPtr = m_controller->lightProject().presets.findById(m_presetId);
+    if (!presetPtr)
+    {
+        qDebug() << "hilfe" << __LINE__;
+        return;
+    }
+
+    const auto &preset = *presetPtr;
+
+    // TODO respect stepIndex
+    if (preset.steps.empty())
+    {
+        qDebug() << "hilfe" << __LINE__;
+        return;
+    }
+
+    m_controller->setSliderStates(preset.steps.front().sliders);
+}
+
 int PresetStepsModel::rowCount(const QModelIndex &parent) const
 {
     if (parent.isValid())
