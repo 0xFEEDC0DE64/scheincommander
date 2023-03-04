@@ -127,7 +127,7 @@ std::expected<T, QString> load(const QJsonArray &json) {
         if (res.has_value()) {
             result.push_back(res.value());
         } else {
-            return std::unexpected(QString("%1: %2").arg(i).arg(res.error()));
+            return tl::make_unexpected(QString("%1: %2").arg(i).arg(res.error()));
         }
     }
 
@@ -139,7 +139,7 @@ std::expected<T, QString> load(const QJsonArray &json) {
     QVector3D vec;
 
     if (json.size() != 3) {
-        return std::unexpected("Vector has wrong number of components");
+        return tl::make_unexpected("Vector has wrong number of components");
     }
 
     for (size_t i = 0; i < json.size(); i++) {
@@ -147,7 +147,7 @@ std::expected<T, QString> load(const QJsonArray &json) {
         if (auto val = load<float>(el); val) {
             vec[i] = val.value();
         } else {
-            return std::unexpected(QString("%1: %2").arg(i).arg(val.error()));
+            return tl::make_unexpected(QString("%1: %2").arg(i).arg(val.error()));
         }
     }
 
@@ -157,7 +157,7 @@ std::expected<T, QString> load(const QJsonArray &json) {
 template <detail::LoadableFromArray T>
 std::expected<T, QString> load(const QJsonValue &json) {
     if (!json.isArray())
-        return std::unexpected("Not a JSON array");
+        return tl::make_unexpected("Not a JSON array");
     return load<T>(json.toArray());
 }
 
@@ -166,7 +166,7 @@ std::expected<T, QString> load(const QJsonValue &json) {
     if (json.isDouble()) {
         return (T)json.toDouble();
     } else {
-        return std::unexpected(QString("Not a number"));
+        return tl::make_unexpected(QString("Not a number"));
     }
 }
 
@@ -175,19 +175,19 @@ std::expected<T, QString> load(const QJsonValue &json) {
     if (json.isString()) {
         return json.toString();
     } else {
-        return std::unexpected(QString("Not a string"));
+        return tl::make_unexpected(QString("Not a string"));
     }
 }
 
 template<detail::LoadableQEnum T>
 std::expected<T, QString> load(const QJsonValue &json) {
     if (!json.isString()) {
-        return std::unexpected("Not a JSON string");
+        return tl::make_unexpected("Not a JSON string");
     }
 
     QMetaEnum me = QMetaEnum::fromType<T>();
     if (!me.isValid()) {
-        return std::unexpected("Invalid QMetaEnum");
+        return tl::make_unexpected("Invalid QMetaEnum");
     }
 
     bool ok = false;
@@ -195,7 +195,7 @@ std::expected<T, QString> load(const QJsonValue &json) {
     if (ok) {
         return (T)value;
     } else {
-        return std::unexpected(QString("No value found for enum key %1").arg(json.toString()));
+        return tl::make_unexpected(QString("No value found for enum key %1").arg(json.toString()));
     }
 }
 
@@ -204,14 +204,14 @@ std::expected<T, QString> loadIfExists(const QJsonObject &json, const QString &k
     if (json.contains(key)) {
         return load<T>(json[key]);
     } else {
-        return std::unexpected(QString("does not exist"));
+        return tl::make_unexpected(QString("does not exist"));
     }
 }
 
 template<detail::LoadableFromObject T>
 std::expected<T, QString> load(const QJsonObject &json) {
     T t;
-    std::optional<std::unexpected<QString>> error;
+    std::optional<tl::unexpected<QString>> error;
 
     iterateMembers(t, [&json, &error] (const char *name, auto &field) {
         if (error)
@@ -220,7 +220,7 @@ std::expected<T, QString> load(const QJsonObject &json) {
         if (auto result = loadIfExists<typename std::remove_cvref_t<decltype(field)>>(json, name)) {
             field = std::move(result.value());
         } else {
-            error = std::unexpected(QString("%1: %2").arg(name).arg(result.error()));
+            error = tl::make_unexpected(QString("%1: %2").arg(name).arg(result.error()));
         }
     });
 
@@ -233,7 +233,7 @@ std::expected<T, QString> load(const QJsonObject &json) {
 template <detail::LoadableFromObject T>
 std::expected<T, QString> load(const QJsonValue &json) {
     if (!json.isObject())
-        return std::unexpected("Not a JSON object");
+        return tl::make_unexpected("Not a JSON object");
     return load<T>(json.toObject());
 }
 
@@ -241,7 +241,7 @@ std::expected<T, QString> load(const QJsonValue &json) {
 
 std::expected<LightProject, QString> loadProject(const QJsonDocument &json) {
     if (!json.isObject()) {
-        return std::unexpected("JsonDocument is not an object");
+        return tl::make_unexpected("JsonDocument is not an object");
     }
 
     return load<LightProject>(json.object());
@@ -270,20 +270,20 @@ template<detail::LoadableQEnum T>
 std::expected<QJsonValue, QString> save(const T &val) {
     QMetaEnum me = QMetaEnum::fromType<T>();
     if (!me.isValid()) {
-        return std::unexpected("Invalid QMetaEnum");
+        return tl::make_unexpected("Invalid QMetaEnum");
     }
 
     if (auto key = me.valueToKey((int)val); key) {
         return QJsonValue(key);
     } else {
-        return std::unexpected(QString("No key found for enum value %1").arg((int)val));
+        return tl::make_unexpected(QString("No key found for enum value %1").arg((int)val));
     }
 }
 
 template<detail::LoadableFromObject T>
 std::expected<QJsonObject, QString> save(const T &val) {
     QJsonObject json;
-    std::optional<std::unexpected<QString>> error;
+    std::optional<tl::unexpected<QString>> error;
 
     iterateMembers(val, [&json, &error] (const char *name, auto &field) {
         if (error)
@@ -292,7 +292,7 @@ std::expected<QJsonObject, QString> save(const T &val) {
         if (auto result = save<typename std::remove_cvref_t<decltype(field)>>(field)) {
             json[name] = result.value();
         } else {
-            error = std::unexpected(QString("%1: %2").arg(name).arg(result.error()));
+            error = tl::make_unexpected(QString("%1: %2").arg(name).arg(result.error()));
         }
     });
 
@@ -312,7 +312,7 @@ std::expected<QJsonArray, QString> save(const T &val) {
         if (json) {
             arr.push_back(json.value());
         } else {
-            return std::unexpected(QString("%1: %2").arg(i).arg(json.error()));
+            return tl::make_unexpected(QString("%1: %2").arg(i).arg(json.error()));
         }
     }
 
@@ -325,7 +325,7 @@ std::expected<QJsonDocument, QString> saveProject(const LightProject &val) {
     if (auto project = save<LightProject>(val); project) {
         return QJsonDocument(project.value());
     } else {
-        return std::unexpected(QString("Failed to save project: %1").arg(project.error()));
+        return tl::make_unexpected(QString("Failed to save project: %1").arg(project.error()));
     }
 }
 

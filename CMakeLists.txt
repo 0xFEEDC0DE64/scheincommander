@@ -33,6 +33,7 @@ qt_add_executable(appscheincommander
     iconutils.h iconutils.cpp
     presetstepsmodel.h presetstepsmodel.cpp
     patternmaker.h patternmaker.cpp
+    expected.hpp
 )
 
 qt_add_qml_module(appscheincommander

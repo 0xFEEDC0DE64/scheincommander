@@ -1,12 +1,22 @@
 #ifndef PROJECTLOADER_H
 #define PROJECTLOADER_H
 
-#include <expected>
+#include "expected.hpp"
 
 #include <QJsonDocument>
 #include <QString>
 
 #include "lightproject.h"
+
+
+namespace std {
+    template <typename... T>
+    using expected = tl::expected<T...>;
+}
+
+
+
+
 
 namespace ProjectLoader {
 
