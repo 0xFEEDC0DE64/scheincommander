@@ -101,6 +101,7 @@ void iterateMembers(T &ref, CB &&cb)
 {
     cb("id", ref.id);
     cb("name", ref.name);
+    cb("msecsPerStep", ref.msecsPerStep);
     cb("steps", ref.steps);
 }
 

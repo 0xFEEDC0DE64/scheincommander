@@ -122,6 +122,7 @@ struct PresetConfig
 {
     int id;
     QString name;
+    int msecsPerStep;
     std::vector<PresetStepConfig> steps;
 };
 

@@ -7,6 +7,7 @@
 
 enum {
     IdRole = Qt::UserRole,
+    MsecsPerStepRole
 };
 
 void PresetsModel::setController(DmxController *controller)
@@ -90,8 +91,9 @@ QVariant PresetsModel::data(const QModelIndex &index, int role) const
     switch (role)
     {
     case Qt::DisplayRole:
-    case Qt::EditRole: return preset.name;
-    case IdRole:       return preset.id;
+    case Qt::EditRole:     return preset.name;
+    case IdRole:           return preset.id;
+    case MsecsPerStepRole: return preset.msecsPerStep;
     }
 
     return {};
@@ -128,16 +130,18 @@ QMap<int, QVariant> PresetsModel::itemData(const QModelIndex &index) const
     const auto &preset = presets.at(index.row());
 
     return {
-        { Qt::DisplayRole, preset.name },
-        { IdRole,          preset.id }
+        { Qt::DisplayRole,  preset.name },
+        { IdRole,           preset.id },
+        { MsecsPerStepRole, preset.msecsPerStep }
     };
 }
 
 QHash<int, QByteArray> PresetsModel::roleNames() const
 {
     return {
-        { Qt::DisplayRole, "name" },
-        { IdRole,          "id" }
+        { Qt::DisplayRole,  "name" },
+        { IdRole,           "id" },
+        { MsecsPerStepRole, "msecsPerStep" }
     };
 }
 
@@ -199,6 +203,15 @@ bool PresetsModel::setData(const QModelIndex &index, const QVariant &value, int 
 //        return true;
         qWarning() << "hilfe" << __LINE__;
         return false;
+    case MsecsPerStepRole:
+        if (value.userType() != QMetaType::Int)
+        {
+            qWarning() << "hilfe" << __LINE__ << value.userType();
+            return false;
+        }
+        preset.msecsPerStep = value.toInt();
+        emit dataChanged(index, index, { MsecsPerStepRole });
+        return true;
     default:
         qWarning() << "hilfe" << __LINE__;
         return false;
@@ -243,7 +256,7 @@ bool PresetsModel::insertRows(int row, int count, const QModelIndex &parent)
         {
             auto iter = std::begin(presets) + row;
             for (auto i = 0; i < count; i++)
-                iter = presets.insert(iter, PresetConfig{ .id=id++, .name="<neu>" }) + 1;
+                iter = presets.insert(iter, PresetConfig{ .id=id++, .name="<neu>", .msecsPerStep=1000 }) + 1;
         }
 
         if (auto &presetStates = m_controller->presetStates(); presetStates.size() > row)

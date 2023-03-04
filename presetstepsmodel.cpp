@@ -47,67 +47,73 @@ void PresetStepsModel::setPresetId(int presetId)
     emit presetIdChanged(m_presetId);
 }
 
-void PresetStepsModel::copyFromFaders(int stepIndex)
+bool PresetStepsModel::copyFromFaders(int stepIndex)
 {
     if (!m_controller)
     {
         qDebug() << "hilfe" << __LINE__;
-        return;
+        return false;
     }
 
     if (m_presetId == -1)
     {
         qDebug() << "hilfe" << __LINE__;
-        return;
+        return false;
     }
 
     auto presetPtr = m_controller->lightProject().presets.findById(m_presetId);
     if (!presetPtr)
     {
         qDebug() << "hilfe" << __LINE__;
-        return;
+        return false;
     }
 
     auto &preset = *presetPtr;
+    auto &steps = preset.steps;
 
     {
         QMutexLocker locker{&m_controller->mutex()};
-        // TODO respect stepIndex
-        preset.steps = { { .sliders=m_controller->sliderStates() } };
+        if (steps.size() <= stepIndex)
+            steps.resize(stepIndex + 1);
+        steps[stepIndex].sliders = m_controller->sliderStates();
     }
+
+    return true;
 }
 
-void PresetStepsModel::copyToFaders(int stepIndex)
+bool PresetStepsModel::copyToFaders(int stepIndex)
 {
     if (!m_controller)
     {
         qDebug() << "hilfe" << __LINE__;
-        return;
+        return false;
     }
 
     if (m_presetId == -1)
     {
         qDebug() << "hilfe" << __LINE__;
-        return;
+        return false;
     }
 
     const auto presetPtr = m_controller->lightProject().presets.findById(m_presetId);
     if (!presetPtr)
     {
         qDebug() << "hilfe" << __LINE__;
-        return;
+        return false;
     }
 
     const auto &preset = *presetPtr;
+    auto &steps = preset.steps;
 
-    // TODO respect stepIndex
-    if (preset.steps.empty())
+    if (steps.size() <= stepIndex)
     {
         qDebug() << "hilfe" << __LINE__;
-        return;
+        return false;
     }
 
-    m_controller->setSliderStates(preset.steps.front().sliders);
+    m_controller->setSliderStates(preset.steps.at(stepIndex).sliders);
+
+    return true;
 }
 
 int PresetStepsModel::rowCount(const QModelIndex &parent) const

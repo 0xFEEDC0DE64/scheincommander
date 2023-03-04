@@ -82,6 +82,13 @@ ColumnLayout {
                     text: presetsListView.currentData ? presetsListView.currentData.name : ''
                     onTextEdited: if (presetsListView.currentData) presetsListView.currentData.name = text; else console.warn('discarded');
                 }
+                Label { text: qsTr("MSecsPerStep:") }
+                SpinBox {
+                    editable: true
+                    to: 999999
+                    value: presetsListView.currentData ? presetsListView.currentData.msecsPerStep : -1
+                    onValueModified: if (presetsListView.currentData) presetsListView.currentData.msecsPerStep = value; else console.warn('discarded');
+                }
             }
 
             Item {
@@ -145,11 +152,11 @@ ColumnLayout {
 
                 Button {
                     text: qsTr('Auf Schieberegler\nunten kopieren');
-                    onPressed: presetStepsModel.copyToFaders(presetStepsListView.currentIndex)
+                    onPressed: if (!presetStepsModel.copyToFaders(presetStepsListView.currentIndex)) console.warn('failed')
                 }
                 Button {
                     text: qsTr('Von Schieberegler\nunten kopieren');
-                    onPressed: presetStepsModel.copyFromFaders(presetStepsListView.currentIndex)
+                    onPressed: if (!presetStepsModel.copyFromFaders(presetStepsListView.currentIndex)) console.warn('failed');
                 }
             }
 

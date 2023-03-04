@@ -174,7 +174,7 @@ void DmxController::setSliderStates(const sliders_state_t &sliderStates)
 void DmxController::sendDmxBuffer()
 {
     const auto now = QDateTime::currentDateTime();
-    const auto secsSinceEpoch = now.toSecsSinceEpoch();
+    const auto msecsSinceEpoch = now.toMSecsSinceEpoch();
 
     char buf[513] {0};
 
@@ -252,7 +252,11 @@ void DmxController::sendDmxBuffer()
                 continue;
             }
 
-            const auto &sliders = preset.steps[secsSinceEpoch % preset.steps.size()].sliders;
+            const auto &steps = preset.steps;
+            const auto &sliders = (steps.size() == 1 ?
+                                       steps.front() :
+                                       steps[msecsSinceEpoch / (preset.msecsPerStep ? preset.msecsPerStep : 100) % steps.size()]
+                                   ).sliders;
             apply(sliders, *iter);
             iter++;
         }
