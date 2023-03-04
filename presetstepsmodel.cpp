@@ -11,24 +11,24 @@ void PresetStepsModel::setController(DmxController *controller)
 
     if (m_controller)
     {
-//        disconnect(m_controller, &DmxController::presetRegisterInserted,
-//                   this, &PresetStepsModel::otherPresetRegisterInserted);
-//        disconnect(m_controller, &DmxController::presetRegisterRemoved,
-//                   this, &PresetStepsModel::otherPresetRegisterRemoved);
-//        disconnect(m_controller, &DmxController::presetRegisterTypeChanged,
-//                   this, &PresetStepsModel::otherPresetRegisterTypeChanged);
+        disconnect(m_controller, &DmxController::presetStepInserted,
+                   this, &PresetStepsModel::otherPresetStepInserted);
+        disconnect(m_controller, &DmxController::presetStepRemoved,
+                   this, &PresetStepsModel::otherPresetStepRemoved);
+//        disconnect(m_controller, &DmxController::presetStepTypeChanged,
+//                   this, &PresetStepsModel::otherPresetStepTypeChanged);
     }
 
     m_controller = controller;
 
     if (m_controller)
     {
-//        connect(m_controller, &DmxController::presetRegisterInserted,
-//                this, &PresetStepsModel::otherPresetRegisterInserted);
-//        connect(m_controller, &DmxController::presetRegisterRemoved,
-//                this, &PresetStepsModel::otherPresetRegisterRemoved);
-//        connect(m_controller, &DmxController::presetRegisterTypeChanged,
-//                this, &PresetStepsModel::otherPresetRegisterTypeChanged);
+        connect(m_controller, &DmxController::presetStepInserted,
+                this, &PresetStepsModel::otherPresetStepInserted);
+        connect(m_controller, &DmxController::presetStepRemoved,
+                this, &PresetStepsModel::otherPresetStepRemoved);
+//        connect(m_controller, &DmxController::presetStepTypeChanged,
+//                this, &PresetStepsModel::otherPresetStepTypeChanged);
     }
 
     endResetModel();
@@ -183,4 +183,170 @@ QHash<int, QByteArray> PresetStepsModel::roleNames() const
     return {
         { Qt::DisplayRole, "name" },
     };
+}
+
+bool PresetStepsModel::insertRows(int row, int count, const QModelIndex &parent)
+{
+    if (parent.isValid())
+    {
+        qWarning() << "hilfe" << __LINE__;
+        return false;
+    }
+
+    if (!m_controller)
+    {
+        qWarning() << "hilfe" << __LINE__;
+        return false;
+    }
+
+    if (m_presetId == -1)
+    {
+        qWarning() << "hilfe" << __LINE__;
+        return false;
+    }
+
+    auto &presets = m_controller->lightProject().presets;
+    auto presetPtr = presets.findById(m_presetId);
+    if (!presetPtr)
+    {
+        qWarning() << "hilfe" << __LINE__;
+        return false;
+    }
+
+    auto &preset = *presetPtr;
+
+    if (row < 0)
+    {
+        qWarning() << "hilfe" << __LINE__;
+        return false;
+    }
+
+    auto &steps = preset.steps;
+
+    beginInsertRows({}, row, row+count-1);
+    {
+        QMutexLocker locker{&m_controller->mutex()};
+        auto iter = std::begin(steps) + row;
+        for (auto i = 0; i < count; i++)
+            iter = steps.insert(iter, PresetStepConfig{}) + 1;
+    }
+    endInsertRows();
+
+    disconnect(m_controller, &DmxController::presetStepInserted,
+               this, &PresetStepsModel::otherPresetStepInserted);
+    emit m_controller->presetStepInserted(preset, row, row+count-1);
+    connect(m_controller, &DmxController::presetStepInserted,
+            this, &PresetStepsModel::otherPresetStepInserted);
+
+    return true;
+}
+
+bool PresetStepsModel::removeRows(int row, int count, const QModelIndex &parent)
+{
+    if (parent.isValid())
+    {
+        qWarning() << "hilfe" << __LINE__;
+        return false;
+    }
+
+    if (!m_controller)
+    {
+        qWarning() << "hilfe" << __LINE__;
+        return false;
+    }
+
+    if (m_presetId == -1)
+    {
+        qWarning() << "hilfe" << __LINE__;
+        return false;
+    }
+
+    auto &presets = m_controller->lightProject().presets;
+    auto presetPtr = presets.findById(m_presetId);
+    if (!presetPtr)
+    {
+        qWarning() << "hilfe" << __LINE__;
+        return false;
+    }
+
+    auto &preset = *presetPtr;
+
+    if (row < 0)
+    {
+        qWarning() << "hilfe" << __LINE__;
+        return false;
+    }
+
+    auto &steps = preset.steps;
+
+    if (row >= steps.size())
+    {
+        qWarning() << "hilfe" << __LINE__;
+        return false;
+    }
+
+    if (row + count > steps.size())
+    {
+        qWarning() << "hilfe" << __LINE__;
+        return false;
+    }
+
+    beginRemoveRows({}, row, row+count-1);
+    {
+        QMutexLocker locker{&m_controller->mutex()};
+        auto begin = std::begin(steps) + row;
+        auto end = begin + count;
+        steps.erase(begin, end);
+    }
+    endRemoveRows();
+
+    disconnect(m_controller, &DmxController::presetStepRemoved,
+               this, &PresetStepsModel::otherPresetStepRemoved);
+    emit m_controller->presetStepRemoved(preset, row, row+count-1);
+    connect(m_controller, &DmxController::presetStepRemoved,
+            this, &PresetStepsModel::otherPresetStepRemoved);
+
+    return true;
+}
+
+void PresetStepsModel::otherPresetStepInserted(const PresetConfig &preset, int first, int last)
+{
+    if (!m_controller)
+    {
+        qWarning() << "hilfe" << __LINE__;
+        return;
+    }
+
+    if (m_presetId == -1)
+    {
+        qWarning() << "hilfe" << __LINE__;
+        return;
+    }
+
+    if (m_presetId != preset.id)
+        return;
+
+    beginInsertRows({}, first, last);
+    endInsertRows();
+}
+
+void PresetStepsModel::otherPresetStepRemoved(const PresetConfig &preset, int first, int last)
+{
+    if (!m_controller)
+    {
+        qWarning() << "hilfe" << __LINE__;
+        return;
+    }
+
+    if (m_presetId == -1)
+    {
+        qWarning() << "hilfe" << __LINE__;
+        return;
+    }
+
+    if (m_presetId != preset.id)
+        return;
+
+    beginRemoveRows({}, first, last);
+    endRemoveRows();
 }

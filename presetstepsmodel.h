@@ -27,9 +27,16 @@ public:
     QMap<int, QVariant> itemData(const QModelIndex &index) const override;
     QHash<int, QByteArray> roleNames() const override;
 
+    bool insertRows(int row, int count, const QModelIndex &parent) override;
+    bool removeRows(int row, int count, const QModelIndex &parent) override;
+
 signals:
     void controllerChanged(DmxController *controller);
     void presetIdChanged(int presetId);
+
+private slots:
+    void otherPresetStepInserted(const PresetConfig &preset, int first, int last);
+    void otherPresetStepRemoved(const PresetConfig &preset, int first, int last);
 
 private:
     DmxController *m_controller{};

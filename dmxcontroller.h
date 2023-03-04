@@ -74,6 +74,9 @@ signals:
     void presetRemoved(int first, int last);
     void presetNameChanged(int row, const QString &name);
 
+    void presetStepInserted(const PresetConfig &preset, int first, int last);
+    void presetStepRemoved(const PresetConfig &preset, int first, int last);
+
     void sliderStatesChanged(const sliders_state_t &sliderStates);
 
 protected:

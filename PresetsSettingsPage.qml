@@ -44,7 +44,7 @@ ColumnLayout {
                     modal: true
                     title: qsTr('Confirmation')
 
-                    onAccepted: presetsModel.removeRow(index)
+                    onAccepted: if (!presetsModel.removeRow(index)) console.warn('failed');
 
                     Label {
                         id: textContainer
@@ -61,6 +61,8 @@ ColumnLayout {
         }
 
         ColumnLayout {
+            Layout.preferredWidth: 300
+            Layout.maximumWidth: 300
             Layout.fillHeight: true
 
             enabled: presetsListView.currentIndex !== -1
@@ -76,6 +78,7 @@ ColumnLayout {
                 }
                 Label { text: qsTr("Name:") }
                 TextField {
+                    Layout.fillWidth: true
                     text: presetsListView.currentData ? presetsListView.currentData.name : ''
                     onTextEdited: if (presetsListView.currentData) presetsListView.currentData.name = text; else console.warn('discarded');
                 }
@@ -86,23 +89,60 @@ ColumnLayout {
             }
         }
 
-        PresetModel {
-            id: presetModel
-            controller: __controller
-            presetId: presetsListView.currentData ? presetsListView.currentData.id : -1
-        }
-
         EditableListView {
+            Layout.fillWidth: true
+
             enabled: presetsListView.currentIndex !== -1
 
             model: PresetStepsModel {
+                id: presetStepsModel
+
                 controller: __controller
                 presetId: presetsListView.currentData ? presetsListView.currentData.id : -1
+            }
+
+            onAddClicked: (index) => { const newIndex = index < 0 ? 0 : index + 1; if (presetStepsModel.insertRow(newIndex)) currentIndex = newIndex; else console.warn('failed'); }
+            onRemoveClicked: (index) => {
+                const dialog = dialogComponent2.createObject(Overlay.overlay);
+                dialog.index = index;
+                dialog.open();
+            }
+
+            Component {
+                id: dialogComponent2
+
+                Dialog {
+                    property int index
+
+                    anchors.centerIn: parent
+                    standardButtons: DialogButtonBox.Yes | DialogButtonBox.Cancel
+                    modal: true
+                    title: qsTr('Confirmation')
+
+                    onAccepted: if (!presetStepsModel.removeRow(index)) console.warn('failed');
+
+                    Label {
+                        id: textContainer
+
+                        anchors.fill: parent
+
+                        horizontalAlignment: Qt.AlignLeft
+                        verticalAlignment: Qt.AlignTop
+
+                        text: qsTr('Are you sure you want to remove row %0').arg(index)
+                    }
+                }
             }
         }
 
         ColumnLayout {
             Layout.fillWidth: true
+
+            PresetModel {
+                id: presetModel
+                controller: __controller
+                presetId: presetsListView.currentData ? presetsListView.currentData.id : -1
+            }
 
             RowLayout {
                 Button {

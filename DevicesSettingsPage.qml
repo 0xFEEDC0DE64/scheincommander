@@ -48,7 +48,7 @@ ColumnLayout {
                     modal: true
                     title: qsTr('Confirmation')
 
-                    onAccepted: model.removeRow(index)
+                    onAccepted: if (!model.removeRow(index)) console.warn('failed');
 
                     Label {
                         id: textContainer
@@ -82,13 +82,13 @@ ColumnLayout {
                     enabled: false
                     Layout.fillWidth: true
                     value: listView.currentData ? listView.currentData.id : -1
-                    onValueModified: listView.currentData.id = value
+                    onValueModified: if (listView.currentData) listView.currentData.id = value; else console.warn('discarded');
                 }
                 Label { text: qsTr("Name:") }
                 TextField {
                     Layout.fillWidth: true
                     text: listView.currentData ? listView.currentData.name : ''
-                    onTextEdited: listView.currentData.name = text
+                    onTextEdited: if (listView.currentData) listView.currentData.name = text; else console.warn('discarded');
                 }
                 Label { text: qsTr("DeviceType:") }
                 IconComboBox {
@@ -112,7 +112,7 @@ ColumnLayout {
                     to: 512
                     Layout.fillWidth: true
                     value: listView.currentData ? listView.currentData.address : -1
-                    onValueModified: listView.currentData.address = value
+                    onValueModified: if (listView.currentData) listView.currentData.address = value; else console.warn('discarded');
                 }
                 Label {
                     Layout.alignment: Qt.AlignTop | Qt.AlignLeft
@@ -121,7 +121,7 @@ ColumnLayout {
                 Vector3DField {
                     id: positionField
                     Layout.fillWidth: true
-                    onValueModified: listView.currentData.position = value;
+                    onValueModified: if (listView.currentData) listView.currentData.position = value; else console.warn('discarded');
                     // TODO solve without onCurrentDataChanged
                 }
             }

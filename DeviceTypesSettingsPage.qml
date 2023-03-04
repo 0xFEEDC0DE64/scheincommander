@@ -45,7 +45,7 @@ ColumnLayout {
                     modal: true
                     title: qsTr('Confirmation')
 
-                    onAccepted: deviceTypesModel.removeRow(index)
+                    onAccepted: if (!deviceTypesModel.removeRow(index)) console.warn('failed');
 
                     Label {
                         id: textContainer
@@ -62,6 +62,8 @@ ColumnLayout {
         }
 
         ColumnLayout {
+            Layout.preferredWidth: 300
+            Layout.maximumWidth: 300
             Layout.fillHeight: true
 
             enabled: deviceTypesListView.currentIndex !== -1
@@ -77,6 +79,7 @@ ColumnLayout {
                 }
                 Label { text: qsTr("Name:") }
                 TextField {
+                    Layout.fillWidth: true
                     text: deviceTypesListView.currentData ? deviceTypesListView.currentData.name : ''
                     onTextEdited: if (deviceTypesListView.currentData) deviceTypesListView.currentData.name = text; else console.warn('discarded');
                 }
@@ -109,34 +112,61 @@ ColumnLayout {
             }
         }
 
-        Pane {
+        EditableListView {
+            id: registersListView
+
             Layout.preferredWidth: 300
+            Layout.maximumWidth: 300
             Layout.fillHeight: true
 
             enabled: deviceTypesListView.currentIndex !== -1
 
-            Material.elevation: 6
+            textRole: 'registerTypeName'
 
-            EditableListView {
-                id: registersListView
-                anchors.fill: parent
+            model: DeviceTypeRegistersModel {
+                id: registersModel
+                controller: __controller
 
-                textRole: 'registerTypeName'
+                deviceTypeId: deviceTypesListView.currentData ? deviceTypesListView.currentData.id : -1
+            }
 
-                model: DeviceTypeRegistersModel {
-                    id: registersModel
-                    controller: __controller
+            onAddClicked: (index) => { const newIndex = index < 0 ? 0 : index + 1; if (registersModel.insertRow(newIndex)) currentIndex = newIndex; else console.warn('failed'); }
+            onRemoveClicked: (index) => {
+                const dialog = dialogComponent2.createObject(Overlay.overlay);
+                dialog.index = index;
+                dialog.open();
+            }
 
-                    deviceTypeId: deviceTypesListView.currentData ? deviceTypesListView.currentData.id : -1
+            Component {
+                id: dialogComponent2
+
+                Dialog {
+                    property int index
+
+                    anchors.centerIn: parent
+                    standardButtons: DialogButtonBox.Yes | DialogButtonBox.Cancel
+                    modal: true
+                    title: qsTr('Confirmation')
+
+                    onAccepted: if (!registersModel.removeRow(index)) console.warn('failed');
+
+                    Label {
+                        id: textContainer
+
+                        anchors.fill: parent
+
+                        horizontalAlignment: Qt.AlignLeft
+                        verticalAlignment: Qt.AlignTop
+
+                        text: qsTr('Are you sure you want to remove row %0').arg(index)
+                    }
                 }
-
-                onAddClicked: (index) => { const newIndex = index < 0 ? 0 : index + 1; if (registersModel.insertRow(newIndex)) currentIndex = newIndex; else console.warn('failed'); }
-                onRemoveClicked: (index) => registersModel.removeRow(index)
             }
         }
 
         ColumnLayout {
-            //Layout.fillWidth: true
+            Layout.preferredWidth: 300
+            Layout.maximumWidth: 300
             Layout.fillHeight: true
 
             enabled: registersListView.currentIndex >= 0
@@ -162,6 +192,10 @@ ColumnLayout {
             Item {
                 Layout.fillHeight: true
             }
+        }
+
+        Item {
+            Layout.fillWidth: true
         }
     }
 }
