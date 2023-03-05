@@ -67,6 +67,7 @@ qt_add_qml_module(appscheincommander
         AnimatedStackView.qml
         Devices3dView.qml
         DoubleSpinBox.qml
+        TorchControlPage.qml
 )
 
 add_definitions(-DCMAKE_PROJECT_VERSION=${CMAKE_PROJECT_VERSION})

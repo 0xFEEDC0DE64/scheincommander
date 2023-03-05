@@ -9,25 +9,52 @@ Item {
 
     property bool needsRegler: true
 
-    Button {
+    ColumnLayout {
         anchors.top: parent.top
         anchors.right: parent.right
-        width: 100
-        height: 100
 
-        text: qsTr('Settings')
+        Button {
+            width: 100
+            height: 100
+            Layout.minimumWidth: width
+            Layout.minimumHeight: height
+            Layout.maximumWidth: width
+            Layout.maximumHeight: height
 
-        onClicked: stackview.push(settingsPage)
+            text: qsTr('Settings')
 
-        Component {
-            id: settingsPage
+            onClicked: stackview.push(settingsPage)
 
-            SettingsPage {
+            Component {
+                id: settingsPage
+
+                SettingsPage {
+                }
+            }
+        }
+
+        Button {
+            width: 100
+            height: 100
+            Layout.minimumWidth: width
+            Layout.minimumHeight: height
+            Layout.maximumWidth: width
+            Layout.maximumHeight: height
+
+            text: qsTr('Torch\nControl')
+
+            onClicked: stackview.push(torchControlPage)
+
+            Component {
+                id: torchControlPage
+
+                TorchControlPage {
+                }
             }
         }
     }
 
-    Flow{
+    Flow {
         anchors.fill: parent
         flow: Flow.TopToBottom
 
@@ -45,38 +72,5 @@ Item {
                 }
             }
         }
-        CheckBox {
-            id: animationCheckbox
-            text: qsTr('Animation')
-        }
-    }
-
-    property int test0
-    onTest0Changed: __controller.setPresetSlider(7, test0);
-    property int test1
-    onTest1Changed: __controller.setPresetSlider(15, test1);
-    property int test2
-    onTest2Changed: __controller.setPresetSlider(9, test2);
-    property int test3
-    onTest3Changed: __controller.setPresetSlider(13, test3);
-
-    SequentialAnimation {
-        loops: Animation.Infinite
-        running: animationCheckbox.checked
-
-        ParallelAnimation {
-            NumberAnimation { target: homePage; property: "test0"; duration: 2000; from: 10; to: 255; easing.type: Easing.InQuad }
-            NumberAnimation { target: homePage; property: "test1"; duration: 2000; from: 255; to: 10; easing.type: Easing.InQuad } // blau
-            NumberAnimation { target: homePage; property: "test2"; duration: 2000; from: 255; to: 10; easing.type: Easing.InQuad } // blau
-            NumberAnimation { target: homePage; property: "test3"; duration: 2000; from: 10; to: 255; easing.type: Easing.InQuad }
-        }
-        PauseAnimation { duration: 1000 }
-        ParallelAnimation {
-            NumberAnimation { target: homePage; property: "test0"; duration: 2000; from: 255; to: 10; easing.type: Easing.InQuad }
-            NumberAnimation { target: homePage; property: "test1"; duration: 2000; from: 10; to: 255; easing.type: Easing.InQuad } // blau
-            NumberAnimation { target: homePage; property: "test2"; duration: 2000; from: 10; to: 255; easing.type: Easing.InQuad } // blau
-            NumberAnimation { target: homePage; property: "test3"; duration: 2000; from: 255; to: 10; easing.type: Easing.InQuad }
-        }
-        PauseAnimation { duration: 1000 }
     }
 }
