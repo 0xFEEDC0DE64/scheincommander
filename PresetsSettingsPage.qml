@@ -237,31 +237,36 @@ ColumnLayout {
                     value: 360
                 }
 
-
                 Button {
                     text: qsTr('Single')
                     onPressed: patternMaker.setRainbow(0, phaseAdvanceSlider.realValue / 360., advanceEveryNLamp.value)
                 }
+
                 Button {
                     text: qsTr('All Steps')
                     onPressed: {
-                        const rowCount = 0;
+                        const rowCount = presetStepsModel.rowCount();
+
+                        if (rowCount)
+                            if (!presetStepsModel.removeRows(0, rowCount)) {
+                                console.warn('removeRows failed');
+                                return;
+                            }
+
                         const steps = generateSteps.value;
 
-                        if(rowCount)presetStepsModel.removeRows(0,rowCount);
-
-                        if(!presetStepsModel.insertRows(0, steps)){
+                        if (!presetStepsModel.insertRows(0, steps)) {
                             console.warn('insertRows failed');
                             return;
                         }
 
-                        for(let i = 0; i < steps; i++){
-
+                        for (let i = 0; i < steps; i++) {
                             patternMaker.setRainbow((i*1.) / steps , phaseAdvanceSlider.realValue / 360., advanceEveryNLamp.value);
-                            if (!presetStepsModel.copyFromFaders(i)) console.warn('copyFromFaders failed');
+
+                            if (!presetStepsModel.copyFromFaders(i))
+                                console.warn('copyFromFaders failed');
                         }
                     }
-
                 }
             }
         }
