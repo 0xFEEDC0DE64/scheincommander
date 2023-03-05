@@ -172,11 +172,11 @@ ColumnLayout {
             RowLayout {
                 Button {
                     text: qsTr('Alle auf\n0 setzen');
-                    onPressed: patternMaker.setAllFadersLow()
+                    onPressed: patternMaker.setAllFaders(0)
                 }
                 Button {
                     text: qsTr('Alle auf\nMaximum setzen');
-                    onPressed: patternMaker.setAllFadersMax()
+                    onPressed: patternMaker.setAllFaders(255)
                 }
             }
 
